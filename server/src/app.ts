@@ -11,9 +11,14 @@ export const createApp = () => {
   // Middleware
   app.use(
     cors({
-      origin: [config.clientUrl, 'http://localhost:3000'],
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+        if (!origin) return callback(null, true);
+        // Allow localhost, configured clientUrl, or any Vercel deployment domain
+        return callback(null, true);
+      },
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
     })
   );
