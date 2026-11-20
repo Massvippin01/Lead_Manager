@@ -170,7 +170,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                     Prospect Inspector
                   </span>
                   {dealHealth && (
-                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded border ${dealHealth.color}`}>
+                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded border ${dealHealth.color}`}>
                       Score {dealHealth.score}
                     </span>
                   )}
@@ -391,6 +391,22 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                       <Phone className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
                       <div className="min-w-0">
                         <p className="text-[10px] text-zinc-400 font-medium font-mono">Phone Number</p>
+                        <a
+                          href={`tel:${lead.phone}`}
+                          className="text-xs font-semibold text-zinc-900 hover:underline truncate block font-mono"
+                        >
+                          {lead.phone}
+                        </a>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div className="flex items-center justify-between p-2.5 rounded-lg border border-zinc-200/80 bg-white">
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <Phone className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-[10px] text-zinc-400 font-medium font-mono">Phone</p>
                         <a
                           href={`tel:${lead.phone}`}
                           className="text-xs font-semibold text-zinc-900 hover:underline truncate block font-mono"

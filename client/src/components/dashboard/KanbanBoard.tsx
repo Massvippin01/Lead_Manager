@@ -110,7 +110,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                 <span className="font-bold text-xs text-zinc-900 tracking-tight">
                   {col.title}
                 </span>
-                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.2 rounded bg-zinc-200 text-zinc-700 tabular-numbers">
+                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-700 tabular-numbers">
                   {columnLeads.length}
                 </span>
               </div>

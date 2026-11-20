@@ -200,10 +200,10 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
 
   const hasActiveFilters = Boolean(
     queryParams.search ||
-      queryParams.status ||
-      queryParams.priority ||
-      queryParams.source ||
-      queryParams.preset
+    queryParams.status ||
+    queryParams.priority ||
+    queryParams.source ||
+    queryParams.preset
   );
 
   const renderSortIndicator = (columnKey: string) => {
@@ -504,7 +504,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       {/* Deal Health Score */}
                       <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3 font-mono text-[11px] tabular-numbers`}>
                         <span
-                          className={`inline-flex items-center space-x-1 px-1.5 py-0.2 rounded font-semibold ${
+                          className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded font-semibold ${
                             score >= 80
                               ? 'text-emerald-700 bg-emerald-50'
                               : score >= 50
@@ -674,11 +674,11 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
       {/* Tactile Power-User Shortcut Hints Bar */}
       <div className="hidden sm:flex items-center justify-between px-2 text-[11px] text-zinc-400 font-mono">
         <div className="flex items-center space-x-3">
-          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">J</kbd> / <kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">K</kbd> Navigate</span>
-          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">↵</kbd> Inspect</span>
-          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">X</kbd> Select</span>
-          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">E</kbd> Edit</span>
-          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">⌘K</kbd> Commands</span>
+          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">J</kbd> / <kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">K</kbd> Navigate</span>
+          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">↵</kbd> Inspect</span>
+          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">X</kbd> Select</span>
+          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">E</kbd> Edit</span>
+          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">⌘K</kbd> Commands</span>
         </div>
         <span className="text-zinc-400">Superhuman-style navigation enabled</span>
       </div>

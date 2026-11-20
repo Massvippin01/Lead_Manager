@@ -290,7 +290,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
                         <div className="flex items-center space-x-2 shrink-0 font-mono text-[11px]">
                           <span
-                            className={`px-1.5 py-0.2 rounded text-[10px] font-semibold ${
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
                               isSelected ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-100 text-zinc-600'
                             }`}
                           >

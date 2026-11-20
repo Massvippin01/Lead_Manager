@@ -40,7 +40,7 @@ export const Navbar: React.FC = () => {
             <div className="hidden sm:flex items-center space-x-1.5 pl-3 border-l border-zinc-200 text-xs text-zinc-500 font-mono">
               <span className="text-zinc-300">/</span>
               <span className="font-semibold text-zinc-800">Sales Pipeline</span>
-              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-sans">
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-sans">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
                 Live Sync
               </span>
@@ -61,7 +61,7 @@ export const Navbar: React.FC = () => {
               >
                 <Search className="h-3 w-3 text-zinc-400" />
                 <span>Commands & search...</span>
-                <kbd className="inline-flex items-center px-1.5 py-0.2 text-[10px] font-mono text-zinc-500 bg-white rounded border border-zinc-200 shadow-2xs">
+                <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-zinc-500 bg-white rounded border border-zinc-200 shadow-2xs">
                   ⌘K
                 </kbd>
               </button>
