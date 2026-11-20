@@ -17,6 +17,14 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
   activeStatus,
   onFilterStatus,
 }) => {
+  const formatCurrency = (val: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(val || 0);
+  };
+
   const cards: {
     status?: LeadStatus;
     title: string;
@@ -30,7 +38,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       status: undefined,
       title: 'Total Pipeline',
       value: stats?.total ?? 0,
-      subtext: 'All recorded leads',
+      subtext: stats?.pipelineValue ? formatCurrency(stats.pipelineValue) : 'All recorded leads',
       icon: Users,
       dotColor: 'bg-slate-900',
       isActive: activeStatus === undefined,
@@ -57,7 +65,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       status: 'QUALIFIED',
       title: 'Qualified',
       value: stats?.qualified ?? 0,
-      subtext: 'Ready for deal close',
+      subtext: stats?.qualifiedValue ? formatCurrency(stats.qualifiedValue) : 'Ready for deal close',
       icon: CheckCircle2,
       dotColor: 'bg-emerald-500',
       isActive: activeStatus === 'QUALIFIED',
@@ -96,8 +104,8 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
             onClick={() => isClickable && onFilterStatus(card.status)}
             className={`text-left rounded-xl border p-3.5 transition-all duration-150 ${
               card.isActive && card.title !== 'Win Rate'
-                ? 'bg-white border-slate-900 ring-1 ring-slate-900 shadow-sm'
-                : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50/50 shadow-sm'
+                ? 'bg-white border-slate-900 ring-1 ring-slate-900 shadow-xs'
+                : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50/50 shadow-xs'
             } ${!isClickable ? 'cursor-default' : 'cursor-pointer'}`}
           >
             <div className="flex items-center justify-between text-xs font-medium text-slate-500 mb-2">
@@ -118,7 +126,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
               )}
             </div>
 
-            <p className="text-[11px] text-slate-400 mt-1 truncate">
+            <p className="text-[11px] font-semibold text-slate-400 mt-1 truncate">
               {card.subtext}
             </p>
           </button>

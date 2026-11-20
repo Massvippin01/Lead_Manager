@@ -93,4 +93,67 @@ export class LeadController {
       next(error);
     }
   }
+
+  static async bulkUpdateStatus(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!.userId;
+      const { ids, status } = req.body;
+      const result = await LeadService.bulkUpdateStatus(userId, ids, status);
+
+      res.status(200).json({
+        success: true,
+        message: `Successfully updated ${result.updatedCount} leads`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async bulkDelete(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!.userId;
+      const { ids } = req.body;
+      const result = await LeadService.bulkDelete(userId, ids);
+
+      res.status(200).json({
+        success: true,
+        message: `Successfully deleted ${result.deletedCount} leads`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async addNote(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!.userId;
+      const leadId = req.params.id as string;
+      const note = await LeadService.addNote(userId, leadId, req.body.content);
+
+      res.status(201).json({
+        success: true,
+        message: 'Note recorded',
+        data: { note },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getNotes(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!.userId;
+      const leadId = req.params.id as string;
+      const notes = await LeadService.getNotes(userId, leadId);
+
+      res.status(200).json({
+        success: true,
+        data: { notes },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

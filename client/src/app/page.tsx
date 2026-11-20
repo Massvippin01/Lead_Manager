@@ -10,11 +10,12 @@ import { StatsCards } from '@/components/dashboard/StatsCards';
 import { PipelineDistributionBar } from '@/components/dashboard/PipelineDistributionBar';
 import { FilterBar } from '@/components/dashboard/FilterBar';
 import { LeadsTable } from '@/components/dashboard/LeadsTable';
+import { KanbanBoard } from '@/components/dashboard/KanbanBoard';
 import { LeadDrawer } from '@/components/dashboard/LeadDrawer';
 import { LeadModal, LeadFormData } from '@/components/dashboard/LeadModal';
 import { DeleteConfirmDialog } from '@/components/dashboard/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, ArrowRight, Layers, Lock, ShieldCheck, ChevronRight } from 'lucide-react';
+import { RefreshCw, ArrowRight } from 'lucide-react';
 
 export default function DashboardPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -26,6 +27,12 @@ export default function DashboardPage() {
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoadingLeads, setIsLoadingLeads] = useState(false);
   const [isLoadingStats, setIsLoadingStats] = useState(false);
+
+  // View Mode: Table vs Kanban
+  const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table');
+
+  // Bulk Selection State
+  const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
 
   // Filters & Query State
   const [queryParams, setQueryParams] = useState<LeadQueryParams>({
@@ -61,7 +68,9 @@ export default function DashboardPage() {
       if (queryParams.sortBy) query.append('sortBy', queryParams.sortBy);
       if (queryParams.sortOrder) query.append('sortOrder', queryParams.sortOrder);
       if (queryParams.page) query.append('page', String(queryParams.page));
-      if (queryParams.limit) query.append('limit', String(queryParams.limit));
+      // In Kanban view, fetch up to 100 leads to populate columns
+      const limitToUse = viewMode === 'kanban' ? 100 : queryParams.limit || 10;
+      query.append('limit', String(limitToUse));
 
       const res = await apiRequest<{
         success: boolean;
@@ -71,7 +80,7 @@ export default function DashboardPage() {
       setLeads(res.data.leads);
       setPagination(res.data.pagination);
 
-      // If drawer is open, keep selected lead updated
+      // Keep drawer lead updated with fresh notes
       if (selectedLeadForDrawer) {
         const updatedSelected = res.data.leads.find((l) => l.id === selectedLeadForDrawer.id);
         if (updatedSelected) {
@@ -83,7 +92,7 @@ export default function DashboardPage() {
     } finally {
       setIsLoadingLeads(false);
     }
-  }, [user, queryParams, error, selectedLeadForDrawer]);
+  }, [user, queryParams, viewMode, error, selectedLeadForDrawer]);
 
   // Fetch Stats
   const fetchStats = useCallback(async () => {
@@ -118,6 +127,32 @@ export default function DashboardPage() {
     }
   }, [fetchStats, user]);
 
+  // Global Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in input or textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') {
+        return;
+      }
+
+      if (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key === 'k')) {
+        e.preventDefault();
+        const searchInput = document.getElementById('global-lead-search-input');
+        if (searchInput) searchInput.focus();
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        handleOpenCreateModal();
+      } else if (e.key === 'v' || e.key === 'V') {
+        e.preventDefault();
+        setViewMode((prev) => (prev === 'table' ? 'kanban' : 'table'));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Handle Query Changes
   const handleQueryChange = (updates: Partial<LeadQueryParams>) => {
     setQueryParams((prev) => ({ ...prev, ...updates }));
@@ -133,9 +168,10 @@ export default function DashboardPage() {
       page: 1,
       limit: 10,
     });
+    setSelectedLeadIds([]);
   };
 
-  // Quick Status Update
+  // Status Change
   const handleStatusChange = async (leadId: string, newStatus: LeadStatus) => {
     try {
       await apiRequest(`/leads/${leadId}`, {
@@ -146,13 +182,117 @@ export default function DashboardPage() {
       fetchLeads();
       fetchStats();
 
-      // Update drawer lead state if currently selected
       if (selectedLeadForDrawer && selectedLeadForDrawer.id === leadId) {
         setSelectedLeadForDrawer({ ...selectedLeadForDrawer, status: newStatus });
       }
     } catch (err: any) {
       error('Update Failed', err.message);
     }
+  };
+
+  // Bulk Selection Handlers
+  const handleToggleSelectLead = (leadId: string) => {
+    setSelectedLeadIds((prev) =>
+      prev.includes(leadId) ? prev.filter((id) => id !== leadId) : [...prev, leadId]
+    );
+  };
+
+  const handleToggleSelectAll = () => {
+    if (selectedLeadIds.length === leads.length) {
+      setSelectedLeadIds([]);
+    } else {
+      setSelectedLeadIds(leads.map((l) => l.id));
+    }
+  };
+
+  const handleBulkStatusChange = async (newStatus: LeadStatus) => {
+    if (selectedLeadIds.length === 0) return;
+    try {
+      await apiRequest('/leads/bulk-status', {
+        method: 'PATCH',
+        body: JSON.stringify({ ids: selectedLeadIds, status: newStatus }),
+      });
+      success('Bulk Updated', `Moved ${selectedLeadIds.length} leads to ${newStatus}`);
+      setSelectedLeadIds([]);
+      fetchLeads();
+      fetchStats();
+    } catch (err: any) {
+      error('Bulk Update Failed', err.message);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedLeadIds.length === 0) return;
+    if (!window.confirm(`Are you sure you want to delete ${selectedLeadIds.length} leads?`)) return;
+
+    try {
+      await apiRequest('/leads/bulk-delete', {
+        method: 'POST',
+        body: JSON.stringify({ ids: selectedLeadIds }),
+      });
+      success('Bulk Deleted', `Deleted ${selectedLeadIds.length} leads`);
+      setSelectedLeadIds([]);
+      fetchLeads();
+      fetchStats();
+    } catch (err: any) {
+      error('Bulk Delete Failed', err.message);
+    }
+  };
+
+  // Add Note Handler
+  const handleAddNote = async (leadId: string, content: string) => {
+    try {
+      const res = await apiRequest<{ success: boolean; data: { note: any } }>(
+        `/leads/${leadId}/notes`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ content }),
+        }
+      );
+      success('Note Added', 'Interaction logged to timeline');
+      fetchLeads();
+
+      if (selectedLeadForDrawer && selectedLeadForDrawer.id === leadId) {
+        setSelectedLeadForDrawer({
+          ...selectedLeadForDrawer,
+          notes: [res.data.note, ...(selectedLeadForDrawer.notes || [])],
+        });
+      }
+    } catch (err: any) {
+      error('Note Failed', err.message);
+    }
+  };
+
+  // Export to CSV
+  const handleExportCsv = () => {
+    if (leads.length === 0) {
+      error('No data to export');
+      return;
+    }
+
+    const headers = ['ID', 'Name', 'Email', 'Phone', 'Company', 'Deal Value', 'Source', 'Status', 'Date Added'];
+    const rows = leads.map((l) => [
+      l.id,
+      `"${l.name.replace(/"/g, '""')}"`,
+      l.email,
+      `"${l.phone}"`,
+      `"${l.company.replace(/"/g, '""')}"`,
+      l.value || 0,
+      l.source,
+      l.status,
+      new Date(l.createdAt).toISOString().split('T')[0],
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `meru_leads_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    success('Export Successful', `Exported ${leads.length} leads to CSV`);
   };
 
   // Drawer Handler
@@ -240,8 +380,7 @@ export default function DashboardPage() {
           </h1>
 
           <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
-            Sales pipeline management application built for Meru Technosoft screening assignment.
-            Capture, qualify, and convert prospects with an enterprise-grade stack.
+            Production-grade sales pipeline management platform with Table & Kanban views, deal value tracking, and real-time interaction logs.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -258,7 +397,6 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          {/* Architecture Credentials Banner */}
           <div className="mt-10 p-4 rounded-xl bg-slate-50 border border-slate-200/80 max-w-md mx-auto text-left text-xs text-slate-600">
             <div className="flex items-center justify-between mb-1">
               <span className="font-semibold text-slate-900">Evaluation Demo Profile</span>
@@ -292,7 +430,7 @@ export default function DashboardPage() {
             Sales Leads Pipeline
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Track, prioritize, and inspect prospective accounts.
+            Track, prioritize, and convert prospective accounts.
           </p>
         </div>
 
@@ -329,27 +467,44 @@ export default function DashboardPage() {
         onSelectStatus={(status) => handleQueryChange({ status, page: 1 })}
       />
 
-      {/* Search & Filter Toolbar */}
+      {/* Search, View Toggle, Export, and Filter Toolbar */}
       <FilterBar
         queryParams={queryParams}
+        viewMode={viewMode}
         onChange={handleQueryChange}
         onReset={handleResetFilters}
+        onViewModeChange={setViewMode}
         onOpenCreateModal={handleOpenCreateModal}
+        onExportCsv={handleExportCsv}
       />
 
-      {/* Leads Table */}
-      <LeadsTable
-        leads={leads}
-        pagination={pagination}
-        isLoading={isLoadingLeads}
-        queryParams={queryParams}
-        onPageChange={(page) => handleQueryChange({ page })}
-        onLimitChange={(limit) => handleQueryChange({ limit, page: 1 })}
-        onQuickStatusChange={handleStatusChange}
-        onSelectLead={handleSelectLead}
-        onEdit={handleOpenEditModal}
-        onDelete={handleOpenDeleteDialog}
-      />
+      {/* Table View vs Kanban Board View */}
+      {viewMode === 'table' ? (
+        <LeadsTable
+          leads={leads}
+          pagination={pagination}
+          isLoading={isLoadingLeads}
+          queryParams={queryParams}
+          selectedLeadIds={selectedLeadIds}
+          onToggleSelectLead={handleToggleSelectLead}
+          onToggleSelectAll={handleToggleSelectAll}
+          onPageChange={(page) => handleQueryChange({ page })}
+          onLimitChange={(limit) => handleQueryChange({ limit, page: 1 })}
+          onQuickStatusChange={handleStatusChange}
+          onBulkStatusChange={handleBulkStatusChange}
+          onBulkDelete={handleBulkDelete}
+          onSelectLead={handleSelectLead}
+          onEdit={handleOpenEditModal}
+          onDelete={handleOpenDeleteDialog}
+        />
+      ) : (
+        <KanbanBoard
+          leads={leads}
+          isLoading={isLoadingLeads}
+          onSelectLead={handleSelectLead}
+          onStatusChange={handleStatusChange}
+        />
+      )}
 
       {/* Slide-over Inspector Drawer */}
       <LeadDrawer
@@ -357,6 +512,7 @@ export default function DashboardPage() {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         onStatusChange={handleStatusChange}
+        onAddNote={handleAddNote}
         onEdit={(lead) => {
           setIsDrawerOpen(false);
           handleOpenEditModal(lead);

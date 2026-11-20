@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lead, LeadStatus } from '@/types';
+import { Lead, LeadStatus, Note } from '@/types';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   X,
   Mail,
@@ -14,11 +15,12 @@ import {
   Copy,
   Pencil,
   Trash2,
-  ExternalLink,
   Clock,
   Tag,
   ShieldCheck,
-  ChevronRight,
+  MessageSquare,
+  Send,
+  DollarSign,
 } from 'lucide-react';
 
 interface LeadDrawerProps {
@@ -26,6 +28,7 @@ interface LeadDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onStatusChange: (leadId: string, newStatus: LeadStatus) => Promise<void>;
+  onAddNote: (leadId: string, content: string) => Promise<void>;
   onEdit: (lead: Lead) => void;
   onDelete: (lead: Lead) => void;
 }
@@ -41,10 +44,13 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
   isOpen,
   onClose,
   onStatusChange,
+  onAddNote,
   onEdit,
   onDelete,
 }) => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [newNote, setNewNote] = useState('');
+  const [isSubmittingNote, setIsSubmittingNote] = useState(false);
 
   if (!isOpen || !lead) return null;
 
@@ -63,6 +69,14 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
       .toUpperCase();
   };
 
+  const formatCurrency = (val: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(val || 0);
+  };
+
   const formatDate = (iso: string) => {
     try {
       return new Date(iso).toLocaleDateString('en-US', {
@@ -74,6 +88,19 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
       });
     } catch {
       return iso;
+    }
+  };
+
+  const handleNoteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNote.trim()) return;
+
+    setIsSubmittingNote(true);
+    try {
+      await onAddNote(lead.id, newNote.trim());
+      setNewNote('');
+    } finally {
+      setIsSubmittingNote(false);
     }
   };
 
@@ -99,9 +126,9 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
             className="w-screen max-w-md bg-white border-l border-slate-200/90 shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-200/80 flex items-center justify-between bg-slate-50/50">
+            <div className="px-6 py-3.5 border-b border-slate-200/80 flex items-center justify-between bg-slate-50/50">
               <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Lead Inspector
+                Lead Inspector & Activity
               </span>
               <button
                 type="button"
@@ -127,18 +154,27 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                     <Building2 className="h-3.5 w-3.5 mr-1.5 text-slate-400" />
                     <span className="truncate">{lead.company}</span>
                   </div>
-                  <div className="inline-flex items-center space-x-1.5 mt-2 px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200/60">
-                    <Tag className="h-3 w-3 text-slate-500" />
-                    <span>Source: {lead.source.replace('_', ' ')}</span>
+
+                  <div className="flex items-center space-x-2 mt-2">
+                    <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200/60">
+                      <Tag className="h-3 w-3 text-slate-500" />
+                      <span>{lead.source}</span>
+                    </span>
+
+                    {lead.value > 0 && (
+                      <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200/60 tabular-numbers">
+                        <span>{formatCurrency(lead.value)}</span>
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
 
               {/* Pipeline Stage Stepper */}
-              <div className="border border-slate-200/90 rounded-xl p-4 bg-slate-50/50">
-                <div className="flex items-center justify-between mb-3">
+              <div className="border border-slate-200/90 rounded-xl p-3.5 bg-slate-50/50">
+                <div className="flex items-center justify-between mb-2.5">
                   <span className="text-xs font-semibold text-slate-700">
-                    Current Stage
+                    Pipeline Stage
                   </span>
                   <span
                     className={`text-xs font-bold px-2 py-0.5 rounded-full ${
@@ -155,8 +191,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                   </span>
                 </div>
 
-                {/* Interactive Stage Progress Bar */}
-                <div className="grid grid-cols-3 gap-1.5 mb-3">
+                <div className="grid grid-cols-3 gap-1.5 mb-2">
                   {statusStages.map((stage) => {
                     const isCurrent = lead.status === stage.key;
                     return (
@@ -165,7 +200,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                         onClick={() => onStatusChange(lead.id, stage.key)}
                         className={`text-xs font-medium py-1.5 px-2 rounded-lg border text-center transition-all ${
                           isCurrent
-                            ? 'bg-slate-900 border-slate-900 text-white shadow-sm'
+                            ? 'bg-slate-900 border-slate-900 text-white shadow-xs'
                             : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
                         }`}
                       >
@@ -193,12 +228,11 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
               </div>
 
               {/* Contact Details List */}
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                   Verified Contact Details
                 </h4>
 
-                {/* Email Item */}
                 <div className="flex items-center justify-between p-3 rounded-xl border border-slate-200/80 bg-white">
                   <div className="flex items-center space-x-3 min-w-0">
                     <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
@@ -229,7 +263,6 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                   </button>
                 </div>
 
-                {/* Phone Item */}
                 <div className="flex items-center justify-between p-3 rounded-xl border border-slate-200/80 bg-white">
                   <div className="flex items-center space-x-3 min-w-0">
                     <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
@@ -261,11 +294,62 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 </div>
               </div>
 
+              {/* Activity & Notes Timeline */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center">
+                    <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
+                    Interaction Notes ({lead.notes?.length || 0})
+                  </h4>
+                </div>
+
+                {/* Add Note Form */}
+                <form onSubmit={handleNoteSubmit} className="flex gap-2">
+                  <Input
+                    type="text"
+                    placeholder="Log a call, meeting, or interaction..."
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                    className="text-xs h-8 flex-1"
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={isSubmittingNote || !newNote.trim()}
+                    className="h-8 text-xs bg-slate-900 hover:bg-slate-800 text-white px-3"
+                  >
+                    <Send className="h-3 w-3 mr-1" />
+                    Log
+                  </Button>
+                </form>
+
+                {/* Notes Timeline List */}
+                <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                  {lead.notes && lead.notes.length > 0 ? (
+                    lead.notes.map((note) => (
+                      <div
+                        key={note.id}
+                        className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-xs text-slate-700"
+                      >
+                        <p className="leading-relaxed">{note.content}</p>
+                        <span className="text-[10px] text-slate-400 mt-1 block">
+                          {formatDate(note.createdAt)}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-xs text-slate-400 italic py-2">
+                      No interaction notes recorded yet.
+                    </p>
+                  )}
+                </div>
+              </div>
+
               {/* Metadata Record */}
-              <div className="border-t border-slate-100 pt-4 space-y-2 text-xs text-slate-500">
+              <div className="border-t border-slate-100 pt-3 space-y-2 text-xs text-slate-500">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center text-slate-400">
-                    <Clock className="h-3.5 w-3.5 mr-1" /> Created
+                    <Clock className="h-3.5 w-3.5 mr-1" /> Added
                   </span>
                   <span className="font-medium text-slate-700">
                     {formatDate(lead.createdAt)}
@@ -273,7 +357,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center text-slate-400">
-                    <ShieldCheck className="h-3.5 w-3.5 mr-1" /> Lead ID
+                    <ShieldCheck className="h-3.5 w-3.5 mr-1" /> ID
                   </span>
                   <span className="font-mono text-[11px] text-slate-600">
                     {lead.id.substring(0, 8)}...
@@ -287,10 +371,8 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={() => {
-                  onDelete(lead);
-                }}
-                className="text-xs"
+                onClick={() => onDelete(lead)}
+                className="text-xs h-8"
               >
                 <Trash2 className="h-3.5 w-3.5 mr-1" />
                 Delete
@@ -301,16 +383,14 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={onClose}
-                  className="text-xs"
+                  className="text-xs h-8"
                 >
                   Close
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => {
-                    onEdit(lead);
-                  }}
-                  className="text-xs"
+                  onClick={() => onEdit(lead)}
+                  className="text-xs h-8 bg-slate-900 hover:bg-slate-800 text-white"
                 >
                   <Pencil className="h-3.5 w-3.5 mr-1" />
                   Edit Details

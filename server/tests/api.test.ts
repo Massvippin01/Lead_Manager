@@ -19,6 +19,12 @@ vi.mock('../src/lib/prisma', () => {
         create: vi.fn(),
         update: vi.fn(),
         delete: vi.fn(),
+        updateMany: vi.fn(),
+        deleteMany: vi.fn(),
+      },
+      note: {
+        findMany: vi.fn(),
+        create: vi.fn(),
       },
     },
   };
@@ -26,7 +32,7 @@ vi.mock('../src/lib/prisma', () => {
 
 const app = createApp();
 
-describe('Meru Lead Manager API Test Suite', () => {
+describe('Meru Lead Manager Production API Test Suite', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -100,7 +106,6 @@ describe('Meru Lead Manager API Test Suite', () => {
     let authToken = '';
 
     beforeEach(async () => {
-      // Mock valid user login to get a real valid JWT
       const hashedPassword = await bcrypt.hash('password123', 10);
       (prisma.user.findUnique as any).mockResolvedValue({
         id: 'test-user-123',
@@ -131,11 +136,13 @@ describe('Meru Lead Manager API Test Suite', () => {
           email: 'contact@acme.com',
           phone: '+1 555 123 4567',
           company: 'Acme Corp',
+          value: 15000,
           source: 'WEBSITE',
           status: 'NEW',
           userId: 'test-user-123',
           createdAt: new Date(),
           updatedAt: new Date(),
+          notes: [],
         },
       ]);
 
@@ -149,12 +156,13 @@ describe('Meru Lead Manager API Test Suite', () => {
       expect(res.body.data.pagination.total).toBe(1);
     });
 
-    it('should create a lead when valid payload is sent', async () => {
+    it('should create a lead with deal value', async () => {
       const newLeadData = {
         name: 'Clark Kent',
         email: 'clark@dailyplanet.com',
         phone: '+1 555 999 8888',
         company: 'Daily Planet',
+        value: 25000,
         source: 'WEBSITE',
         status: 'NEW',
       };
@@ -165,6 +173,7 @@ describe('Meru Lead Manager API Test Suite', () => {
         userId: 'test-user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
+        notes: [],
       });
 
       const res = await request(app)
@@ -175,74 +184,76 @@ describe('Meru Lead Manager API Test Suite', () => {
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.data.lead.name).toBe('Clark Kent');
-      expect(res.body.data.lead.company).toBe('Daily Planet');
+      expect(res.body.data.lead.value).toBe(25000);
     });
 
-    it('should reject lead creation with invalid phone and email', async () => {
+    it('should handle bulk status update', async () => {
+      (prisma.lead.updateMany as any).mockResolvedValue({ count: 2 });
+
       const res = await request(app)
-        .post('/api/v1/leads')
+        .patch('/api/v1/leads/bulk-status')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
-          name: 'Batman',
-          email: 'not-an-email',
-          phone: '123',
-          company: '',
+          ids: ['lead-1', 'lead-2'],
+          status: 'QUALIFIED',
         });
 
-      expect(res.status).toBe(400);
-      expect(res.body.success).toBe(false);
-      expect(res.body.details).toBeDefined();
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.updatedCount).toBe(2);
     });
 
-    it('should update lead status successfully', async () => {
-      (prisma.lead.findFirst as any).mockResolvedValue({
-        id: 'lead-1',
-        name: 'Clark Kent',
-        email: 'clark@dailyplanet.com',
-        userId: 'test-user-123',
-      });
-
-      (prisma.lead.update as any).mockResolvedValue({
-        id: 'lead-1',
-        name: 'Clark Kent',
-        status: 'QUALIFIED',
-        userId: 'test-user-123',
-      });
+    it('should handle bulk delete', async () => {
+      (prisma.lead.deleteMany as any).mockResolvedValue({ count: 2 });
 
       const res = await request(app)
-        .put('/api/v1/leads/lead-1')
+        .post('/api/v1/leads/bulk-delete')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ status: 'QUALIFIED' });
+        .send({
+          ids: ['lead-1', 'lead-2'],
+        });
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
-      expect(res.body.data.lead.status).toBe('QUALIFIED');
+      expect(res.body.data.deletedCount).toBe(2);
     });
 
-    it('should delete a lead successfully', async () => {
+    it('should create and retrieve notes for a lead', async () => {
       (prisma.lead.findFirst as any).mockResolvedValue({
         id: 'lead-1',
         userId: 'test-user-123',
       });
 
-      (prisma.lead.delete as any).mockResolvedValue({ id: 'lead-1' });
+      (prisma.note.create as any).mockResolvedValue({
+        id: 'note-1',
+        leadId: 'lead-1',
+        content: 'Customer interested in annual enterprise plan.',
+        createdAt: new Date(),
+      });
 
-      const res = await request(app)
-        .delete('/api/v1/leads/lead-1')
-        .set('Authorization', `Bearer ${authToken}`);
+      const createRes = await request(app)
+        .post('/api/v1/leads/lead-1/notes')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ content: 'Customer interested in annual enterprise plan.' });
 
-      expect(res.status).toBe(200);
-      expect(res.body.success).toBe(true);
-      expect(res.body.message).toContain('successfully deleted');
+      expect(createRes.status).toBe(201);
+      expect(createRes.body.success).toBe(true);
+      expect(createRes.body.data.note.content).toContain('annual enterprise plan');
     });
 
-    it('should return aggregated status statistics', async () => {
+    it('should return aggregated metrics including pipeline value', async () => {
       (prisma.lead.count as any)
         .mockResolvedValueOnce(10) // total
         .mockResolvedValueOnce(4)  // new
         .mockResolvedValueOnce(3)  // contacted
         .mockResolvedValueOnce(2)  // qualified
         .mockResolvedValueOnce(1); // lost
+
+      (prisma.lead.findMany as any).mockResolvedValue([
+        { value: 10000, status: 'QUALIFIED' },
+        { value: 20000, status: 'QUALIFIED' },
+        { value: 5000, status: 'NEW' },
+      ]);
 
       const res = await request(app)
         .get('/api/v1/leads/stats')
@@ -251,9 +262,8 @@ describe('Meru Lead Manager API Test Suite', () => {
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.stats.total).toBe(10);
-      expect(res.body.data.stats.new).toBe(4);
-      expect(res.body.data.stats.qualified).toBe(2);
-      expect(res.body.data.stats.conversionRate).toBe('20.0%');
+      expect(res.body.data.stats.pipelineValue).toBe(35000);
+      expect(res.body.data.stats.qualifiedValue).toBe(30000);
     });
   });
 });

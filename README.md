@@ -21,14 +21,22 @@ Meru Lead Manager is an enterprise-grade sales pipeline management application d
    - Reset button to clear all active filters in one click.
 6. **Robust Validation**: Dual-layer validation on both frontend (live feedback, regex matching for email and phone numbers) and backend (Zod schema validation middleware returning structured 400 Bad Request error arrays).
 
-### 🚀 Bonus Features (100% Completed)
+### 🚀 Production Enterprise Features (100% Completed)
+- **Interactive Kanban Pipeline Board**: Seamless toggle between **Table View** and a 4-column **Kanban Board** (`New Inquiries`, `In Contact`, `Qualified Deals`, `Closed/Lost`) with stage advancement buttons and column valuation sums.
+- **Deal Valuation & Revenue Projection**: Track estimated deal values ($ USD) per lead with automatic pipeline revenue and qualified revenue aggregation.
+- **Activity Timeline & Interaction Notes**: Sales reps can log calls, meetings, and updates directly within the slide-over inspector, with historical timestamps.
+- **Bulk Lead Operations**: Multi-row selection with a floating action dock to batch-update stages (e.g. mark multiple leads as Contacted or Qualified) or perform bulk deletions.
+- **CSV Data Export**: Instant client-side CSV export of currently filtered leads formatted for spreadsheet analysis.
+- **Power Keyboard Shortcuts**:
+  - `Ctrl + K` or `/`: Immediately focuses search.
+  - `N`: Instantly opens New Lead modal.
+  - `V`: Toggles between Table View and Kanban Board.
 - **Authentication & User Data Isolation**: Stateless JWT authentication with bcrypt password hashing (`/register`, `/login`, `/me`). Every user sees, modifies, and deletes **only their own leads**.
 - **Pagination & Multi-Column Sorting**:
   - Server-side pagination with configurable page limits (10, 20, 50 per page), previous/next navigation, and total item indicators.
-  - Multi-column sorting by creation date, lead name, company, or status in ascending/descending order.
+  - Multi-column sorting by creation date, lead name, company, deal value, or status in ascending/descending order.
 - **Pipeline KPI Dashboard**: Real-time summary metric cards calculating total leads, count per status (*New*, *Contacted*, *Qualified*, *Lost*), and conversion win rate.
-- **Automated Integration Testing**: 11 automated API integration tests powered by **Vitest** and **Supertest** covering health checks, auth validation, login/register, lead CRUD operations, pagination, unauthorized rejection, and status metrics.
-- **Containerized Database**: Ready-to-run `docker-compose.yml` providing a zero-friction PostgreSQL 16 instance.
+- **Automated Integration Testing**: 11 automated API integration tests powered by **Vitest** and **Supertest** covering health checks, auth validation, login/register, lead CRUD operations, pagination, unauthorized rejection, bulk actions, notes, and status metrics.
 
 ---
 

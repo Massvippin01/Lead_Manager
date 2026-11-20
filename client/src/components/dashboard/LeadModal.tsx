@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Lead, LeadSource, LeadStatus } from '@/types';
-import { User, Mail, Phone, Building2, Globe, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Phone, Building2, Globe, CheckCircle2, DollarSign } from 'lucide-react';
 
 interface LeadModalProps {
   isOpen: boolean;
@@ -26,6 +26,7 @@ export interface LeadFormData {
   email: string;
   phone: string;
   company: string;
+  value: number;
   source: LeadSource;
   status: LeadStatus;
 }
@@ -41,6 +42,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
     email: '',
     phone: '',
     company: '',
+    value: 0,
     source: 'WEBSITE',
     status: 'NEW',
   });
@@ -55,6 +57,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
         email: leadToEdit.email,
         phone: leadToEdit.phone,
         company: leadToEdit.company,
+        value: leadToEdit.value || 0,
         source: leadToEdit.source,
         status: leadToEdit.status,
       });
@@ -64,6 +67,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
         email: '',
         phone: '',
         company: '',
+        value: 0,
         source: 'WEBSITE',
         status: 'NEW',
       });
@@ -98,6 +102,10 @@ export const LeadModal: React.FC<LeadModalProps> = ({
       newErrors.company = 'Company name is required';
     }
 
+    if (formData.value < 0) {
+      newErrors.value = 'Value cannot be negative';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -111,7 +119,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
       await onSubmit(formData);
       onClose();
     } catch {
-      // Toast handles error in parent
+      // Handled via toast in parent
     } finally {
       setIsSubmitting(false);
     }
@@ -126,12 +134,12 @@ export const LeadModal: React.FC<LeadModalProps> = ({
           </DialogTitle>
           <DialogDescription className="text-xs text-slate-500">
             {leadToEdit
-              ? 'Update the prospect contact credentials, source channel, and pipeline status.'
-              : 'Add a verified prospect to your organization sales pipeline.'}
+              ? 'Update contact credentials, deal value, acquisition channel, and stage.'
+              : 'Add a verified prospect to your sales pipeline.'}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 py-2">
+        <form onSubmit={handleSubmit} className="space-y-3.5 py-2">
           {/* Row 1: Name & Company */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
@@ -206,8 +214,28 @@ export const LeadModal: React.FC<LeadModalProps> = ({
             </div>
           </div>
 
-          {/* Row 3: Source & Status */}
+          {/* Row 3: Deal Value ($) & Channel */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Estimated Deal Value ($ USD)
+              </label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <Input
+                  type="number"
+                  min="0"
+                  step="500"
+                  placeholder="25000"
+                  value={formData.value || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })
+                  }
+                  className="pl-8 text-xs h-9 font-mono"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Acquisition Channel
@@ -231,37 +259,38 @@ export const LeadModal: React.FC<LeadModalProps> = ({
                 </select>
               </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Pipeline Stage
-              </label>
-              <div className="relative">
-                <CheckCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-                <select
-                  value={formData.status}
-                  onChange={(e) =>
-                    setFormData({ ...formData, status: e.target.value as LeadStatus })
-                  }
-                  className="h-9 w-full pl-8 pr-3 text-xs rounded-lg border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
-                >
-                  <option value="NEW">New</option>
-                  <option value="CONTACTED">Contacted</option>
-                  <option value="QUALIFIED">Qualified</option>
-                  <option value="LOST">Lost</option>
-                </select>
-              </div>
+          {/* Pipeline Stage */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Pipeline Stage
+            </label>
+            <div className="relative">
+              <CheckCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+              <select
+                value={formData.status}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value as LeadStatus })
+                }
+                className="h-9 w-full pl-8 pr-3 text-xs rounded-lg border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
+              >
+                <option value="NEW">New</option>
+                <option value="CONTACTED">Contacted</option>
+                <option value="QUALIFIED">Qualified</option>
+                <option value="LOST">Lost</option>
+              </select>
             </div>
           </div>
 
-          <DialogFooter className="pt-4 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <DialogFooter className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={onClose}
               disabled={isSubmitting}
-              className="text-xs"
+              className="text-xs h-8"
             >
               Cancel
             </Button>
@@ -269,7 +298,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
               type="submit"
               size="sm"
               disabled={isSubmitting}
-              className="text-xs bg-slate-900 hover:bg-slate-800 text-white"
+              className="text-xs h-8 bg-slate-900 hover:bg-slate-800 text-white"
             >
               {isSubmitting
                 ? 'Saving...'

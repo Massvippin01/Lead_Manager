@@ -26,10 +26,12 @@ model Lead {
   email     String
   phone     String
   company   String
+  value     Float    @default(0)
   source    String   @default("WEBSITE")
   status    String   @default("NEW")
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -39,4 +41,15 @@ model Lead {
   @@index([createdAt])
   @@index([name])
   @@map("leads")
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  content   String
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([leadId])
+  @@map("notes")
 }
