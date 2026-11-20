@@ -23,6 +23,10 @@ Meru Lead Manager is an enterprise-grade, high-density sales CRM workspace engin
 
 ### 🚀 Production CRM Elevators (100% Completed)
 - **High-Density Linear / Attio Aesthetic**: Completely purged of "vibe-coded" gradient washes or unstyled defaults. Features solid carbon zinc tones (`#09090b`), muted semantic status dots, and crisp tabular numbers.
+- **100% Radix UI Select & Dropdown Architecture**: Zero unstyled browser-native `<select>` tags anywhere in the application. Replaced with accessible, keyboard-driven Radix floating popovers with color status dots, checkmark indicators, and smooth animations.
+- **SaaS Pipeline & Workspace Switcher**: Quick-switcher dropdown in the top navbar allowing seamless transitions between Enterprise SaaS Pipeline, Product-Led Inbound, and Strategic Partnerships, with instant dataset filtering.
+- **Modern SaaS Landing Page & 1-Click Demo**: High-converting unauthenticated gateway featuring a hero announcement pill, interactive live product mockup (with Table & Kanban toggling), capabilities bento grid, and a **1-Click Instant Demo Access** button for instant recruiter evaluation.
+- **Precision Toast Notifications**: Linear-grade floating alert system anchored strictly to the bottom-right corner with spring animations, clear status icon badges, and tactile dismiss buttons.
 - **Spotlight Command Palette (`⌘K` / `Ctrl+K`)**: Raycast-style spotlight overlay with fuzzy search across prospects and quick actions (toggle views, batch import, export CSV, presets, shortcuts) with arrow navigation.
 - **Superhuman-Style Table Keyboard Navigation**:
   - `J` / `K` (or `↓` / `↑`): Instant row hopping with active keyboard ring focus.
