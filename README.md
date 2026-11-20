@@ -1,7 +1,19 @@
 # Meru Lead Manager
 
 > **Full Stack Developer Screening Assignment** for **Meru Technosoft Pvt. Ltd.**  
-> A high-performance, full-stack sales lead tracking platform built with **Next.js (App Router)**, **Node.js (Express + TypeScript)**, **Prisma ORM**, **Tailwind CSS**, and **Framer Motion**.
+> A high-performance, full-stack sales lead tracking platform built with **Next.js (App Router)**, **Node.js (Express + TypeScript)**, **Prisma ORM**, **Neon PostgreSQL**, **Tailwind CSS**, and **Framer Motion**.
+
+---
+
+## 🌐 Live Production Deployments & Access
+
+| Resource | URL / Access |
+| :--- | :--- |
+| **Live Backend API** | [https://meru-lead-api.onrender.com](https://meru-lead-api.onrender.com) |
+| **API Health Check** | [https://meru-lead-api.onrender.com/api/v1/health](https://meru-lead-api.onrender.com/api/v1/health) |
+| **Evaluation Account** | `demo@meru.com` |
+| **Evaluation Password** | `password123` |
+| **GitHub Repository** | [https://github.com/Massvippin01/Lead_Manager](https://github.com/Massvippin01/Lead_Manager) |
 
 ---
 
