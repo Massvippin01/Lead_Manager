@@ -3,6 +3,13 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { LeadStatus, LeadPriority, LeadSource, LeadQueryParams } from '@/types';
 import {
   Search,
@@ -245,10 +252,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
       </div>
 
-      {/* Row 2: Search, Filter Selectors & Sort */}
-      <div className="bg-white border border-zinc-200/90 rounded-lg p-2.5 shadow-xs flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
+      {/* Row 2: Search, Custom Select Dropdowns & Sort */}
+      <div className="bg-white border border-zinc-200/90 rounded-lg p-2 shadow-xs flex flex-col md:flex-row gap-2 items-stretch md:items-center justify-between">
         {/* Search Input */}
-        <div className="relative flex-1 min-w-[220px]">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
           <Input
             id="global-lead-search-input"
@@ -269,86 +276,146 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           )}
         </div>
 
-        {/* Filter Dropdowns */}
+        {/* Custom Radix Select Filters */}
         <div className="flex flex-wrap items-center gap-1.5">
-          {/* Status Filter */}
-          <select
-            value={queryParams.status || ''}
-            onChange={(e) =>
-              onChange({
-                status: (e.target.value as LeadStatus) || undefined,
-                preset: undefined, // Clear preset when manual filter is changed
-                page: 1,
-              })
-            }
-            className="h-7 text-xs rounded border border-zinc-200 bg-zinc-50/70 px-2 text-zinc-700 font-medium focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-          >
-            <option value="">All Statuses</option>
-            <option value="NEW">New</option>
-            <option value="CONTACTED">Contacted</option>
-            <option value="QUALIFIED">Qualified</option>
-            <option value="LOST">Lost</option>
-          </select>
-
-          {/* Priority Filter */}
-          <select
-            value={queryParams.priority || ''}
-            onChange={(e) =>
-              onChange({
-                priority: (e.target.value as LeadPriority) || undefined,
-                preset: undefined, // Clear preset when manual filter is changed
-                page: 1,
-              })
-            }
-            className="h-7 text-xs rounded border border-zinc-200 bg-zinc-50/70 px-2 text-zinc-700 font-medium focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-          >
-            <option value="">All Priorities</option>
-            <option value="HIGH">P1 - High</option>
-            <option value="MEDIUM">P2 - Medium</option>
-            <option value="LOW">P3 - Low</option>
-          </select>
-
-          {/* Source Filter */}
-          <select
-            value={queryParams.source || ''}
-            onChange={(e) =>
-              onChange({
-                source: (e.target.value as LeadSource) || undefined,
-                preset: undefined, // Clear preset when manual filter is changed
-                page: 1,
-              })
-            }
-            className="h-7 text-xs rounded border border-zinc-200 bg-zinc-50/70 px-2 text-zinc-700 font-medium focus:bg-white focus:outline-none focus:ring-1 focus:ring-zinc-900"
-          >
-            <option value="">All Sources</option>
-            <option value="WEBSITE">Website</option>
-            <option value="REFERRAL">Referral</option>
-            <option value="COLD_OUTREACH">Cold Outreach</option>
-            <option value="LINKEDIN">LinkedIn</option>
-            <option value="ADVERTISEMENT">Ad Campaign</option>
-            <option value="EVENT">Event</option>
-            <option value="OTHER">Other</option>
-          </select>
-
-          {/* Sort Column & Direction */}
-          <div className="flex items-center space-x-1 border border-zinc-200 rounded p-0.5 bg-zinc-50/70">
-            <select
-              value={queryParams.sortBy || 'createdAt'}
-              onChange={(e) =>
+          {/* Status Filter Dropdown */}
+          <div className="w-[125px]">
+            <Select
+              value={queryParams.status || 'ALL'}
+              onValueChange={(val) =>
                 onChange({
-                  sortBy: e.target.value as any,
+                  status: val === 'ALL' ? undefined : (val as LeadStatus),
+                  preset: undefined,
                   page: 1,
                 })
               }
-              className="h-6 text-xs rounded bg-transparent px-1.5 text-zinc-700 font-medium focus:outline-none"
             >
-              <option value="createdAt">Date</option>
-              <option value="name">Name</option>
-              <option value="company">Company</option>
-              <option value="value">Value ($)</option>
-              <option value="priority">Priority</option>
-              <option value="status">Status</option>
-            </select>
+              <SelectTrigger className="h-7 text-xs bg-zinc-50/70 border-zinc-200">
+                <SelectValue placeholder="All Statuses" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Statuses</SelectItem>
+                <SelectItem value="NEW">
+                  <span className="flex items-center space-x-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-sky-500" />
+                    <span>New</span>
+                  </span>
+                </SelectItem>
+                <SelectItem value="CONTACTED">
+                  <span className="flex items-center space-x-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                    <span>Contacted</span>
+                  </span>
+                </SelectItem>
+                <SelectItem value="QUALIFIED">
+                  <span className="flex items-center space-x-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                    <span>Qualified</span>
+                  </span>
+                </SelectItem>
+                <SelectItem value="LOST">
+                  <span className="flex items-center space-x-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                    <span>Lost</span>
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Priority Filter Dropdown */}
+          <div className="w-[120px]">
+            <Select
+              value={queryParams.priority || 'ALL'}
+              onValueChange={(val) =>
+                onChange({
+                  priority: val === 'ALL' ? undefined : (val as LeadPriority),
+                  preset: undefined,
+                  page: 1,
+                })
+              }
+            >
+              <SelectTrigger className="h-7 text-xs bg-zinc-50/70 border-zinc-200">
+                <SelectValue placeholder="All Priorities" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Priorities</SelectItem>
+                <SelectItem value="HIGH">
+                  <span className="flex items-center space-x-1.5 text-rose-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-rose-600" />
+                    <span>P1 - High</span>
+                  </span>
+                </SelectItem>
+                <SelectItem value="MEDIUM">
+                  <span className="flex items-center space-x-1.5 text-amber-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                    <span>P2 - Medium</span>
+                  </span>
+                </SelectItem>
+                <SelectItem value="LOW">
+                  <span className="flex items-center space-x-1.5 text-zinc-600">
+                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                    <span>P3 - Low</span>
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Source Filter Dropdown */}
+          <div className="w-[125px]">
+            <Select
+              value={queryParams.source || 'ALL'}
+              onValueChange={(val) =>
+                onChange({
+                  source: val === 'ALL' ? undefined : (val as LeadSource),
+                  preset: undefined,
+                  page: 1,
+                })
+              }
+            >
+              <SelectTrigger className="h-7 text-xs bg-zinc-50/70 border-zinc-200">
+                <SelectValue placeholder="All Sources" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Sources</SelectItem>
+                <SelectItem value="WEBSITE">Website</SelectItem>
+                <SelectItem value="REFERRAL">Referral</SelectItem>
+                <SelectItem value="COLD_OUTREACH">Cold Outreach</SelectItem>
+                <SelectItem value="LINKEDIN">LinkedIn</SelectItem>
+                <SelectItem value="ADVERTISEMENT">Ad Campaign</SelectItem>
+                <SelectItem value="EVENT">Event</SelectItem>
+                <SelectItem value="OTHER">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Sort Column & Direction */}
+          <div className="flex items-center space-x-1 border border-zinc-200 rounded p-0.5 bg-zinc-50/70">
+            <div className="w-[95px]">
+              <Select
+                value={queryParams.sortBy || 'createdAt'}
+                onValueChange={(val) =>
+                  onChange({
+                    sortBy: val as any,
+                    page: 1,
+                  })
+                }
+              >
+                <SelectTrigger className="h-6 text-[11px] border-0 bg-transparent shadow-none px-1.5">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="createdAt">Date</SelectItem>
+                  <SelectItem value="name">Name</SelectItem>
+                  <SelectItem value="company">Company</SelectItem>
+                  <SelectItem value="value">Value ($)</SelectItem>
+                  <SelectItem value="priority">Priority</SelectItem>
+                  <SelectItem value="status">Status</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <button
               type="button"
               onClick={() =>
@@ -356,7 +423,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   sortOrder: queryParams.sortOrder === 'asc' ? 'desc' : 'asc',
                 })
               }
-              className="h-6 px-1.5 text-zinc-600 hover:text-zinc-900 flex items-center text-[10px] font-semibold rounded hover:bg-zinc-200/60"
+              className="h-6 px-1.5 text-zinc-600 hover:text-zinc-900 flex items-center text-[10px] font-semibold rounded hover:bg-zinc-200/60 transition-colors"
               title={`Toggle sort order (${queryParams.sortOrder === 'asc' ? 'Ascending' : 'Descending'})`}
             >
               <ArrowUpDown className="h-2.5 w-2.5 mr-0.5" />

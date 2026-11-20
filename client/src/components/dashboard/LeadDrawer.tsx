@@ -6,12 +6,21 @@ import { Lead, LeadPriority, LeadStatus } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import {
   X,
   Mail,
   Phone,
   Building2,
   Calendar,
   Check,
+  ChevronDown,
   Copy,
   Pencil,
   Trash2,
@@ -179,7 +188,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                   </div>
 
                   {dealHealth && (
-                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded border ${dealHealth.color}`}>
+                    <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded border ${dealHealth.color}`}>
                       Health {dealHealth.score}
                     </span>
                   )}
@@ -234,21 +243,64 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                       </span>
 
                       {/* Priority Selector */}
-                      <select
-                        value={lead.priority}
-                        onChange={(e) => onPriorityChange(lead.id, e.target.value as LeadPriority)}
-                        className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border cursor-pointer focus:outline-none transition-colors ${
-                          lead.priority === 'HIGH'
-                            ? 'bg-rose-50 text-rose-700 border-rose-200'
-                            : lead.priority === 'MEDIUM'
-                            ? 'bg-amber-50 text-amber-700 border-amber-200'
-                            : 'bg-zinc-100 text-zinc-600 border-zinc-200'
-                        }`}
-                      >
-                        <option value="HIGH">P1 - High Priority</option>
-                        <option value="MEDIUM">P2 - Medium Priority</option>
-                        <option value="LOW">P3 - Low Priority</option>
-                      </select>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            type="button"
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border transition-all hover:ring-1 hover:ring-zinc-300 focus:outline-none ${
+                              lead.priority === 'HIGH'
+                                ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                                : lead.priority === 'MEDIUM'
+                                ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                                : 'bg-zinc-100 text-zinc-600 border-zinc-200 hover:bg-zinc-200'
+                            }`}
+                            title="Click to update priority"
+                          >
+                            <span>
+                              {lead.priority === 'HIGH'
+                                ? 'P1 - High'
+                                : lead.priority === 'MEDIUM'
+                                ? 'P2 - Med'
+                                : 'P3 - Low'}
+                            </span>
+                            <ChevronDown className="h-3 w-3 opacity-60" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-36">
+                          <DropdownMenuLabel>Priority Ranking</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => onPriorityChange(lead.id, 'HIGH')}
+                            className="flex items-center justify-between text-xs font-mono text-rose-700 hover:bg-rose-50 cursor-pointer"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <span className="h-2 w-2 rounded-full bg-rose-500" />
+                              <span>P1 - High</span>
+                            </div>
+                            {lead.priority === 'HIGH' && <Check className="h-3.5 w-3.5 text-rose-700" />}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onPriorityChange(lead.id, 'MEDIUM')}
+                            className="flex items-center justify-between text-xs font-mono text-amber-700 hover:bg-amber-50 cursor-pointer"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <span className="h-2 w-2 rounded-full bg-amber-500" />
+                              <span>P2 - Medium</span>
+                            </div>
+                            {lead.priority === 'MEDIUM' && <Check className="h-3.5 w-3.5 text-amber-700" />}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onPriorityChange(lead.id, 'LOW')}
+                            className="flex items-center justify-between text-xs font-mono text-zinc-600 hover:bg-zinc-50 cursor-pointer"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <span className="h-2 w-2 rounded-full bg-zinc-400" />
+                              <span>P3 - Low</span>
+                            </div>
+                            {lead.priority === 'LOW' && <Check className="h-3.5 w-3.5 text-zinc-600" />}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 </div>
@@ -321,15 +373,14 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                       Stage Progression
                     </span>
                     <span
-                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
-                        lead.status === 'NEW'
-                          ? 'bg-sky-50 text-sky-800 border border-sky-200'
-                          : lead.status === 'CONTACTED'
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${lead.status === 'NEW'
+                        ? 'bg-sky-50 text-sky-800 border border-sky-200'
+                        : lead.status === 'CONTACTED'
                           ? 'bg-amber-50 text-amber-800 border border-amber-200'
                           : lead.status === 'QUALIFIED'
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                          : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
-                      }`}
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
+                        }`}
                     >
                       {lead.status}
                     </span>
@@ -346,10 +397,10 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                           currentStep === 1
                             ? '0%'
                             : currentStep === 2
-                            ? '50%'
-                            : currentStep === 3
-                            ? '100%'
-                            : '0%',
+                              ? '50%'
+                              : currentStep === 3
+                                ? '100%'
+                                : '0%',
                       }}
                     />
 
@@ -365,13 +416,12 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                           className="relative z-10 flex flex-col items-center group cursor-pointer"
                         >
                           <div
-                            className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
-                              isCurrent
-                                ? 'bg-zinc-900 text-white ring-4 ring-zinc-200 shadow-xs scale-110'
-                                : isCompleted
+                            className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${isCurrent
+                              ? 'bg-zinc-900 text-white ring-4 ring-zinc-200 shadow-xs scale-110'
+                              : isCompleted
                                 ? 'bg-zinc-900 text-white'
                                 : 'bg-white border-2 border-zinc-300 text-zinc-500 hover:border-zinc-500'
-                            }`}
+                              }`}
                           >
                             {isCompleted && !isCurrent ? (
                               <Check className="h-3 w-3" />
@@ -380,9 +430,8 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                             )}
                           </div>
                           <span
-                            className={`text-[10px] mt-1 font-semibold transition-colors ${
-                              isCurrent ? 'text-zinc-900 font-bold' : 'text-zinc-500'
-                            }`}
+                            className={`text-[10px] mt-1 font-semibold transition-colors ${isCurrent ? 'text-zinc-900 font-bold' : 'text-zinc-500'
+                              }`}
                           >
                             {stage.label}
                           </span>

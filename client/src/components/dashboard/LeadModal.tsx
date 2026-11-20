@@ -11,6 +11,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { Lead, LeadPriority, LeadSource, LeadStatus } from '@/types';
 import { User, Mail, Phone, Building2, Globe, CheckCircle2, DollarSign, Flame } from 'lucide-react';
 
@@ -244,20 +251,47 @@ export const LeadModal: React.FC<LeadModalProps> = ({
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Priority Ranking
               </label>
-              <div className="relative">
-                <Flame className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
-                <select
-                  value={formData.priority}
-                  onChange={(e) =>
-                    setFormData({ ...formData, priority: e.target.value as LeadPriority })
-                  }
-                  className="h-8 w-full pl-8 pr-2.5 text-xs rounded-md border border-zinc-200 bg-white font-medium text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                >
-                  <option value="HIGH">P1 - High (Urgent)</option>
-                  <option value="MEDIUM">P2 - Medium (Standard)</option>
-                  <option value="LOW">P3 - Low (Nurture)</option>
-                </select>
-              </div>
+              <Select
+                value={formData.priority}
+                onValueChange={(val) =>
+                  setFormData({ ...formData, priority: val as LeadPriority })
+                }
+              >
+                <SelectTrigger className="h-8 text-xs font-medium">
+                  <div className="flex items-center gap-2">
+                    <Flame
+                      className={`h-3.5 w-3.5 ${
+                        formData.priority === 'HIGH'
+                          ? 'text-rose-500'
+                          : formData.priority === 'MEDIUM'
+                          ? 'text-amber-500'
+                          : 'text-zinc-400'
+                      }`}
+                    />
+                    <SelectValue placeholder="Select Priority" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="HIGH">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-rose-500" />
+                      <span className="font-medium text-rose-700">P1 - High (Urgent)</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="MEDIUM">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-amber-500" />
+                      <span className="font-medium text-amber-700">P2 - Medium (Standard)</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="LOW">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-zinc-400" />
+                      <span className="font-medium text-zinc-600">P3 - Low (Nurture)</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -267,45 +301,83 @@ export const LeadModal: React.FC<LeadModalProps> = ({
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Acquisition Channel
               </label>
-              <div className="relative">
-                <Globe className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
-                <select
-                  value={formData.source}
-                  onChange={(e) =>
-                    setFormData({ ...formData, source: e.target.value as LeadSource })
-                  }
-                  className="h-8 w-full pl-8 pr-2.5 text-xs rounded-md border border-zinc-200 bg-white font-medium text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                >
-                  <option value="WEBSITE">Website</option>
-                  <option value="REFERRAL">Referral</option>
-                  <option value="COLD_OUTREACH">Cold Outreach</option>
-                  <option value="LINKEDIN">LinkedIn</option>
-                  <option value="ADVERTISEMENT">Advertisement</option>
-                  <option value="EVENT">Event</option>
-                  <option value="OTHER">Other</option>
-                </select>
-              </div>
+              <Select
+                value={formData.source}
+                onValueChange={(val) =>
+                  setFormData({ ...formData, source: val as LeadSource })
+                }
+              >
+                <SelectTrigger className="h-8 text-xs font-medium">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-3.5 w-3.5 text-zinc-400" />
+                    <SelectValue placeholder="Select Source" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="WEBSITE">Website</SelectItem>
+                  <SelectItem value="REFERRAL">Referral</SelectItem>
+                  <SelectItem value="COLD_OUTREACH">Cold Outreach</SelectItem>
+                  <SelectItem value="LINKEDIN">LinkedIn</SelectItem>
+                  <SelectItem value="ADVERTISEMENT">Advertisement</SelectItem>
+                  <SelectItem value="EVENT">Event</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Pipeline Stage
               </label>
-              <div className="relative">
-                <CheckCircle2 className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
-                <select
-                  value={formData.status}
-                  onChange={(e) =>
-                    setFormData({ ...formData, status: e.target.value as LeadStatus })
-                  }
-                  className="h-8 w-full pl-8 pr-2.5 text-xs rounded-md border border-zinc-200 bg-white font-medium text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-                >
-                  <option value="NEW">New</option>
-                  <option value="CONTACTED">Contacted</option>
-                  <option value="QUALIFIED">Qualified</option>
-                  <option value="LOST">Lost</option>
-                </select>
-              </div>
+              <Select
+                value={formData.status}
+                onValueChange={(val) =>
+                  setFormData({ ...formData, status: val as LeadStatus })
+                }
+              >
+                <SelectTrigger className="h-8 text-xs font-medium">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        formData.status === 'NEW'
+                          ? 'bg-sky-500'
+                          : formData.status === 'CONTACTED'
+                          ? 'bg-amber-500'
+                          : formData.status === 'QUALIFIED'
+                          ? 'bg-emerald-600'
+                          : 'bg-zinc-400'
+                      }`}
+                    />
+                    <SelectValue placeholder="Select Stage" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NEW">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-sky-500" />
+                      <span>New</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="CONTACTED">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-amber-500" />
+                      <span>Contacted</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="QUALIFIED">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-emerald-600" />
+                      <span>Qualified</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="LOST">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-zinc-400" />
+                      <span>Lost</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

@@ -5,6 +5,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lead, LeadStatus, Pagination, LeadQueryParams } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import {
   Mail,
   Building2,
   Calendar,
@@ -12,6 +27,7 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   UserX,
   Copy,
   Check,
@@ -539,24 +555,45 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                         onClick={(e) => e.stopPropagation()}
                         onMouseDown={(e) => e.stopPropagation()}
                       >
-                        <div className="relative inline-flex items-center">
-                          <select
-                            value={lead.status}
-                            onChange={(e) =>
-                              onQuickStatusChange(lead.id, e.target.value as LeadStatus)
-                            }
-                            className={`cursor-pointer appearance-none rounded-full pl-5 pr-2.5 py-0.5 text-[11px] font-semibold border transition-all focus:outline-none focus:ring-1 focus:ring-zinc-900 ${statusConfig.badge}`}
-                            title="Click to advance stage"
-                          >
-                            <option value="NEW">New</option>
-                            <option value="CONTACTED">Contacted</option>
-                            <option value="QUALIFIED">Qualified</option>
-                            <option value="LOST">Lost</option>
-                          </select>
-                          <span
-                            className={`absolute left-2 h-1.5 w-1.5 rounded-full pointer-events-none ${statusConfig.dot}`}
-                          />
-                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button
+                              type="button"
+                              className={`inline-flex items-center gap-1.5 rounded-full pl-2 pr-2 py-0.5 text-[11px] font-semibold border transition-all hover:ring-1 hover:ring-zinc-400 focus:outline-none ${statusConfig.badge}`}
+                              title="Click to advance stage"
+                            >
+                              <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${statusConfig.dot}`} />
+                              <span>{statusConfig.label}</span>
+                              <ChevronDown className="h-3 w-3 opacity-50 shrink-0 ml-0.5" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="w-36">
+                            <DropdownMenuLabel>Pipeline Stage</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {(
+                              [
+                                { value: 'NEW', label: 'New', dot: 'bg-sky-500' },
+                                { value: 'CONTACTED', label: 'Contacted', dot: 'bg-amber-500' },
+                                { value: 'QUALIFIED', label: 'Qualified', dot: 'bg-emerald-600' },
+                                { value: 'LOST', label: 'Lost', dot: 'bg-zinc-400' },
+                              ] as const
+                            ).map((st) => (
+                              <DropdownMenuItem
+                                key={st.value}
+                                onClick={() => onQuickStatusChange(lead.id, st.value)}
+                                className="flex items-center justify-between text-xs cursor-pointer"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className={`h-2 w-2 rounded-full ${st.dot}`} />
+                                  <span>{st.label}</span>
+                                </div>
+                                {lead.status === st.value && (
+                                  <Check className="h-3.5 w-3.5 text-zinc-900" />
+                                )}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </td>
 
                       {/* Date Added */}
@@ -626,17 +663,21 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                 </span>
               </span>
 
-              <div className="flex items-center space-x-1 pl-2 border-l border-zinc-200">
-                <span>Rows:</span>
-                <select
-                  value={pagination.limit}
-                  onChange={(e) => onLimitChange(Number(e.target.value))}
-                  className="h-6 text-xs rounded border border-zinc-200 bg-white px-1 text-zinc-700 font-medium focus:outline-none"
+              <div className="flex items-center space-x-1.5 pl-2 border-l border-zinc-200">
+                <span className="text-zinc-500">Rows:</span>
+                <Select
+                  value={String(pagination.limit)}
+                  onValueChange={(val) => onLimitChange(Number(val))}
                 >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
+                  <SelectTrigger className="h-6 w-[62px] px-2 text-xs font-mono font-medium">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent align="end" className="min-w-[62px]">
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
