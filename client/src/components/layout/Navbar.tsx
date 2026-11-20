@@ -44,12 +44,12 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md backdrop-saturate-150 border-b border-slate-200/80 shadow-2xs">
+    <header className="sticky top-0 z-50 bg-white/55 backdrop-blur-3xl backdrop-saturate-200 border-b border-white/60 shadow-[0_8px_32px_0_rgba(15,23,42,0.06),inset_0_1px_0_0_rgba(255,255,255,0.95)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Left: Brand & Workspace Switcher */}
         <div className="flex items-center space-x-3">
           <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:bg-slate-800 transition-colors">
+            <div className="w-8 h-8 rounded-xl bg-slate-900/90 flex items-center justify-center text-white shrink-0 shadow-md ring-1 ring-white/30 group-hover:bg-slate-900 transition-all backdrop-blur-md">
               <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 19V5l8 9 8-9v14" />
               </svg>
@@ -337,12 +337,12 @@ export const Navbar: React.FC = () => {
           ) : (
             <div className="flex items-center space-x-2">
               <Link href="/login">
-                <Button variant="ghost" size="sm" className="text-xs h-8">
+                <Button variant="ghost" size="sm" className="text-xs h-8 text-slate-700 hover:text-slate-950 hover:bg-white/60 backdrop-blur-md rounded-lg font-semibold transition-all">
                   Sign In
                 </Button>
               </Link>
               <Link href="/register">
-                <Button size="sm" className="text-xs h-8 bg-zinc-900 hover:bg-zinc-800 text-white">
+                <Button size="sm" className="text-xs h-8 bg-slate-900/90 hover:bg-slate-900 text-white font-semibold rounded-lg shadow-sm backdrop-blur-md border border-white/20 hover:shadow transition-all">
                   Get Started
                 </Button>
               </Link>
