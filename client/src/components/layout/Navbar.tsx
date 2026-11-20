@@ -43,43 +43,43 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200/90 bg-white/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/98 backdrop-blur-xl shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Left: Brand & Workspace Switcher */}
         <div className="flex items-center space-x-3">
           <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="h-7 w-7 rounded-lg bg-zinc-900 flex items-center justify-center text-white font-bold text-xs shadow-xs group-hover:bg-zinc-800 transition-colors">
+            <div className="h-7.5 w-7.5 rounded-lg bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center text-white font-bold text-xs shadow-sm ring-1 ring-white/20 group-hover:from-slate-800 transition-all">
               M
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-zinc-900 tracking-tight leading-none">
+              <span className="text-xs font-bold text-slate-900 tracking-tight leading-none">
                 Meru CRM
               </span>
-              <span className="text-[10px] text-zinc-400 font-mono leading-tight mt-0.5 hidden sm:inline">
+              <span className="text-[10px] text-slate-400 font-mono leading-tight mt-0.5 hidden sm:inline">
                 Lead Intelligence
               </span>
             </div>
           </Link>
 
           {user && (
-            <div className="hidden sm:flex items-center space-x-2 pl-3 border-l border-zinc-200">
+            <div className="hidden sm:flex items-center space-x-2 pl-3 border-l border-slate-200">
               {/* SaaS Pipeline Switcher & Actions Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
                     type="button"
-                    className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-700 bg-zinc-100/80 hover:bg-zinc-200/80 border border-zinc-200/60 shadow-2xs transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-slate-100/80 hover:bg-slate-200/80 border border-slate-200/80 shadow-2xs transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-900"
                     title="Switch pipeline, views, and quick operations"
                   >
-                    <Layers className="h-3.5 w-3.5 text-zinc-600" />
-                    <span className="font-semibold text-zinc-900">
+                    <Layers className="h-3.5 w-3.5 text-slate-600" />
+                    <span className="font-semibold text-slate-900">
                       {activePipeline === 'saas'
                         ? 'SaaS Pipeline'
                         : activePipeline === 'inbound'
                         ? 'Inbound Funnel'
                         : 'Partnership Pipeline'}
                     </span>
-                    <ChevronDown className="h-3 w-3 text-zinc-400" />
+                    <ChevronDown className="h-3 w-3 text-slate-400" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -259,20 +259,20 @@ export const Navbar: React.FC = () => {
 
         {/* Center: Command Palette Spotlight Bar */}
         {user && (
-          <div className="hidden md:flex items-center justify-center flex-1 max-w-sm mx-4">
+          <div className="hidden md:flex items-center justify-center flex-1 max-w-lg mx-6">
             <button
               type="button"
               onClick={handleOpenCommandPalette}
-              className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-zinc-500 bg-zinc-50 hover:bg-zinc-100/80 border border-zinc-200 rounded-lg transition-all cursor-pointer shadow-2xs group"
+              className="w-full flex items-center justify-between px-3.5 py-1.5 text-xs text-slate-500 bg-slate-50/90 hover:bg-slate-100/90 border border-slate-200/90 rounded-lg transition-all cursor-pointer shadow-2xs group focus:outline-none focus:ring-2 focus:ring-slate-900"
               title="Open Spotlight Command Palette (Ctrl+K or ⌘K)"
             >
-              <div className="flex items-center space-x-2">
-                <Search className="h-3.5 w-3.5 text-zinc-400 group-hover:text-zinc-600 transition-colors" />
-                <span className="text-zinc-400 group-hover:text-zinc-600 transition-colors">
-                  Search leads or actions...
+              <div className="flex items-center space-x-2.5">
+                <Search className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
+                <span className="text-slate-400 group-hover:text-slate-600 transition-colors">
+                  Search prospects, actions, commands...
                 </span>
               </div>
-              <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-zinc-500 bg-white rounded border border-zinc-200 shadow-2xs">
+              <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-slate-500 bg-white rounded border border-slate-200 shadow-2xs">
                 ⌘K
               </kbd>
             </button>
@@ -287,26 +287,26 @@ export const Navbar: React.FC = () => {
               <Button
                 size="sm"
                 onClick={handleOpenCreateModal}
-                className="h-8 px-3 text-xs bg-zinc-900 hover:bg-zinc-800 text-white font-semibold shadow-xs"
+                className="h-8 px-3.5 text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg shadow-xs"
               >
                 <Plus className="h-3.5 w-3.5 mr-1" />
                 <span>New Lead</span>
-                <kbd className="hidden lg:inline-block ml-1.5 px-1 py-0.2 text-[9px] font-mono bg-zinc-800 text-zinc-300 rounded">
+                <kbd className="hidden lg:inline-block ml-1.5 px-1 py-0.2 text-[9px] font-mono bg-slate-800 text-slate-300 rounded">
                   N
                 </kbd>
               </Button>
 
               {/* User Profile Pill & Sign Out */}
-              <div className="flex items-center space-x-1.5 pl-2 border-l border-zinc-200">
-                <div className="flex items-center space-x-2 text-xs text-zinc-700 bg-zinc-50 border border-zinc-200 rounded-lg py-1 px-2.5">
-                  <span className="h-5 w-5 rounded-md bg-zinc-900 text-white flex items-center justify-center font-bold text-[10px] shadow-2xs">
+              <div className="flex items-center space-x-1.5 pl-2 border-l border-slate-200">
+                <div className="flex items-center space-x-2 text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg py-1 px-2.5 shadow-2xs">
+                  <span className="h-5.5 w-5.5 rounded-full bg-gradient-to-tr from-slate-900 to-indigo-700 text-white flex items-center justify-center font-bold text-[10px] ring-1 ring-slate-300 shadow-2xs">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                   <div className="flex flex-col text-left leading-tight hidden lg:flex">
-                    <span className="font-bold text-zinc-800 text-[11px] max-w-[120px] truncate">
+                    <span className="font-bold text-slate-800 text-[11px] max-w-[120px] truncate">
                       {user.name}
                     </span>
-                    <span className="text-[10px] text-zinc-400 font-mono">
+                    <span className="text-[10px] text-slate-400 font-mono">
                       Sales Rep
                     </span>
                   </div>
@@ -316,7 +316,7 @@ export const Navbar: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   onClick={logout}
-                  className="text-zinc-400 hover:text-rose-600 hover:bg-rose-50 text-xs h-8 px-2"
+                  className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 text-xs h-8 px-2 rounded-lg"
                   title="Sign out of account"
                 >
                   <LogOut className="h-3.5 w-3.5" />

@@ -566,13 +566,19 @@ export default function DashboardPage() {
   return (
     <div className="space-y-4">
       {/* Workspace Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-200/60">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900">
-            Sales Pipeline
-          </h1>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            Capture, qualify, and convert prospective accounts.
+          <div className="flex items-center space-x-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+              Sales Pipeline
+            </h1>
+            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/70">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
+              Live Workspace
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-1 font-medium">
+            Capture, qualify, and convert prospective accounts with real-time stage analytics.
           </p>
         </div>
 
@@ -586,10 +592,10 @@ export default function DashboardPage() {
               success('Synchronized', 'Pipeline data refreshed');
             }}
             disabled={isLoadingLeads}
-            className="text-xs h-8 text-zinc-700"
+            className="text-xs h-8 px-3 text-slate-700 bg-white hover:bg-slate-50 hover:text-slate-900 border-slate-200 rounded-lg shadow-2xs transition-all"
           >
             <RefreshCw className={`h-3 w-3 mr-1.5 ${isLoadingLeads ? 'animate-spin' : ''}`} />
-            Sync
+            Sync Pipeline
           </Button>
         </div>
       </div>

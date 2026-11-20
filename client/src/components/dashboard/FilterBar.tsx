@@ -49,12 +49,12 @@ const presets: {
   label: string;
   icon: any;
 }[] = [
-    { key: undefined, label: 'All', icon: null },
-    { key: 'P1', label: 'P1 Urgent', icon: Flame },
-    { key: 'HIGH_VALUE', label: 'Value >$25k', icon: DollarSign },
-    { key: 'NEEDS_TOUCH', label: 'Needs First Touch', icon: Zap },
-    { key: 'CLOSING', label: 'Deal Closing', icon: Target },
-  ];
+  { key: undefined, label: 'All', icon: null },
+  { key: 'P1', label: 'P1 Urgent', icon: Flame },
+  { key: 'HIGH_VALUE', label: 'Value >$25k', icon: DollarSign },
+  { key: 'NEEDS_TOUCH', label: 'Needs First Touch', icon: Zap },
+  { key: 'CLOSING', label: 'Deal Closing', icon: Target },
+];
 
 export const FilterBar: React.FC<FilterBarProps> = ({
   queryParams,
@@ -122,12 +122,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   };
 
   return (
-    <div className="space-y-2.5 mb-5">
+    <div className="bg-white border border-slate-200/90 rounded-xl p-3 shadow-sm space-y-3 mb-5">
       {/* Row 1: Linear-style View Presets & Action Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 border-b border-zinc-200/90 pb-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 pb-2 border-b border-slate-100">
         {/* Preset Pills */}
         <div className="flex items-center space-x-1.5 overflow-x-auto py-0.5">
-          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mr-1 hidden sm:inline">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden sm:inline">
             Views:
           </span>
           {presets.map((p) => {
@@ -139,10 +139,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 key={p.label}
                 type="button"
                 onClick={() => handleSelectPreset(p.key)}
-                className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all whitespace-nowrap ${isActive
-                  ? 'bg-zinc-900 text-white shadow-2xs'
-                  : 'bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/70 border border-zinc-200/50'
-                  }`}
+                className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70 border border-slate-200/50'
+                }`}
               >
                 {Icon && <Icon className="h-3 w-3" />}
                 <span>{p.label}</span>
@@ -155,12 +156,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <div className="flex items-center space-x-1.5 shrink-0 self-end md:self-auto">
           {/* Density Toggle (only active in table view) */}
           {viewMode === 'table' && (
-            <div className="flex items-center border border-zinc-200 rounded-md p-0.5 bg-zinc-50">
+            <div className="flex items-center border border-slate-200 rounded-lg p-0.5 bg-slate-50">
               <button
                 type="button"
                 onClick={() => onDensityChange('comfortable')}
-                className={`p-1 rounded text-xs transition-all ${density === 'comfortable' ? 'bg-white text-zinc-900 shadow-2xs' : 'text-zinc-400 hover:text-zinc-700'
-                  }`}
+                className={`p-1 rounded text-xs transition-all ${
+                  density === 'comfortable' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-400 hover:text-slate-700'
+                }`}
                 title="Comfortable row density"
               >
                 <Rows className="h-3.5 w-3.5" />
@@ -168,8 +170,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <button
                 type="button"
                 onClick={() => onDensityChange('compact')}
-                className={`p-1 rounded text-xs transition-all ${density === 'compact' ? 'bg-white text-zinc-900 shadow-2xs' : 'text-zinc-400 hover:text-zinc-700'
-                  }`}
+                className={`p-1 rounded text-xs transition-all ${
+                  density === 'compact' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-400 hover:text-slate-700'
+                }`}
                 title="Compact spreadsheet density"
               >
                 <AlignJustify className="h-3.5 w-3.5" />
@@ -178,12 +181,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           )}
 
           {/* Table / Kanban View Toggle */}
-          <div className="flex items-center border border-zinc-200 rounded-md p-0.5 bg-zinc-50">
+          <div className="flex items-center border border-slate-200 rounded-lg p-0.5 bg-slate-50">
             <button
               type="button"
               onClick={() => onViewModeChange('table')}
-              className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all ${viewMode === 'table' ? 'bg-white text-zinc-900 shadow-2xs font-semibold' : 'text-zinc-500 hover:text-zinc-800'
-                }`}
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded text-xs font-medium transition-all ${
+                viewMode === 'table' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-500 hover:text-slate-800'
+              }`}
               title="Table View (V)"
             >
               <TableIcon className="h-3.5 w-3.5" />
@@ -192,8 +196,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <button
               type="button"
               onClick={() => onViewModeChange('kanban')}
-              className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all ${viewMode === 'kanban' ? 'bg-white text-zinc-900 shadow-2xs font-semibold' : 'text-zinc-500 hover:text-zinc-800'
-                }`}
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded text-xs font-medium transition-all ${
+                viewMode === 'kanban' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-500 hover:text-slate-800'
+              }`}
               title="Kanban Board View (V)"
             >
               <LayoutGrid className="h-3.5 w-3.5" />
@@ -205,7 +210,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <button
             type="button"
             onClick={onOpenShortcutsDialog}
-            className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 rounded-md border border-zinc-200 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors"
             title="Keyboard Shortcuts (?)"
           >
             <Keyboard className="h-3.5 w-3.5" />
@@ -216,7 +221,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             variant="outline"
             size="sm"
             onClick={onOpenImportModal}
-            className="text-xs h-7 text-zinc-700 hover:text-zinc-900"
+            className="text-xs h-7.5 px-2.5 text-slate-700 hover:text-slate-900 border-slate-200"
             title="Import CSV"
           >
             <Upload className="h-3 w-3 mr-1" />
@@ -228,7 +233,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             variant="outline"
             size="sm"
             onClick={onExportCsv}
-            className="text-xs h-7 text-zinc-700 hover:text-zinc-900"
+            className="text-xs h-7.5 px-2.5 text-slate-700 hover:text-slate-900 border-slate-200"
             title="Export CSV"
           >
             <Download className="h-3 w-3 mr-1" />
@@ -239,7 +244,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <Button
             onClick={onOpenCreateModal}
             size="sm"
-            className="text-xs h-7 bg-zinc-900 hover:bg-zinc-800 text-white font-semibold"
+            className="text-xs h-7.5 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold shadow-xs"
           >
             <Plus className="h-3.5 w-3.5 mr-1" />
             New Lead
@@ -248,25 +253,25 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* Row 2: Search, Custom Select Dropdowns & Sort */}
-      <div className="bg-white border border-zinc-200/90 rounded-lg p-2 shadow-xs flex flex-col md:flex-row gap-2 items-stretch md:items-center justify-between">
+      <div className="flex flex-col md:flex-row gap-2 items-stretch md:items-center justify-between">
         {/* Search Input */}
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+        <div className="relative flex-1 min-w-[220px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <Input
             id="global-lead-search-input"
             type="text"
-            placeholder="Search leads (Press / or Ctrl+K)..."
+            placeholder="Search leads by name, email, or company (Press / or ⌘K)..."
             value={queryParams.search || ''}
             onChange={(e) => onChange({ search: e.target.value, page: 1 })}
-            className="pl-8 pr-7 h-7 text-xs bg-zinc-50/70 border-zinc-200 focus:bg-white focus-visible:ring-1 focus-visible:ring-zinc-900"
+            className="pl-9 pr-8 h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg focus:bg-white focus-visible:ring-2 focus-visible:ring-slate-900"
           />
           {queryParams.search && (
             <button
               type="button"
               onClick={() => onChange({ search: '', page: 1 })}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
             >
-              <X className="h-3 w-3" />
+              <X className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
@@ -285,7 +290,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 })
               }
             >
-              <SelectTrigger className="h-7 text-xs bg-zinc-50/70 border-zinc-200">
+              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
@@ -310,7 +315,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 </SelectItem>
                 <SelectItem value="LOST">
                   <span className="flex items-center space-x-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
                     <span>Lost</span>
                   </span>
                 </SelectItem>
@@ -330,7 +335,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 })
               }
             >
-              <SelectTrigger className="h-7 text-xs bg-zinc-50/70 border-zinc-200">
+              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg">
                 <SelectValue placeholder="All Priorities" />
               </SelectTrigger>
               <SelectContent>
@@ -348,8 +353,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   </span>
                 </SelectItem>
                 <SelectItem value="LOW">
-                  <span className="flex items-center space-x-1.5 text-zinc-600">
-                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+                  <span className="flex items-center space-x-1.5 text-slate-600">
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
                     <span>P3 - Low</span>
                   </span>
                 </SelectItem>
@@ -369,7 +374,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 })
               }
             >
-              <SelectTrigger className="h-7 text-xs bg-zinc-50/70 border-zinc-200">
+              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg">
                 <SelectValue placeholder="All Sources" />
               </SelectTrigger>
               <SelectContent>
@@ -386,7 +391,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
 
           {/* Sort Column & Direction */}
-          <div className="flex items-center space-x-1 border border-zinc-200 rounded p-0.5 bg-zinc-50/70">
+          <div className="flex items-center space-x-1 border border-slate-200 rounded-lg p-0.5 bg-slate-50/90">
             <div className="w-[95px]">
               <Select
                 value={queryParams.sortBy || 'createdAt'}
@@ -397,7 +402,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   })
                 }
               >
-                <SelectTrigger className="h-6 text-[11px] border-0 bg-transparent shadow-none px-1.5">
+                <SelectTrigger className="h-7 text-[11px] border-0 bg-transparent shadow-none px-1.5 font-medium">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -418,10 +423,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   sortOrder: queryParams.sortOrder === 'asc' ? 'desc' : 'asc',
                 })
               }
-              className="h-6 px-1.5 text-zinc-600 hover:text-zinc-900 flex items-center text-[10px] font-semibold rounded hover:bg-zinc-200/60 transition-colors"
+              className="h-7 px-2 text-slate-600 hover:text-slate-900 flex items-center text-[10px] font-bold rounded-md hover:bg-slate-200/60 transition-colors"
               title={`Toggle sort order (${queryParams.sortOrder === 'asc' ? 'Ascending' : 'Descending'})`}
             >
-              <ArrowUpDown className="h-2.5 w-2.5 mr-0.5" />
+              <ArrowUpDown className="h-3 w-3 mr-0.5" />
               {queryParams.sortOrder?.toUpperCase() || 'DESC'}
             </button>
           </div>
@@ -432,7 +437,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               variant="ghost"
               size="sm"
               onClick={onReset}
-              className="text-zinc-500 hover:text-zinc-900 text-xs h-7 px-2"
+              className="text-slate-500 hover:text-slate-900 text-xs h-8 px-2.5 rounded-lg"
             >
               <RotateCcw className="h-3 w-3 mr-1" />
               Reset

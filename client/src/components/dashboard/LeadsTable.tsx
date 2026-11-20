@@ -70,29 +70,29 @@ const statusStyles: Record<
   NEW: {
     label: 'New',
     dot: 'bg-sky-500',
-    badge: 'bg-zinc-50 text-zinc-700 border-zinc-200/80',
+    badge: 'bg-sky-50 text-sky-700 border-sky-200/80 hover:bg-sky-100/70',
   },
   CONTACTED: {
     label: 'Contacted',
     dot: 'bg-amber-500',
-    badge: 'bg-amber-50/70 text-amber-800 border-amber-200/60',
+    badge: 'bg-amber-50 text-amber-800 border-amber-200/80 hover:bg-amber-100/70',
   },
   QUALIFIED: {
     label: 'Qualified',
     dot: 'bg-emerald-600',
-    badge: 'bg-emerald-50/70 text-emerald-800 border-emerald-200/60',
+    badge: 'bg-emerald-50 text-emerald-800 border-emerald-200/80 hover:bg-emerald-100/70',
   },
   LOST: {
     label: 'Lost',
-    dot: 'bg-zinc-400',
-    badge: 'bg-zinc-100 text-zinc-600 border-zinc-200/80',
+    dot: 'bg-slate-400',
+    badge: 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200/70',
   },
 };
 
-const priorityBadges: Record<string, { label: string; dot: string; text: string }> = {
-  HIGH: { label: 'P1', dot: 'bg-rose-600', text: 'text-rose-700' },
-  MEDIUM: { label: 'P2', dot: 'bg-amber-500', text: 'text-amber-700' },
-  LOW: { label: 'P3', dot: 'bg-zinc-400', text: 'text-zinc-600' },
+const priorityBadges: Record<string, { label: string; dot: string; text: string; bg: string }> = {
+  HIGH: { label: 'P1', dot: 'bg-rose-500', text: 'text-rose-700', bg: 'bg-rose-50 border-rose-200/60' },
+  MEDIUM: { label: 'P2', dot: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50 border-amber-200/60' },
+  LOW: { label: 'P3', dot: 'bg-slate-400', text: 'text-slate-600', bg: 'bg-slate-100 border-slate-200/60' },
 };
 
 export const LeadsTable: React.FC<LeadsTableProps> = ({
@@ -235,12 +235,12 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
 
   return (
     <div className="relative space-y-2">
-      <div className="bg-white border border-zinc-200/90 rounded-lg shadow-2xs overflow-hidden">
+      <div className="bg-white border border-slate-200/90 rounded-xl shadow-sm overflow-hidden">
         {/* Table Container */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200/80 bg-zinc-50/80 text-zinc-500 font-semibold text-[11px] uppercase tracking-wider select-none">
+              <tr className="border-b border-slate-200 bg-slate-50/90 text-slate-500 font-semibold text-[11px] uppercase tracking-wider select-none">
                 {/* Checkbox */}
                 <th className="py-2.5 px-3 w-8 text-center">
                   <button
@@ -428,12 +428,15 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                         setFocusedIndex(index);
                         onSelectLead(lead);
                       }}
-                      className={`group cursor-pointer transition-colors ${isKeyboardFocused
-                        ? 'bg-zinc-100/90 ring-1 ring-inset ring-zinc-900'
-                        : isSelected
-                          ? 'bg-zinc-100/70'
-                          : 'hover:bg-zinc-50/70'
-                        }`}
+                      className={`group cursor-pointer transition-colors ${
+                        isKeyboardFocused
+                          ? 'bg-indigo-50/70 ring-1 ring-inset ring-indigo-500'
+                          : isSelected
+                          ? 'bg-indigo-50/40'
+                          : index % 2 === 1
+                          ? 'bg-slate-50/40 hover:bg-slate-100/70'
+                          : 'bg-white hover:bg-slate-100/70'
+                      }`}
                     >
                       {/* Checkbox */}
                       <td
@@ -445,10 +448,10 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       >
                         <button
                           type="button"
-                          className="text-zinc-400 hover:text-zinc-800 transition-colors"
+                          className="text-slate-400 hover:text-slate-800 transition-colors"
                         >
                           {isSelected ? (
-                            <CheckSquare className="h-3.5 w-3.5 text-zinc-900" />
+                            <CheckSquare className="h-3.5 w-3.5 text-slate-900" />
                           ) : (
                             <Square className="h-3.5 w-3.5" />
                           )}
@@ -457,7 +460,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
 
                       {/* Priority */}
                       <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3 whitespace-nowrap`}>
-                        <span className={`inline-flex items-center space-x-1 text-[11px] font-mono font-bold ${prioConfig.text}`}>
+                        <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${prioConfig.bg} ${prioConfig.text}`}>
                           <span className={`h-1.5 w-1.5 rounded-full ${prioConfig.dot}`} />
                           <span>{prioConfig.label}</span>
                         </span>
@@ -467,11 +470,11 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3`}>
                         <div className="flex items-center space-x-2">
                           {!isCompact && (
-                            <div className="h-6 w-6 rounded bg-zinc-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+                            <div className="h-6 w-6 rounded-md bg-gradient-to-tr from-slate-900 to-slate-800 text-white flex items-center justify-center font-bold text-[10px] shrink-0 shadow-2xs">
                               {getInitials(lead.name)}
                             </div>
                           )}
-                          <span className="font-semibold text-zinc-900 group-hover:text-blue-600 transition-colors truncate">
+                          <span className="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
                             {lead.name}
                           </span>
                         </div>
@@ -519,21 +522,23 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       {/* Deal Health Score */}
                       <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3 font-mono text-[11px] tabular-numbers`}>
                         <span
-                          className={`inline-flex items-center space-x-1 px-1.5 py-0.2 rounded font-semibold ${score >= 80
-                            ? 'text-emerald-700 bg-emerald-50'
-                            : score >= 50
-                              ? 'text-amber-700 bg-amber-50'
-                              : 'text-zinc-500 bg-zinc-100'
-                            }`}
+                          className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-full font-bold border shadow-2xs ${
+                            score >= 80
+                              ? 'text-emerald-700 bg-emerald-50 border-emerald-200/70'
+                              : score >= 50
+                              ? 'text-amber-700 bg-amber-50 border-amber-200/70'
+                              : 'text-slate-500 bg-slate-100 border-slate-200/70'
+                          }`}
                           title={`Deal Health: ${score}/100`}
                         >
                           <span
-                            className={`h-1.5 w-1.5 rounded-full ${score >= 80
-                              ? 'bg-emerald-500'
-                              : score >= 50
+                            className={`h-1.5 w-1.5 rounded-full ${
+                              score >= 80
+                                ? 'bg-emerald-500'
+                                : score >= 50
                                 ? 'bg-amber-500'
-                                : 'bg-zinc-400'
-                              }`}
+                                : 'bg-slate-400'
+                            }`}
                           />
                           <span>{score}</span>
                         </span>
@@ -541,7 +546,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
 
                       {/* Source Channel */}
                       <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3`}>
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono text-zinc-600 bg-zinc-100 border border-zinc-200/60">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 border border-slate-200/80 uppercase">
                           {lead.source}
                         </span>
                       </td>

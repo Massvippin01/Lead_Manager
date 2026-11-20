@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { LeadStats, LeadStatus } from '@/types';
-import { ArrowRight, Sparkles, Filter } from 'lucide-react';
+import { ArrowRight, Sparkles, Filter, BarChart3 } from 'lucide-react';
 
 interface PipelineDistributionBarProps {
   stats: LeadStats | null;
@@ -37,7 +37,6 @@ export const PipelineDistributionBar: React.FC<PipelineDistributionBarProps> = (
     pct: number;
     dotColor: string;
     barColor: string;
-    badgeColor: string;
   }[] = [
     {
       status: 'NEW',
@@ -46,7 +45,6 @@ export const PipelineDistributionBar: React.FC<PipelineDistributionBarProps> = (
       pct: newPct,
       dotColor: 'bg-sky-500',
       barColor: 'bg-sky-500',
-      badgeColor: 'text-sky-800 bg-sky-50',
     },
     {
       status: 'CONTACTED',
@@ -55,7 +53,6 @@ export const PipelineDistributionBar: React.FC<PipelineDistributionBarProps> = (
       pct: contactedPct,
       dotColor: 'bg-amber-500',
       barColor: 'bg-amber-500',
-      badgeColor: 'text-amber-800 bg-amber-50',
     },
     {
       status: 'QUALIFIED',
@@ -64,32 +61,33 @@ export const PipelineDistributionBar: React.FC<PipelineDistributionBarProps> = (
       pct: qualifiedPct,
       dotColor: 'bg-emerald-600',
       barColor: 'bg-emerald-600',
-      badgeColor: 'text-emerald-800 bg-emerald-50',
     },
     {
       status: 'LOST',
       label: 'Closed / Lost',
       count: stats.lost,
       pct: lostPct,
-      dotColor: 'bg-zinc-400',
-      barColor: 'bg-zinc-400',
-      badgeColor: 'text-zinc-700 bg-zinc-100',
+      dotColor: 'bg-slate-400',
+      barColor: 'bg-slate-400',
     },
   ];
 
   return (
-    <div className="bg-white border border-zinc-200/90 rounded-lg p-3 shadow-2xs mb-5 transition-all">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+    <div className="bg-white border border-slate-200/90 rounded-xl p-3.5 shadow-sm mb-5 transition-all">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
         <div className="flex items-center space-x-2">
-          <span className="text-xs font-bold text-zinc-900 tracking-tight flex items-center">
+          <div className="p-1 rounded-md bg-slate-100 text-slate-700">
+            <BarChart3 className="h-3.5 w-3.5" />
+          </div>
+          <span className="text-xs font-bold text-slate-900 tracking-tight">
             Pipeline Funnel Distribution
           </span>
-          <span className="text-xs font-mono text-zinc-400">
+          <span className="text-xs font-mono text-slate-400">
             ({stats.total} total accounts · {formatCurrency(stats.pipelineValue || 0)})
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono">
           {stages.map((stage) => {
             const isSelected = activeStatus === stage.status;
             return (
@@ -97,21 +95,20 @@ export const PipelineDistributionBar: React.FC<PipelineDistributionBarProps> = (
                 key={stage.status}
                 type="button"
                 onClick={() => onSelectStatus(isSelected ? undefined : stage.status)}
-                className={`flex items-center space-x-1.5 px-2 py-0.5 rounded text-xs transition-all ${
+                className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs transition-all ${
                   isSelected
-                    ? 'bg-zinc-900 text-white font-bold shadow-2xs'
-                    : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/80'
+                    ? 'bg-slate-900 text-white font-bold shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/90 border border-slate-200/60'
                 }`}
                 title={`Filter by ${stage.label}`}
               >
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${isSelected ? 'bg-white' : stage.dotColor}`}
                 />
-                <span>
-                  {stage.label}: {stage.count}{' '}
-                  <span className={isSelected ? 'text-zinc-300' : 'text-zinc-400'}>
-                    ({stage.pct.toFixed(0)}%)
-                  </span>
+                <span className="font-sans font-medium">{stage.label}:</span>
+                <span className="font-bold">{stage.count}</span>
+                <span className={isSelected ? 'text-slate-300' : 'text-slate-400'}>
+                  ({stage.pct.toFixed(0)}%)
                 </span>
               </button>
             );
@@ -119,8 +116,8 @@ export const PipelineDistributionBar: React.FC<PipelineDistributionBarProps> = (
         </div>
       </div>
 
-      {/* Multi-segment Interactive Funnel Bar */}
-      <div className="h-2.5 w-full bg-zinc-100 rounded-sm overflow-hidden flex cursor-pointer">
+      {/* Multi-segment Interactive Funnel Bar with gaps and rounded edges */}
+      <div className="h-3.5 w-full bg-slate-100/90 rounded-lg overflow-hidden flex gap-0.5 p-0.5 cursor-pointer">
         {stages.map((stage) => {
           if (stage.pct <= 0) return null;
           const isSelected = activeStatus === stage.status;
@@ -129,7 +126,7 @@ export const PipelineDistributionBar: React.FC<PipelineDistributionBarProps> = (
               key={stage.status}
               style={{ width: `${stage.pct}%` }}
               onClick={() => onSelectStatus(isSelected ? undefined : stage.status)}
-              className={`${stage.barColor} transition-all duration-150 hover:opacity-80 relative group ${
+              className={`${stage.barColor} h-full rounded-sm transition-all duration-200 hover:opacity-85 hover:scale-y-105 ${
                 activeStatus && !isSelected ? 'opacity-30' : 'opacity-100'
               }`}
               title={`${stage.label}: ${stage.count} (${stage.pct.toFixed(1)}%) - Click to filter`}
