@@ -44,7 +44,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-2xs">
+    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md backdrop-saturate-150 border-b border-slate-200/80 shadow-2xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Left: Brand & Workspace Switcher */}
         <div className="flex items-center space-x-3">
