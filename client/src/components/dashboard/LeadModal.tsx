@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Lead, LeadSource, LeadStatus } from '@/types';
-import { User, Mail, Phone, Building2, Globe, CheckCircle2, DollarSign } from 'lucide-react';
+import { Lead, LeadPriority, LeadSource, LeadStatus } from '@/types';
+import { User, Mail, Phone, Building2, Globe, CheckCircle2, DollarSign, Flame } from 'lucide-react';
 
 interface LeadModalProps {
   isOpen: boolean;
@@ -27,6 +27,7 @@ export interface LeadFormData {
   phone: string;
   company: string;
   value: number;
+  priority: LeadPriority;
   source: LeadSource;
   status: LeadStatus;
 }
@@ -43,6 +44,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
     phone: '',
     company: '',
     value: 0,
+    priority: 'MEDIUM',
     source: 'WEBSITE',
     status: 'NEW',
   });
@@ -58,6 +60,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
         phone: leadToEdit.phone,
         company: leadToEdit.company,
         value: leadToEdit.value || 0,
+        priority: leadToEdit.priority || 'MEDIUM',
         source: leadToEdit.source,
         status: leadToEdit.status,
       });
@@ -68,6 +71,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
         phone: '',
         company: '',
         value: 0,
+        priority: 'MEDIUM',
         source: 'WEBSITE',
         status: 'NEW',
       });
@@ -119,7 +123,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
       await onSubmit(formData);
       onClose();
     } catch {
-      // Handled via toast in parent
+      // Toast handles in parent
     } finally {
       setIsSubmitting(false);
     }
@@ -129,99 +133,99 @@ export const LeadModal: React.FC<LeadModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-slate-900">
-            {leadToEdit ? 'Edit Lead Profile' : 'Capture New Prospect'}
+          <DialogTitle className="text-base font-bold text-zinc-900">
+            {leadToEdit ? 'Edit Prospect Details' : 'Capture New Prospect'}
           </DialogTitle>
-          <DialogDescription className="text-xs text-slate-500">
+          <DialogDescription className="text-xs text-zinc-500">
             {leadToEdit
-              ? 'Update contact credentials, deal value, acquisition channel, and stage.'
-              : 'Add a verified prospect to your sales pipeline.'}
+              ? 'Update contact credentials, priority score, deal value, and pipeline stage.'
+              : 'Add an account to your organization sales pipeline.'}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-3.5 py-2">
+        <form onSubmit={handleSubmit} className="space-y-3 py-1">
           {/* Row 1: Name & Company */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Full Name <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <User className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
                 <Input
                   type="text"
                   placeholder="e.g. Eleanor Vance"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className={`pl-8 text-xs h-9 ${errors.name ? 'border-rose-400' : ''}`}
+                  className={`pl-8 text-xs h-8 ${errors.name ? 'border-rose-400' : ''}`}
                 />
               </div>
-              {errors.name && <p className="text-[11px] text-rose-500 mt-1">{errors.name}</p>}
+              {errors.name && <p className="text-[10px] text-rose-500 mt-0.5">{errors.name}</p>}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Company Name <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <Building2 className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
                 <Input
                   type="text"
                   placeholder="e.g. Hill House Capital"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                  className={`pl-8 text-xs h-9 ${errors.company ? 'border-rose-400' : ''}`}
+                  className={`pl-8 text-xs h-8 ${errors.company ? 'border-rose-400' : ''}`}
                 />
               </div>
-              {errors.company && <p className="text-[11px] text-rose-500 mt-1">{errors.company}</p>}
+              {errors.company && <p className="text-[10px] text-rose-500 mt-0.5">{errors.company}</p>}
             </div>
           </div>
 
           {/* Row 2: Email & Phone */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Work Email <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
                 <Input
                   type="email"
                   placeholder="eleanor@hillhouse.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className={`pl-8 text-xs h-9 ${errors.email ? 'border-rose-400' : ''}`}
+                  className={`pl-8 text-xs h-8 ${errors.email ? 'border-rose-400' : ''}`}
                 />
               </div>
-              {errors.email && <p className="text-[11px] text-rose-500 mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-[10px] text-rose-500 mt-0.5">{errors.email}</p>}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Phone Number <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <Phone className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
                 <Input
                   type="tel"
                   placeholder="+1 (555) 123-4567"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className={`pl-8 text-xs h-9 ${errors.phone ? 'border-rose-400' : ''}`}
+                  className={`pl-8 text-xs h-8 font-mono ${errors.phone ? 'border-rose-400' : ''}`}
                 />
               </div>
-              {errors.phone && <p className="text-[11px] text-rose-500 mt-1">{errors.phone}</p>}
+              {errors.phone && <p className="text-[10px] text-rose-500 mt-0.5">{errors.phone}</p>}
             </div>
           </div>
 
-          {/* Row 3: Deal Value ($) & Channel */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Row 3: Deal Value ($) & Priority */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Estimated Deal Value ($ USD)
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                Deal Value ($ USD)
               </label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <DollarSign className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
                 <Input
                   type="number"
                   min="0"
@@ -231,23 +235,46 @@ export const LeadModal: React.FC<LeadModalProps> = ({
                   onChange={(e) =>
                     setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })
                   }
-                  className="pl-8 text-xs h-9 font-mono"
+                  className="pl-8 text-xs h-8 font-mono"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                Priority Ranking
+              </label>
+              <div className="relative">
+                <Flame className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+                <select
+                  value={formData.priority}
+                  onChange={(e) =>
+                    setFormData({ ...formData, priority: e.target.value as LeadPriority })
+                  }
+                  className="h-8 w-full pl-8 pr-2.5 text-xs rounded-md border border-zinc-200 bg-white font-medium text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                >
+                  <option value="HIGH">P1 - High (Urgent)</option>
+                  <option value="MEDIUM">P2 - Medium (Standard)</option>
+                  <option value="LOW">P3 - Low (Nurture)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Row 4: Channel & Stage */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 Acquisition Channel
               </label>
               <div className="relative">
-                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <Globe className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
                 <select
                   value={formData.source}
                   onChange={(e) =>
                     setFormData({ ...formData, source: e.target.value as LeadSource })
                   }
-                  className="h-9 w-full pl-8 pr-3 text-xs rounded-lg border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="h-8 w-full pl-8 pr-2.5 text-xs rounded-md border border-zinc-200 bg-white font-medium text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-900"
                 >
                   <option value="WEBSITE">Website</option>
                   <option value="REFERRAL">Referral</option>
@@ -259,38 +286,37 @@ export const LeadModal: React.FC<LeadModalProps> = ({
                 </select>
               </div>
             </div>
-          </div>
 
-          {/* Pipeline Stage */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Pipeline Stage
-            </label>
-            <div className="relative">
-              <CheckCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              <select
-                value={formData.status}
-                onChange={(e) =>
-                  setFormData({ ...formData, status: e.target.value as LeadStatus })
-                }
-                className="h-9 w-full pl-8 pr-3 text-xs rounded-lg border border-slate-200 bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
-              >
-                <option value="NEW">New</option>
-                <option value="CONTACTED">Contacted</option>
-                <option value="QUALIFIED">Qualified</option>
-                <option value="LOST">Lost</option>
-              </select>
+            <div>
+              <label className="block text-xs font-semibold text-zinc-700 mb-1">
+                Pipeline Stage
+              </label>
+              <div className="relative">
+                <CheckCircle2 className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+                <select
+                  value={formData.status}
+                  onChange={(e) =>
+                    setFormData({ ...formData, status: e.target.value as LeadStatus })
+                  }
+                  className="h-8 w-full pl-8 pr-2.5 text-xs rounded-md border border-zinc-200 bg-white font-medium text-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                >
+                  <option value="NEW">New</option>
+                  <option value="CONTACTED">Contacted</option>
+                  <option value="QUALIFIED">Qualified</option>
+                  <option value="LOST">Lost</option>
+                </select>
+              </div>
             </div>
           </div>
 
-          <DialogFooter className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+          <DialogFooter className="pt-2.5 border-t border-zinc-100 flex items-center justify-end space-x-1.5">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={onClose}
               disabled={isSubmitting}
-              className="text-xs h-8"
+              className="text-xs h-7"
             >
               Cancel
             </Button>
@@ -298,13 +324,9 @@ export const LeadModal: React.FC<LeadModalProps> = ({
               type="submit"
               size="sm"
               disabled={isSubmitting}
-              className="text-xs h-8 bg-slate-900 hover:bg-slate-800 text-white"
+              className="text-xs h-7 bg-zinc-900 hover:bg-zinc-800 text-white"
             >
-              {isSubmitting
-                ? 'Saving...'
-                : leadToEdit
-                ? 'Update Lead'
-                : 'Create Lead'}
+              {isSubmitting ? 'Saving...' : leadToEdit ? 'Update Lead' : 'Create Lead'}
             </Button>
           </DialogFooter>
         </form>

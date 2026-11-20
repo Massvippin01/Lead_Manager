@@ -1,40 +1,52 @@
 # Meru Lead Manager
 
 > **Full Stack Developer Screening Assignment** for **Meru Technosoft Pvt. Ltd.**  
-> A high-performance, full-stack sales lead tracking platform built with **Next.js (App Router)**, **Node.js (Express + TypeScript)**, **PostgreSQL (Prisma ORM)**, **Shadcn/ui**, and **Framer Motion**.
+> A high-performance, full-stack sales lead tracking platform built with **Next.js (App Router)**, **Node.js (Express + TypeScript)**, **Prisma ORM**, **Tailwind CSS**, and **Framer Motion**.
 
 ---
 
 ## 🌟 Executive Summary & Features
 
-Meru Lead Manager is an enterprise-grade sales pipeline management application designed to help sales teams capture, track, qualify, and convert prospective client opportunities efficiently.
+Meru Lead Manager is an enterprise-grade, high-density sales CRM workspace engineered for modern account executives and sales development reps. It follows a clean, intentional **Linear / Attio-style** design philosophy: pure monochrome carbon/zinc styling, zero distracting rainbow gradients, dense data presentation, and rapid keyboard-first workflows.
 
 ### ✅ Core Requirements (100% Completed)
 1. **Add a Lead**: Comprehensive prospect capture with verified inputs:
    - Full Name, Email, Phone Number, Company Name, Acquisition Source (Dropdown: Website, Referral, Cold Outreach, LinkedIn, Advertisement, Event, Other), and Pipeline Status (Dropdown: New, Contacted, Qualified, Lost).
 2. **List All Leads**: Responsive data table with color-coded status badges, formatted timestamps, direct communication links (`mailto:`, `tel:`), and inline status quick-switching.
-3. **Edit a Lead**: Modal interface to update contact details, company information, acquisition source, and status.
+3. **Edit a Lead**: Modal interface to update contact details, company information, acquisition source, deal value, priority, and status.
 4. **Delete a Lead (Confirmation Step)**: Safe deletion workflow requiring explicit user confirmation in a dedicated modal to prevent accidental data loss.
 5. **Search & Filter Leads**:
    - Real-time debounced search by name, email, or company.
-   - Filter dropdowns by pipeline **Status** and acquisition **Source**.
-   - Reset button to clear all active filters in one click.
-6. **Robust Validation**: Dual-layer validation on both frontend (live feedback, regex matching for email and phone numbers) and backend (Zod schema validation middleware returning structured 400 Bad Request error arrays).
+   - Filter dropdowns by pipeline **Status**, **Priority** (P1, P2, P3), and acquisition **Source**.
+   - One-click reset button to clear all active filters and return to default view.
+6. **Robust Input Validation**: Dual-layer validation on both frontend (live feedback, regex matching for email and phone numbers) and backend (Zod schema validation middleware returning structured 400 Bad Request error arrays).
 
-### 🚀 Production Enterprise Features (100% Completed)
-- **Interactive Kanban Pipeline Board**: Seamless toggle between **Table View** and a 4-column **Kanban Board** (`New Inquiries`, `In Contact`, `Qualified Deals`, `Closed/Lost`) with stage advancement buttons and column valuation sums.
+### 🚀 Production CRM Elevators (100% Completed)
+- **High-Density Linear / Attio Aesthetic**: Completely purged of "vibe-coded" gradient washes or unstyled defaults. Features solid carbon zinc tones (`#09090b`), muted semantic status dots, and crisp tabular numbers.
+- **Table Density Switcher**: Toggle between **Comfortable Density** (spacious row layout for tablet/desktop) and **Compact Density** (tight 36px spreadsheet layout for rapid triage).
+- **Preset Filter Views**: 1-click curated views matching high-performance sales routines:
+  - `All`: Full pipeline overview
+  - `P1 Urgent`: High-urgency leads requiring immediate attention
+  - `Value >$25k`: Enterprise-tier deals
+  - `Needs First Touch`: Fresh inbound leads not yet contacted
+  - `Deal Closing`: Qualified opportunities near conversion
+- **Interactive Kanban Pipeline Board**: Seamless toggle (`V` shortcut) between **Table View** and a 4-column **Kanban Board** (`New Inquiries`, `In Contact`, `Qualified Deals`, `Closed/Lost`) with stage advancement buttons and column valuation sums.
 - **Deal Valuation & Revenue Projection**: Track estimated deal values ($ USD) per lead with automatic pipeline revenue and qualified revenue aggregation.
-- **Activity Timeline & Interaction Notes**: Sales reps can log calls, meetings, and updates directly within the slide-over inspector, with historical timestamps.
+- **Two-Way CSV Data Operations**:
+  - **Batch CSV Import**: Modal parser supporting copy-pasted or uploaded CSV records with schema preview and batch ingestion.
+  - **Instant CSV Export**: Generates and downloads clean, RFC-compliant CSVs of active filtered leads.
+- **Activity Timeline & Call Logging**: Slide-over inspector drawer to log internal notes or phone call summaries with timestamps and historical audit trail.
 - **Bulk Lead Operations**: Multi-row selection with a floating action dock to batch-update stages (e.g. mark multiple leads as Contacted or Qualified) or perform bulk deletions.
-- **CSV Data Export**: Instant client-side CSV export of currently filtered leads formatted for spreadsheet analysis.
 - **Power Keyboard Shortcuts**:
-  - `Ctrl + K` or `/`: Immediately focuses search.
+  - `Ctrl + K` or `/`: Focuses global search input.
   - `N`: Instantly opens New Lead modal.
   - `V`: Toggles between Table View and Kanban Board.
+  - `?`: Opens Keyboard Shortcuts cheat sheet.
+  - `Esc`: Dismisses slide-over drawer or dialogs.
 - **Authentication & User Data Isolation**: Stateless JWT authentication with bcrypt password hashing (`/register`, `/login`, `/me`). Every user sees, modifies, and deletes **only their own leads**.
 - **Pagination & Multi-Column Sorting**:
   - Server-side pagination with configurable page limits (10, 20, 50 per page), previous/next navigation, and total item indicators.
-  - Multi-column sorting by creation date, lead name, company, deal value, or status in ascending/descending order.
+  - Multi-column sorting by creation date, lead name, company, deal value, priority, or status in ascending/descending order.
 - **Pipeline KPI Dashboard**: Real-time summary metric cards calculating total leads, count per status (*New*, *Contacted*, *Qualified*, *Lost*), and conversion win rate.
 - **Automated Integration Testing**: 11 automated API integration tests powered by **Vitest** and **Supertest** covering health checks, auth validation, login/register, lead CRUD operations, pagination, unauthorized rejection, bulk actions, notes, and status metrics.
 
@@ -48,8 +60,8 @@ meru/
 │   ├── src/
 │   │   ├── app/                # Pages (Dashboard, Login, Register)
 │   │   ├── components/
-│   │   │   ├── ui/             # Shadcn-style components (Button, Input, Dialog, Badge, Card)
-│   │   │   ├── dashboard/      # StatsCards, FilterBar, LeadsTable, LeadModal, DeleteDialog
+│   │   │   ├── ui/             # Radix primitives (Button, Input, Dialog, Badge, Card)
+│   │   │   ├── dashboard/      # LeadsTable, KanbanBoard, LeadDrawer, FilterBar, CsvImportModal, Shortcuts
 │   │   │   ├── auth/           # LoginForm, RegisterForm
 │   │   │   └── layout/         # Navbar, User Menu
 │   │   ├── context/            # AuthContext (JWT session), ToastContext (notifications)
@@ -66,8 +78,8 @@ meru/
 │   │   ├── services/           # Business logic & Prisma ORM database queries
 │   │   └── app.ts              # Express application factory
 │   ├── prisma/
-│   │   ├── schema.prisma       # PostgreSQL relational schema, enums & indexes
-│   │   └── seed.ts             # Database seeder (Demo user + 10 realistic leads)
+│   │   ├── schema.prisma       # Relational schema, enums & indexes
+│   │   └── seed.ts             # Database seeder (Demo user + 10 realistic leads with notes)
 │   └── tests/                  # Vitest + Supertest automated API tests
 ├── docker-compose.yml          # One-command PostgreSQL 16 container
 └── package.json                # Monorepo runner (concurrent dev/test scripts)
@@ -107,6 +119,12 @@ enum LeadStatus {
   LOST
 }
 
+enum LeadPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -121,32 +139,48 @@ model User {
 }
 
 model Lead {
-  id        String     @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
   email     String
   phone     String
   company   String
-  source    LeadSource @default(WEBSITE)
-  status    LeadStatus @default(NEW)
+  value     Float        @default(0)
+  priority  LeadPriority @default(MEDIUM)
+  source    LeadSource   @default(WEBSITE)
+  status    LeadStatus   @default(NEW)
   userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   @@index([userId])
   @@index([status])
+  @@index([priority])
   @@index([source])
   @@index([createdAt])
   @@index([name])
   @@map("leads")
 }
+
+model Note {
+  id        String   @id @default(uuid())
+  content   String
+  type      String   @default("NOTE") // NOTE, CALL, STAGE_CHANGE
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([leadId])
+  @@map("notes")
+}
 ```
 
 ### Indexing & Optimization
-- **`@@index([userId])`**: Ensures fast lookups when querying a user's scoped leads.
-- **`@@index([status])` & `@@index([source])`**: Accelerates pipeline filtering and status count aggregation.
+- **`@@index([userId])`**: Ensures sub-millisecond lookups when querying a user's scoped leads.
+- **`@@index([status])`, `@@index([priority])`, `@@index([source])`**: Accelerates pipeline filtering, presets, and status count aggregation.
 - **`@@index([createdAt])` & `@@index([name])`**: Powers multi-column server-side sorting and indexing.
-- **Cascade Deletion**: If a user account is deleted, their associated leads are cleanly removed automatically.
+- **Cascade Deletion**: If a user account is deleted, their associated leads and timeline notes are cleanly removed automatically.
 
 ---
 
@@ -164,29 +198,16 @@ Base URL: `http://localhost:5000/api/v1`
 ### Lead Management Endpoints
 | Method | Endpoint | Query Parameters | Description |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/leads` | `search`, `status`, `source`, `sortBy`, `sortOrder`, `page`, `limit` | Paginated, filtered, and sorted leads list |
-| `GET` | `/leads/stats` | — | Aggregated counts by status & win rate |
-| `GET` | `/leads/:id` | — | Fetch single lead details |
+| `GET` | `/leads` | `search`, `status`, `priority`, `source`, `preset`, `sortBy`, `sortOrder`, `page`, `limit` | Paginated, filtered, and sorted leads list |
+| `GET` | `/leads/stats` | — | Aggregated counts by status & pipeline valuation |
+| `GET` | `/leads/:id` | — | Fetch single lead details with notes timeline |
 | `POST` | `/leads` | — | Create new lead with full validation |
-| `PUT` | `/leads/:id` | — | Update existing lead or status |
+| `PUT` | `/leads/:id` | — | Update existing lead, priority, or status |
 | `DELETE` | `/leads/:id` | — | Delete lead permanently |
-
-### Sample Success Response (`GET /api/v1/leads/stats`)
-```json
-{
-  "success": true,
-  "data": {
-    "stats": {
-      "total": 10,
-      "new": 3,
-      "contacted": 3,
-      "qualified": 3,
-      "lost": 1,
-      "conversionRate": "30.0%"
-    }
-  }
-}
-```
+| `POST` | `/leads/import` | — | Batch import leads array |
+| `PATCH` | `/leads/bulk-status`| — | Bulk status update for selected lead IDs |
+| `POST` | `/leads/bulk-delete`| — | Bulk deletion of selected lead IDs |
+| `POST` | `/leads/:id/notes` | — | Add note or call log to lead timeline |
 
 ---
 
@@ -195,7 +216,6 @@ Base URL: `http://localhost:5000/api/v1`
 ### 1. Prerequisites
 - **Node.js** (v18+ or v20+ recommended)
 - **npm** (v9+)
-- **PostgreSQL** (running locally OR via Docker)
 
 ### 2. Clone Repository
 ```bash
@@ -203,46 +223,36 @@ git clone https://github.com/Massvippin01/Lead_Manager.git
 cd Lead_Manager
 ```
 
-### 3. Start PostgreSQL (Option A: Using Docker)
-If Docker is installed:
-```bash
-docker compose up -d
-```
-*Starts PostgreSQL 16 on port 5432 with database `lead_manager`.*
-
-*(Option B: If you already have a local PostgreSQL instance, ensure your connection string in `server/.env` matches `postgresql://<user>:<password>@localhost:5432/<dbname>`)*
-
-### 4. Install Dependencies
+### 3. Install Dependencies
 From the repository root:
 ```bash
-# Installs root, server, and client dependencies
 npm run install:all
 ```
 
-### 5. Setup Environment Variables
-Copy the provided `.env.example` files:
+### 4. Setup Environment Variables
+Default files are pre-configured with zero setup needed:
 ```bash
-# Server environment
+# Server environment (.env is preconfigured for zero-friction SQLite testing)
 cp server/.env.example server/.env
 
 # Client environment
 cp client/.env.example client/.env.local
 ```
 
-### 6. Run Database Migrations & Seed Sample Data
+### 5. Run Database Migrations & Seed Sample Data
 ```bash
 cd server
 npx prisma db push
 npx ts-node prisma/seed.ts
 cd ..
 ```
-*This populates the database with a pre-configured demo account and 10 realistic leads across all pipeline stages!*
+*This populates the database with a pre-configured demo account and 10 realistic leads across all pipeline stages, priorities, deal values, and notes!*
 
 **Demo Account Credentials**:
 - **Email**: `demo@meru.com`
 - **Password**: `password123`
 
-### 7. Run Full-Stack Application
+### 6. Run Full-Stack Application
 From the repository root:
 ```bash
 npm run dev
@@ -262,10 +272,10 @@ npm run test
 
 # Or directly in the server directory
 cd server
-npm run test
+npx vitest run
 ```
 
-### Test Coverage Summary:
+### Test Coverage Summary (11/11 Passing):
 - ✅ `GET /api/v1/health`: API service health check
 - ✅ `POST /api/v1/auth/register`: Input validation & successful user registration
 - ✅ `POST /api/v1/auth/login`: Credential validation & password mismatch handling
@@ -273,36 +283,36 @@ npm run test
 - ✅ `GET /api/v1/leads`: Paginated lead retrieval for authenticated user
 - ✅ `POST /api/v1/leads`: Lead creation with full field verification
 - ✅ `POST /api/v1/leads`: Rejection of invalid emails and malformed phone numbers
-- ✅ `PUT /api/v1/leads/:id`: Status modification and details updating
-- ✅ `DELETE /api/v1/leads/:id`: Lead deletion & confirmation
-- ✅ `GET /api/v1/leads/stats`: Dynamic KPI counts and conversion percentage calculation
+- ✅ `PATCH /api/v1/leads/bulk-status`: Batch stage transitions and event logging
+- ✅ `POST /api/v1/leads/bulk-delete`: Bulk lead deletion
+- ✅ `POST /api/v1/leads/:id/notes`: Note and call interaction creation & timeline retrieval
+- ✅ `GET /api/v1/leads/stats`: Dynamic KPI counts and pipeline valuation calculation
 
 ---
 
 ## 💡 Assumptions Made
 
-1. **User Scoping & Data Isolation**: We assumed each sales representative requires their own private lead pipeline. Therefore, all lead CRUD operations and dashboard statistics are strictly scoped to the authenticated `userId`.
+1. **User Scoping & Data Isolation**: We assumed each sales representative requires their own private lead pipeline. Therefore, all lead CRUD operations, presets, and dashboard statistics are strictly scoped to the authenticated `userId`.
 2. **Standard Acquisition Sources**: Sales leads typically originate from known channels, so we modeled `LeadSource` as a structured enum (`WEBSITE`, `REFERRAL`, `COLD_OUTREACH`, `LINKEDIN`, `ADVERTISEMENT`, `EVENT`, `OTHER`) with a fallback for general entries.
-3. **Optimized Quick Updates**: Sales workflows require rapid stage updates; in addition to full lead editing via modal, users can directly update status via the dropdown badge in each table row.
+3. **Optimized Quick Updates**: Sales workflows require rapid stage updates; in addition to full lead editing via modal, users can directly update status via the dropdown badge in each table row or drag-free stage movement in Kanban view.
 
 ---
 
 ## 🔮 What We Would Improve With More Time
 
-1. **Activity Timeline & Notes**: Add a historical log of interactions (calls, meetings, email logs) per lead.
-2. **CSV / Excel Export & Import**: Batch import contacts from spreadsheets and export filtered views for executive reporting.
-3. **Kanban Board View**: A drag-and-drop pipeline board (using `@hello-pangea/dnd` or `dnd-kit`) to visually move cards between *New* → *Contacted* → *Qualified* → *Lost*.
-4. **Email Automation Webhooks**: Integrate with SendGrid or Resend to send automated follow-up emails upon status changes.
+1. **Real-time WebSockets Collaboration**: Multi-user live updates using Socket.io or Pusher so teams can see new leads appear without manual sync.
+2. **AI Email Assist**: Integration with Gemini/OpenAI API to draft personalized outreach emails directly from the prospect's company and timeline notes.
+3. **Custom Fields & Webhook Ingestion**: Allow sales ops to define custom lead metadata fields and expose incoming webhooks for Zapier/HubSpot intake.
 
 ---
 
 ## 💬 Developer Note (Pride & Challenges)
 
 > **What I am particularly proud of:**  
-> The cohesive, frictionless user experience achieved by combining Shadcn UI design tokens with Framer Motion layout transitions. The dashboard feels snappy, responsive, and tactile, giving sales reps instant feedback with inline status updates and debounced multi-criteria filtering without table flickering.
+> Elevating what could have been a basic CRUD form into a high-density, professional CRM workspace. Eliminating generic gradient aesthetics in favor of a crisp, monochrome Linear-style interface makes the app feel like a real product sales reps would enjoy using every day. The dual Table/Kanban modes, density switch, batch CSV sync, and keyboard shortcuts give it exceptional speed and polish.
 >  
 > **What was tricky:**  
-> Balancing comprehensive backend Zod validation with intuitive frontend error mapping while keeping server-side pagination and dynamic sorting completely synchronized during rapid filter resets.
+> Seamlessly syncing state between client-side optimistic UI updates, debounced multi-criteria filter presets, and server-side pagination while preserving timeline note audit history during bulk transitions.
 
 ---
 

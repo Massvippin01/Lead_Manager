@@ -130,11 +130,12 @@ export class LeadController {
     try {
       const userId = req.user!.userId;
       const leadId = req.params.id as string;
-      const note = await LeadService.addNote(userId, leadId, req.body.content);
+      const { content, type } = req.body;
+      const note = await LeadService.addNote(userId, leadId, content, type);
 
       res.status(201).json({
         success: true,
-        message: 'Note recorded',
+        message: 'Activity recorded',
         data: { note },
       });
     } catch (error) {
@@ -151,6 +152,21 @@ export class LeadController {
       res.status(200).json({
         success: true,
         data: { notes },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async importLeads(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user!.userId;
+      const result = await LeadService.importLeads(userId, req.body.leads);
+
+      res.status(200).json({
+        success: true,
+        message: `Imported ${result.importedCount} leads successfully`,
+        data: result,
       });
     } catch (error) {
       next(error);

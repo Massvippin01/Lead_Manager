@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { LeadStats, LeadStatus } from '@/types';
-import { Users, UserPlus, PhoneCall, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
+import { Users, Flame, CheckCircle2, TrendingUp, PhoneCall, Sparkles } from 'lucide-react';
 
 interface StatsCardsProps {
   stats: LeadStats | null;
@@ -38,52 +38,52 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       status: undefined,
       title: 'Total Pipeline',
       value: stats?.total ?? 0,
-      subtext: stats?.pipelineValue ? formatCurrency(stats.pipelineValue) : 'All recorded leads',
+      subtext: stats?.pipelineValue ? formatCurrency(stats.pipelineValue) : '$0',
       icon: Users,
-      dotColor: 'bg-slate-900',
+      dotColor: 'bg-zinc-900',
       isActive: activeStatus === undefined,
     },
     {
       status: 'NEW',
-      title: 'New',
+      title: 'New Inquiries',
       value: stats?.new ?? 0,
       subtext: 'Awaiting discovery',
-      icon: UserPlus,
+      icon: Sparkles,
       dotColor: 'bg-sky-500',
       isActive: activeStatus === 'NEW',
     },
     {
       status: 'CONTACTED',
-      title: 'Contacted',
+      title: 'In Dialogue',
       value: stats?.contacted ?? 0,
-      subtext: 'In active dialogue',
+      subtext: 'Active outreach',
       icon: PhoneCall,
       dotColor: 'bg-amber-500',
       isActive: activeStatus === 'CONTACTED',
     },
     {
       status: 'QUALIFIED',
-      title: 'Qualified',
+      title: 'Qualified Deals',
       value: stats?.qualified ?? 0,
-      subtext: stats?.qualifiedValue ? formatCurrency(stats.qualifiedValue) : 'Ready for deal close',
+      subtext: stats?.qualifiedValue ? formatCurrency(stats.qualifiedValue) : '$0',
       icon: CheckCircle2,
-      dotColor: 'bg-emerald-500',
+      dotColor: 'bg-emerald-600',
       isActive: activeStatus === 'QUALIFIED',
     },
     {
-      status: 'LOST',
-      title: 'Lost',
-      value: stats?.lost ?? 0,
-      subtext: 'Closed uncoverted',
-      icon: XCircle,
+      status: undefined,
+      title: 'P1 Hot Accounts',
+      value: stats?.highPriority ?? 0,
+      subtext: 'Urgent priority',
+      icon: Flame,
       dotColor: 'bg-rose-500',
-      isActive: activeStatus === 'LOST',
+      isActive: false,
     },
     {
       status: undefined,
       title: 'Win Rate',
       value: stats?.conversionRate ?? '0%',
-      subtext: 'Qualified ratio',
+      subtext: 'Lead qualification ratio',
       icon: TrendingUp,
       dotColor: 'bg-indigo-600',
       isActive: false,
@@ -91,10 +91,10 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-5">
       {cards.map((card) => {
         const Icon = card.icon;
-        const isClickable = card.title !== 'Win Rate';
+        const isClickable = card.status !== undefined || card.title === 'Total Pipeline';
 
         return (
           <button
@@ -102,31 +102,31 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
             type="button"
             disabled={!isClickable}
             onClick={() => isClickable && onFilterStatus(card.status)}
-            className={`text-left rounded-xl border p-3.5 transition-all duration-150 ${
-              card.isActive && card.title !== 'Win Rate'
-                ? 'bg-white border-slate-900 ring-1 ring-slate-900 shadow-xs'
-                : 'bg-white border-slate-200/90 hover:border-slate-300 hover:bg-slate-50/50 shadow-xs'
+            className={`text-left rounded-lg border p-3 transition-all duration-150 ${
+              card.isActive && isClickable
+                ? 'bg-white border-zinc-900 ring-1 ring-zinc-900 shadow-2xs'
+                : 'bg-white border-zinc-200/90 hover:border-zinc-300 hover:bg-zinc-50/60 shadow-2xs'
             } ${!isClickable ? 'cursor-default' : 'cursor-pointer'}`}
           >
-            <div className="flex items-center justify-between text-xs font-medium text-slate-500 mb-2">
+            <div className="flex items-center justify-between text-xs font-medium text-zinc-500 mb-1.5">
               <span className="flex items-center space-x-1.5">
                 <span className={`h-1.5 w-1.5 rounded-full ${card.dotColor}`} />
-                <span>{card.title}</span>
+                <span className="truncate">{card.title}</span>
               </span>
-              <Icon className="h-3.5 w-3.5 text-slate-400" />
+              <Icon className="h-3 w-3 text-zinc-400 shrink-0" />
             </div>
 
             <div className="flex items-baseline space-x-1">
               {isLoading ? (
-                <div className="h-7 w-12 bg-slate-100 animate-pulse rounded my-0.5" />
+                <div className="h-6 w-10 bg-zinc-100 animate-pulse rounded my-0.5" />
               ) : (
-                <span className="text-2xl font-bold tracking-tight text-slate-900 tabular-numbers">
+                <span className="text-xl font-bold tracking-tight text-zinc-900 font-mono tabular-numbers">
                   {card.value}
                 </span>
               )}
             </div>
 
-            <p className="text-[11px] font-semibold text-slate-400 mt-1 truncate">
+            <p className="text-[11px] font-mono text-zinc-400 mt-1 truncate">
               {card.subtext}
             </p>
           </button>

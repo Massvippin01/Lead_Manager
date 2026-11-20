@@ -9,6 +9,7 @@ import {
   bulkStatusSchema,
   bulkDeleteSchema,
   createNoteSchema,
+  importLeadsSchema,
 } from '../schemas/lead.schema';
 
 const router = Router();
@@ -20,9 +21,10 @@ router.use(authenticate);
 router.get('/', validateQuery(leadQuerySchema), LeadController.getLeads);
 router.get('/stats', LeadController.getStats);
 
-// Bulk Operations
+// Batch & Import Operations
 router.patch('/bulk-status', validateBody(bulkStatusSchema), LeadController.bulkUpdateStatus);
 router.post('/bulk-delete', validateBody(bulkDeleteSchema), LeadController.bulkDelete);
+router.post('/import', validateBody(importLeadsSchema), LeadController.importLeads);
 
 // Single Lead CRUD
 router.get('/:id', LeadController.getLeadById);

@@ -32,11 +32,13 @@ async function main() {
       phone: '+1 (555) 234-5678',
       company: 'Cyberdyne Systems',
       value: 45000,
+      priority: 'HIGH',
       source: 'WEBSITE',
       status: 'QUALIFIED',
       notes: [
-        'Reviewed technical security proposal. Requested procurement quote.',
-        'Initial discovery call with VP of Engineering completed.',
+        { content: 'Reviewed technical security proposal. Requested procurement quote.', type: 'NOTE' },
+        { content: 'Initial discovery call with VP of Engineering completed.', type: 'CALL' },
+        { content: 'Pipeline stage advanced from CONTACTED to QUALIFIED.', type: 'STAGE_CHANGE' },
       ],
     },
     {
@@ -45,10 +47,11 @@ async function main() {
       phone: '+1 (555) 890-1234',
       company: 'Wayne Enterprises',
       value: 120000,
+      priority: 'HIGH',
       source: 'REFERRAL',
       status: 'CONTACTED',
       notes: [
-        'Introductory meeting scheduled for next Tuesday regarding enterprise rollout.',
+        { content: 'Introductory meeting scheduled for next Tuesday regarding enterprise rollout.', type: 'CALL' },
       ],
     },
     {
@@ -57,10 +60,12 @@ async function main() {
       phone: '+1 (555) 345-6789',
       company: 'Stark Industries',
       value: 250000,
+      priority: 'HIGH',
       source: 'LINKEDIN',
       status: 'QUALIFIED',
       notes: [
-        'Security compliance requirements verified. Contract in final legal review.',
+        { content: 'Security compliance requirements verified. Contract in final legal review.', type: 'NOTE' },
+        { content: 'Pipeline stage advanced from CONTACTED to QUALIFIED.', type: 'STAGE_CHANGE' },
       ],
     },
     {
@@ -69,10 +74,11 @@ async function main() {
       phone: '+1 (555) 456-7890',
       company: 'Daily Bugle',
       value: 15000,
+      priority: 'LOW',
       source: 'COLD_OUTREACH',
       status: 'NEW',
       notes: [
-        'Inbound form submission downloaded whitepaper.',
+        { content: 'Inbound form submission downloaded whitepaper.', type: 'NOTE' },
       ],
     },
     {
@@ -81,10 +87,11 @@ async function main() {
       phone: '+1 (555) 567-8901',
       company: 'Themyscira Cultural Inst.',
       value: 38000,
+      priority: 'MEDIUM',
       source: 'EVENT',
       status: 'CONTACTED',
       notes: [
-        'Met at London Tech Summit. Interested in multi-region deployment.',
+        { content: 'Met at London Tech Summit. Interested in multi-region deployment.', type: 'CALL' },
       ],
     },
     {
@@ -93,10 +100,12 @@ async function main() {
       phone: '+44 20 7946 0912',
       company: 'Galaxy Travels',
       value: 12000,
+      priority: 'LOW',
       source: 'ADVERTISEMENT',
       status: 'LOST',
       notes: [
-        'Budget allocated to alternative travel system this quarter. Follow up in Q4.',
+        { content: 'Budget allocated to alternative travel system this quarter. Follow up in Q4.', type: 'NOTE' },
+        { content: 'Stage marked as LOST.', type: 'STAGE_CHANGE' },
       ],
     },
     {
@@ -105,10 +114,11 @@ async function main() {
       phone: '+1 (555) 678-9012',
       company: 'SHIELD Consulting',
       value: 85000,
+      priority: 'HIGH',
       source: 'REFERRAL',
       status: 'QUALIFIED',
       notes: [
-        'Security audit cleared. Awaiting final signatory.',
+        { content: 'Security audit cleared. Awaiting final signatory.', type: 'NOTE' },
       ],
     },
     {
@@ -117,6 +127,7 @@ async function main() {
       phone: '+1 (555) 789-0123',
       company: 'Gray Matter Technologies',
       value: 62000,
+      priority: 'MEDIUM',
       source: 'WEBSITE',
       status: 'NEW',
       notes: [],
@@ -127,6 +138,7 @@ async function main() {
       phone: '+1 (555) 901-2345',
       company: 'Visions Academy',
       value: 24000,
+      priority: 'LOW',
       source: 'OTHER',
       status: 'NEW',
       notes: [],
@@ -137,10 +149,11 @@ async function main() {
       phone: '+1 (555) 123-4567',
       company: 'Uncharted Media',
       value: 50000,
+      priority: 'MEDIUM',
       source: 'LINKEDIN',
       status: 'CONTACTED',
       notes: [
-        'Requested product demo video and pricing tiers.',
+        { content: 'Requested product demo video and pricing tiers.', type: 'CALL' },
       ],
     },
   ];
@@ -154,17 +167,18 @@ async function main() {
       },
     });
 
-    for (const noteContent of notes) {
+    for (const note of notes) {
       await prisma.note.create({
         data: {
           leadId: createdLead.id,
-          content: noteContent,
+          content: note.content,
+          type: note.type,
         },
       });
     }
   }
 
-  console.log(`✅ Seeded ${sampleLeads.length} leads with deal values and interaction notes.`);
+  console.log(`✅ Seeded ${sampleLeads.length} leads with priorities, deal values, and interaction history.`);
 }
 
 main()

@@ -4,26 +4,26 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-lg text-xs font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-40 active:scale-[0.99]',
   {
     variants: {
       variant: {
         default:
-          'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20 hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg hover:shadow-blue-500/30',
+          'bg-zinc-900 text-white hover:bg-zinc-800 border border-zinc-900 shadow-xs',
         destructive:
-          'bg-red-500 text-white shadow-sm hover:bg-red-600 hover:shadow-md hover:shadow-red-500/20',
+          'bg-rose-600 text-white hover:bg-rose-700 border border-rose-600 shadow-xs',
         outline:
-          'border border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-900 text-slate-700 shadow-sm',
+          'border border-zinc-200 bg-white hover:bg-zinc-50 hover:text-zinc-900 text-zinc-700 shadow-xs',
         secondary:
-          'bg-slate-100 text-slate-900 hover:bg-slate-200 shadow-sm',
-        ghost: 'hover:bg-slate-100 hover:text-slate-900 text-slate-600',
-        link: 'text-blue-600 underline-offset-4 hover:underline p-0 h-auto',
+          'bg-zinc-100 text-zinc-900 hover:bg-zinc-200 border border-zinc-200/60 shadow-xs',
+        ghost: 'hover:bg-zinc-100 hover:text-zinc-900 text-zinc-600',
+        link: 'text-zinc-900 underline-offset-4 hover:underline p-0 h-auto',
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-11 rounded-lg px-8 text-base font-semibold',
-        icon: 'h-9 w-9 rounded-lg',
+        default: 'h-8 px-3 py-1.5',
+        sm: 'h-7 rounded-md px-2.5 text-xs',
+        lg: 'h-9 rounded-lg px-4 text-sm font-semibold',
+        icon: 'h-8 w-8 rounded-lg',
       },
     },
     defaultVariants: {

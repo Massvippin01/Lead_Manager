@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import { apiRequest } from '@/lib/api';
-import { Lead, LeadStats, Pagination, LeadQueryParams, LeadStatus } from '@/types';
+import { Lead, LeadStats, Pagination, LeadQueryParams, LeadStatus, LeadPriority } from '@/types';
 import { StatsCards } from '@/components/dashboard/StatsCards';
 import { PipelineDistributionBar } from '@/components/dashboard/PipelineDistributionBar';
 import { FilterBar } from '@/components/dashboard/FilterBar';
@@ -14,6 +14,8 @@ import { KanbanBoard } from '@/components/dashboard/KanbanBoard';
 import { LeadDrawer } from '@/components/dashboard/LeadDrawer';
 import { LeadModal, LeadFormData } from '@/components/dashboard/LeadModal';
 import { DeleteConfirmDialog } from '@/components/dashboard/DeleteConfirmDialog';
+import { CsvImportModal } from '@/components/dashboard/CsvImportModal';
+import { KeyboardShortcutsDialog } from '@/components/dashboard/KeyboardShortcutsDialog';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, ArrowRight } from 'lucide-react';
 
@@ -31,6 +33,9 @@ export default function DashboardPage() {
   // View Mode: Table vs Kanban
   const [viewMode, setViewMode] = useState<'table' | 'kanban'>('table');
 
+  // Table Density: Comfortable vs Compact
+  const [density, setDensity] = useState<'comfortable' | 'compact'>('comfortable');
+
   // Bulk Selection State
   const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
 
@@ -38,7 +43,9 @@ export default function DashboardPage() {
   const [queryParams, setQueryParams] = useState<LeadQueryParams>({
     search: '',
     status: undefined,
+    priority: undefined,
     source: undefined,
+    preset: undefined,
     sortBy: 'createdAt',
     sortOrder: 'desc',
     page: 1,
@@ -56,6 +63,10 @@ export default function DashboardPage() {
   const [leadToDelete, setLeadToDelete] = useState<Lead | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Import & Shortcuts Dialogs
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+
   // Fetch Leads
   const fetchLeads = useCallback(async () => {
     if (!user) return;
@@ -64,7 +75,9 @@ export default function DashboardPage() {
       const query = new URLSearchParams();
       if (queryParams.search) query.append('search', queryParams.search);
       if (queryParams.status) query.append('status', queryParams.status);
+      if (queryParams.priority) query.append('priority', queryParams.priority);
       if (queryParams.source) query.append('source', queryParams.source);
+      if (queryParams.preset) query.append('preset', queryParams.preset);
       if (queryParams.sortBy) query.append('sortBy', queryParams.sortBy);
       if (queryParams.sortOrder) query.append('sortOrder', queryParams.sortOrder);
       if (queryParams.page) query.append('page', String(queryParams.page));
@@ -146,6 +159,9 @@ export default function DashboardPage() {
       } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault();
         setViewMode((prev) => (prev === 'table' ? 'kanban' : 'table'));
+      } else if (e.key === '?') {
+        e.preventDefault();
+        setIsShortcutsOpen(true);
       }
     };
 
@@ -162,7 +178,9 @@ export default function DashboardPage() {
     setQueryParams({
       search: '',
       status: undefined,
+      priority: undefined,
       source: undefined,
+      preset: undefined,
       sortBy: 'createdAt',
       sortOrder: 'desc',
       page: 1,
@@ -187,6 +205,25 @@ export default function DashboardPage() {
       }
     } catch (err: any) {
       error('Update Failed', err.message);
+    }
+  };
+
+  // Priority Change
+  const handlePriorityChange = async (leadId: string, newPriority: LeadPriority) => {
+    try {
+      await apiRequest(`/leads/${leadId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ priority: newPriority }),
+      });
+      success('Priority Updated', `Set to ${newPriority}`);
+      fetchLeads();
+      fetchStats();
+
+      if (selectedLeadForDrawer && selectedLeadForDrawer.id === leadId) {
+        setSelectedLeadForDrawer({ ...selectedLeadForDrawer, priority: newPriority });
+      }
+    } catch (err: any) {
+      error('Priority Update Failed', err.message);
     }
   };
 
@@ -240,16 +277,16 @@ export default function DashboardPage() {
   };
 
   // Add Note Handler
-  const handleAddNote = async (leadId: string, content: string) => {
+  const handleAddNote = async (leadId: string, content: string, type: 'NOTE' | 'CALL' = 'NOTE') => {
     try {
       const res = await apiRequest<{ success: boolean; data: { note: any } }>(
         `/leads/${leadId}/notes`,
         {
           method: 'POST',
-          body: JSON.stringify({ content }),
+          body: JSON.stringify({ content, type }),
         }
       );
-      success('Note Added', 'Interaction logged to timeline');
+      success(type === 'CALL' ? 'Call Logged' : 'Note Added', 'Interaction logged to timeline');
       fetchLeads();
 
       if (selectedLeadForDrawer && selectedLeadForDrawer.id === leadId) {
@@ -263,6 +300,26 @@ export default function DashboardPage() {
     }
   };
 
+  // Import Leads Handler
+  const handleImportLeads = async (importedLeads: any[]) => {
+    try {
+      const res = await apiRequest<{ success: boolean; data: { count: number; leads: Lead[] } }>(
+        '/leads/import',
+        {
+          method: 'POST',
+          body: JSON.stringify({ leads: importedLeads }),
+        }
+      );
+      success('Import Successful', `Imported ${res.data.count} leads to your pipeline`);
+      setIsImportModalOpen(false);
+      fetchLeads();
+      fetchStats();
+    } catch (err: any) {
+      error('Import Failed', err.message);
+      throw err;
+    }
+  };
+
   // Export to CSV
   const handleExportCsv = () => {
     if (leads.length === 0) {
@@ -270,7 +327,7 @@ export default function DashboardPage() {
       return;
     }
 
-    const headers = ['ID', 'Name', 'Email', 'Phone', 'Company', 'Deal Value', 'Source', 'Status', 'Date Added'];
+    const headers = ['ID', 'Name', 'Email', 'Phone', 'Company', 'Deal Value', 'Priority', 'Source', 'Status', 'Date Added'];
     const rows = leads.map((l) => [
       l.id,
       `"${l.name.replace(/"/g, '""')}"`,
@@ -278,6 +335,7 @@ export default function DashboardPage() {
       `"${l.phone}"`,
       `"${l.company.replace(/"/g, '""')}"`,
       l.value || 0,
+      l.priority || 'MEDIUM',
       l.source,
       l.status,
       new Date(l.createdAt).toISOString().split('T')[0],
@@ -370,22 +428,22 @@ export default function DashboardPage() {
   if (!user && !isAuthLoading) {
     return (
       <div className="py-14 max-w-4xl mx-auto">
-        <div className="border border-slate-200/90 rounded-2xl bg-white p-8 sm:p-12 shadow-sm text-center">
-          <div className="h-10 w-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-base mx-auto mb-5 shadow-xs">
+        <div className="border border-zinc-200/90 rounded-2xl bg-white p-8 sm:p-12 shadow-sm text-center">
+          <div className="h-10 w-10 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-bold text-base mx-auto mb-5 shadow-xs">
             M
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
             Meru Lead Manager
           </h1>
 
-          <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
-            Production-grade sales pipeline management platform with Table & Kanban views, deal value tracking, and real-time interaction logs.
+          <p className="mt-3 text-sm sm:text-base text-zinc-600 max-w-xl mx-auto">
+            High-density sales CRM workspace with Table & Kanban views, P1/P2/P3 prioritization, deal value metrics, and two-way CSV sync.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/login">
-              <Button size="lg" className="w-full sm:w-auto text-xs sm:text-sm bg-slate-900 hover:bg-slate-800 text-white">
+              <Button size="lg" className="w-full sm:w-auto text-xs sm:text-sm bg-zinc-900 hover:bg-zinc-800 text-white">
                 Sign in to Demo Account
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
@@ -397,14 +455,14 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          <div className="mt-10 p-4 rounded-xl bg-slate-50 border border-slate-200/80 max-w-md mx-auto text-left text-xs text-slate-600">
+          <div className="mt-10 p-4 rounded-xl bg-zinc-50 border border-zinc-200/80 max-w-md mx-auto text-left text-xs text-zinc-600">
             <div className="flex items-center justify-between mb-1">
-              <span className="font-semibold text-slate-900">Evaluation Demo Profile</span>
-              <span className="text-[11px] font-mono bg-slate-200/70 text-slate-700 px-1.5 py-0.5 rounded">
+              <span className="font-semibold text-zinc-900">Evaluation Demo Profile</span>
+              <span className="text-[11px] font-mono bg-zinc-200/70 text-zinc-700 px-1.5 py-0.5 rounded">
                 Pre-seeded
               </span>
             </div>
-            <p className="font-mono text-slate-700">demo@meru.com / password123</p>
+            <p className="font-mono text-zinc-700">demo@meru.com / password123</p>
           </div>
         </div>
       </div>
@@ -415,8 +473,8 @@ export default function DashboardPage() {
   if (isAuthLoading) {
     return (
       <div className="py-20 flex flex-col items-center justify-center space-y-3">
-        <div className="h-6 w-6 rounded-full border-2 border-slate-900 border-t-transparent animate-spin" />
-        <p className="text-xs text-slate-500 font-medium">Connecting to sales pipeline...</p>
+        <div className="h-6 w-6 rounded-full border-2 border-zinc-900 border-t-transparent animate-spin" />
+        <p className="text-xs text-zinc-500 font-medium">Connecting to sales pipeline...</p>
       </div>
     );
   }
@@ -426,11 +484,11 @@ export default function DashboardPage() {
       {/* Workspace Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            Sales Leads Pipeline
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900">
+            Sales Pipeline
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Track, prioritize, and convert prospective accounts.
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Capture, qualify, and convert prospective accounts.
           </p>
         </div>
 
@@ -444,7 +502,7 @@ export default function DashboardPage() {
               success('Synchronized', 'Pipeline data refreshed');
             }}
             disabled={isLoadingLeads}
-            className="text-xs h-8"
+            className="text-xs h-8 text-zinc-700"
           >
             <RefreshCw className={`h-3 w-3 mr-1.5 ${isLoadingLeads ? 'animate-spin' : ''}`} />
             Sync
@@ -467,14 +525,18 @@ export default function DashboardPage() {
         onSelectStatus={(status) => handleQueryChange({ status, page: 1 })}
       />
 
-      {/* Search, View Toggle, Export, and Filter Toolbar */}
+      {/* Search, View Presets, Density Toggle, CSV & Actions Toolbar */}
       <FilterBar
         queryParams={queryParams}
         viewMode={viewMode}
+        density={density}
         onChange={handleQueryChange}
         onReset={handleResetFilters}
         onViewModeChange={setViewMode}
+        onDensityChange={setDensity}
         onOpenCreateModal={handleOpenCreateModal}
+        onOpenImportModal={() => setIsImportModalOpen(true)}
+        onOpenShortcutsDialog={() => setIsShortcutsOpen(true)}
         onExportCsv={handleExportCsv}
       />
 
@@ -484,6 +546,7 @@ export default function DashboardPage() {
           leads={leads}
           pagination={pagination}
           isLoading={isLoadingLeads}
+          density={density}
           queryParams={queryParams}
           selectedLeadIds={selectedLeadIds}
           onToggleSelectLead={handleToggleSelectLead}
@@ -512,6 +575,7 @@ export default function DashboardPage() {
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         onStatusChange={handleStatusChange}
+        onPriorityChange={handlePriorityChange}
         onAddNote={handleAddNote}
         onEdit={(lead) => {
           setIsDrawerOpen(false);
@@ -528,6 +592,19 @@ export default function DashboardPage() {
         leadToEdit={leadToEdit}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitLeadForm}
+      />
+
+      {/* CSV Batch Import Modal Dialog */}
+      <CsvImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImport={handleImportLeads}
+      />
+
+      {/* Keyboard Shortcuts Dialog */}
+      <KeyboardShortcutsDialog
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
       />
 
       {/* Delete Confirmation Step Dialog */}

@@ -1,5 +1,7 @@
 export type LeadStatus = 'NEW' | 'CONTACTED' | 'QUALIFIED' | 'LOST';
 
+export type LeadPriority = 'HIGH' | 'MEDIUM' | 'LOW';
+
 export type LeadSource =
   | 'WEBSITE'
   | 'REFERRAL'
@@ -12,6 +14,7 @@ export type LeadSource =
 export interface Note {
   id: string;
   content: string;
+  type: 'NOTE' | 'CALL' | 'STAGE_CHANGE';
   leadId: string;
   createdAt: string;
 }
@@ -23,6 +26,7 @@ export interface Lead {
   phone: string;
   company: string;
   value: number;
+  priority: LeadPriority;
   source: LeadSource;
   status: LeadStatus;
   userId: string;
@@ -44,6 +48,7 @@ export interface LeadStats {
   contacted: number;
   qualified: number;
   lost: number;
+  highPriority: number;
   conversionRate: string;
   pipelineValue: number;
   qualifiedValue: number;
@@ -61,8 +66,10 @@ export interface Pagination {
 export interface LeadQueryParams {
   search?: string;
   status?: LeadStatus;
+  priority?: LeadPriority;
   source?: LeadSource;
-  sortBy?: 'name' | 'company' | 'status' | 'value' | 'createdAt';
+  preset?: 'ALL' | 'P1' | 'HIGH_VALUE' | 'NEEDS_TOUCH' | 'CLOSING';
+  sortBy?: 'name' | 'company' | 'status' | 'value' | 'priority' | 'createdAt';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;

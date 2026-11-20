@@ -5,11 +5,24 @@ import { Prisma } from '@prisma/client';
 
 export class LeadService {
   static async getLeads(userId: string, params: LeadQueryParams) {
-    const { search, status, source, sortBy, sortOrder, page, limit } = params;
+    const { search, status, priority, source, preset, sortBy, sortOrder, page, limit } = params;
+
+    let presetFilter: Prisma.LeadWhereInput = {};
+    if (preset === 'P1') {
+      presetFilter = { priority: 'HIGH' };
+    } else if (preset === 'HIGH_VALUE') {
+      presetFilter = { value: { gte: 25000 } };
+    } else if (preset === 'NEEDS_TOUCH') {
+      presetFilter = { status: 'NEW' };
+    } else if (preset === 'CLOSING') {
+      presetFilter = { status: 'QUALIFIED' };
+    }
 
     const where: Prisma.LeadWhereInput = {
       userId,
+      ...presetFilter,
       ...(status ? { status } : {}),
+      ...(priority ? { priority } : {}),
       ...(source ? { source } : {}),
       ...(search
         ? {
@@ -55,7 +68,7 @@ export class LeadService {
   }
 
   static async getStats(userId: string) {
-    const [total, newCount, contactedCount, qualifiedCount, lostCount, allLeads] =
+    const [total, newCount, contactedCount, qualifiedCount, lostCount, allLeads, highPriorityCount] =
       await Promise.all([
         prisma.lead.count({ where: { userId } }),
         prisma.lead.count({ where: { userId, status: 'NEW' } }),
@@ -64,8 +77,9 @@ export class LeadService {
         prisma.lead.count({ where: { userId, status: 'LOST' } }),
         prisma.lead.findMany({
           where: { userId },
-          select: { value: true, status: true },
+          select: { value: true, status: true, priority: true },
         }),
+        prisma.lead.count({ where: { userId, priority: 'HIGH' } }),
       ]);
 
     const totalPipelineValue = allLeads.reduce((acc, lead) => acc + (lead.value || 0), 0);
@@ -81,6 +95,7 @@ export class LeadService {
       contacted: contactedCount,
       qualified: qualifiedCount,
       lost: lostCount,
+      highPriority: highPriorityCount,
       conversionRate: `${conversionRate}%`,
       pipelineValue: totalPipelineValue,
       qualifiedValue,
@@ -115,11 +130,20 @@ export class LeadService {
       },
     });
 
+    // Auto-create initial activity event
+    await prisma.note.create({
+      data: {
+        leadId: lead.id,
+        content: `Lead created and logged into pipeline under ${lead.source} channel.`,
+        type: 'STAGE_CHANGE',
+      },
+    });
+
     return lead;
   }
 
   static async updateLead(userId: string, leadId: string, data: UpdateLeadInput) {
-    await this.getLeadById(userId, leadId);
+    const currentLead = await this.getLeadById(userId, leadId);
 
     const updated = await prisma.lead.update({
       where: { id: leadId },
@@ -130,6 +154,17 @@ export class LeadService {
         },
       },
     });
+
+    // If status changed, auto-log stage progression audit event
+    if (data.status && data.status !== currentLead.status) {
+      await prisma.note.create({
+        data: {
+          leadId,
+          content: `Pipeline stage changed from ${currentLead.status} to ${data.status}.`,
+          type: 'STAGE_CHANGE',
+        },
+      });
+    }
 
     return updated;
   }
@@ -153,6 +188,21 @@ export class LeadService {
       data: { status },
     });
 
+    // Create audit events for updated leads
+    for (const id of ids) {
+      try {
+        await prisma.note.create({
+          data: {
+            leadId: id,
+            content: `Batch moved to ${status}.`,
+            type: 'STAGE_CHANGE',
+          },
+        });
+      } catch {
+        // Continue if single note creation fails
+      }
+    }
+
     return { updatedCount: result.count };
   }
 
@@ -167,13 +217,14 @@ export class LeadService {
     return { deletedCount: result.count };
   }
 
-  static async addNote(userId: string, leadId: string, content: string) {
+  static async addNote(userId: string, leadId: string, content: string, type: string = 'NOTE') {
     await this.getLeadById(userId, leadId);
 
     const note = await prisma.note.create({
       data: {
         leadId,
         content,
+        type,
       },
     });
 
@@ -189,5 +240,20 @@ export class LeadService {
     });
 
     return notes;
+  }
+
+  static async importLeads(userId: string, leads: CreateLeadInput[]) {
+    let imported = 0;
+    for (const leadData of leads) {
+      await prisma.lead.create({
+        data: {
+          ...leadData,
+          userId,
+        },
+      });
+      imported++;
+    }
+
+    return { importedCount: imported };
   }
 }

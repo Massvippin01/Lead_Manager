@@ -27,6 +27,7 @@ model Lead {
   phone     String
   company   String
   value     Float    @default(0)
+  priority  String   @default("MEDIUM")
   source    String   @default("WEBSITE")
   status    String   @default("NEW")
   userId    String
@@ -37,6 +38,7 @@ model Lead {
 
   @@index([userId])
   @@index([status])
+  @@index([priority])
   @@index([source])
   @@index([createdAt])
   @@index([name])
@@ -46,6 +48,7 @@ model Lead {
 model Note {
   id        String   @id @default(uuid())
   content   String
+  type      String   @default("NOTE")
   leadId    String
   lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
