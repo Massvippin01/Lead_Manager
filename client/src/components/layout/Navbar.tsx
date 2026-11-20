@@ -5,6 +5,14 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import {
   LogOut,
   Plus,
   Search,
@@ -14,11 +22,17 @@ import {
   CheckCircle2,
   Sparkles,
   Command,
+  Layers,
+  Table,
+  LayoutGrid,
+  RefreshCw,
+  Download,
+  Check,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [activePipeline, setActivePipeline] = useState<'saas' | 'inbound' | 'partnerships'>('saas');
 
   const handleOpenCommandPalette = () => {
     window.dispatchEvent(new CustomEvent('open-command-palette'));
@@ -49,20 +63,190 @@ export const Navbar: React.FC = () => {
 
           {user && (
             <div className="hidden sm:flex items-center space-x-2 pl-3 border-l border-zinc-200">
+              {/* SaaS Pipeline Switcher & Actions Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-zinc-700 bg-zinc-100/80 hover:bg-zinc-200/80 border border-zinc-200/60 shadow-2xs transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                    title="Switch pipeline, views, and quick operations"
+                  >
+                    <Layers className="h-3.5 w-3.5 text-zinc-600" />
+                    <span className="font-semibold text-zinc-900">
+                      {activePipeline === 'saas'
+                        ? 'SaaS Pipeline'
+                        : activePipeline === 'inbound'
+                        ? 'Inbound Funnel'
+                        : 'Partnership Pipeline'}
+                    </span>
+                    <ChevronDown className="h-3 w-3 text-zinc-400" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-64 p-1.5">
+                  <div className="px-2 py-1.5 bg-zinc-50 rounded-md border border-zinc-100 mb-1">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">
+                      Active Workspace
+                    </span>
+                    <span className="text-xs font-bold text-zinc-900 block mt-0.5">
+                      Meru Technosoft CRM
+                    </span>
+                  </div>
+
+                  <DropdownMenuLabel>SaaS Pipelines</DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setActivePipeline('saas');
+                      window.dispatchEvent(new CustomEvent('switch-pipeline', { detail: 'saas' }));
+                    }}
+                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${
+                      activePipeline === 'saas' ? 'bg-zinc-50 font-semibold' : ''
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      <div>
+                        <p className="text-zinc-900">Enterprise SaaS Pipeline</p>
+                        <p className="text-[10px] text-zinc-400 font-mono">B2B Core Deals · All</p>
+                      </div>
+                    </div>
+                    {activePipeline === 'saas' && (
+                      <Check className="h-3.5 w-3.5 text-zinc-900 shrink-0" />
+                    )}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setActivePipeline('inbound');
+                      window.dispatchEvent(new CustomEvent('switch-pipeline', { detail: 'inbound' }));
+                    }}
+                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${
+                      activePipeline === 'inbound' ? 'bg-zinc-50 font-semibold' : ''
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="h-2 w-2 rounded-full bg-sky-500" />
+                      <div>
+                        <p className="text-zinc-900">Product-Led Inbound</p>
+                        <p className="text-[10px] text-zinc-400 font-mono">Self-Serve Website Leads</p>
+                      </div>
+                    </div>
+                    {activePipeline === 'inbound' && (
+                      <Check className="h-3.5 w-3.5 text-zinc-900 shrink-0" />
+                    )}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setActivePipeline('partnerships');
+                      window.dispatchEvent(
+                        new CustomEvent('switch-pipeline', { detail: 'partnerships' })
+                      );
+                    }}
+                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${
+                      activePipeline === 'partnerships' ? 'bg-zinc-50 font-semibold' : ''
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="h-2 w-2 rounded-full bg-purple-500" />
+                      <div>
+                        <p className="text-zinc-900">Strategic Partnerships</p>
+                        <p className="text-[10px] text-zinc-400 font-mono">Reseller Referrals</p>
+                      </div>
+                    </div>
+                    {activePipeline === 'partnerships' && (
+                      <Check className="h-3.5 w-3.5 text-zinc-900 shrink-0" />
+                    )}
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuLabel>Workspace Views</DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('switch-view-mode', { detail: 'table' }));
+                    }}
+                    className="flex items-center justify-between py-1.5 text-xs cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Table className="h-3.5 w-3.5 text-zinc-500" />
+                      <span>Table Spreadsheet View</span>
+                    </div>
+                    <kbd className="text-[10px] font-mono text-zinc-400">⌘1</kbd>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('switch-view-mode', { detail: 'kanban' }));
+                    }}
+                    className="flex items-center justify-between py-1.5 text-xs cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <LayoutGrid className="h-3.5 w-3.5 text-zinc-500" />
+                      <span>Kanban Stage Board</span>
+                    </div>
+                    <kbd className="text-[10px] font-mono text-zinc-400">⌘2</kbd>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuLabel>Pipeline Operations</DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('trigger-sync'));
+                    }}
+                    className="flex items-center justify-between py-1.5 text-xs cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RefreshCw className="h-3.5 w-3.5 text-zinc-500" />
+                      <span>Live Sync Pipeline</span>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={handleOpenCreateModal}
+                    className="flex items-center justify-between py-1.5 text-xs cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Plus className="h-3.5 w-3.5 text-zinc-500" />
+                      <span>Add New Prospect</span>
+                    </div>
+                    <kbd className="text-[10px] font-mono text-zinc-400">N</kbd>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('trigger-export-csv'));
+                    }}
+                    className="flex items-center justify-between py-1.5 text-xs cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Download className="h-3.5 w-3.5 text-zinc-500" />
+                      <span>Export Leads to CSV</span>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={handleOpenCommandPalette}
+                    className="flex items-center justify-between py-1.5 text-xs cursor-pointer"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Command className="h-3.5 w-3.5 text-zinc-500" />
+                      <span>Spotlight Command Bar</span>
+                    </div>
+                    <kbd className="text-[10px] font-mono text-zinc-400">⌘K</kbd>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <button
                 type="button"
-                onClick={handleOpenCommandPalette}
-                className="flex items-center space-x-1.5 px-2 py-1 rounded-md text-xs font-medium text-zinc-700 bg-zinc-100/70 hover:bg-zinc-200/60 transition-colors"
+                onClick={() => window.dispatchEvent(new CustomEvent('trigger-sync'))}
+                className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 hover:bg-emerald-100/80 text-emerald-700 border border-emerald-200/60 transition-colors cursor-pointer"
+                title="Click to trigger Live Sync"
               >
-                <Building2 className="h-3.5 w-3.5 text-zinc-500" />
-                <span className="font-semibold text-zinc-800">Sales Pipeline</span>
-                <ChevronDown className="h-3 w-3 text-zinc-400" />
-              </button>
-
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
                 Live Sync
-              </span>
+              </button>
             </div>
           )}
         </div>

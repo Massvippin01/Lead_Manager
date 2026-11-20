@@ -49,12 +49,12 @@ const presets: {
   label: string;
   icon: any;
 }[] = [
-  { key: undefined, label: 'All', icon: null },
-  { key: 'P1', label: 'P1 Urgent', icon: Flame },
-  { key: 'HIGH_VALUE', label: 'Value >$25k', icon: DollarSign },
-  { key: 'NEEDS_TOUCH', label: 'Needs First Touch', icon: Zap },
-  { key: 'CLOSING', label: 'Deal Closing', icon: Target },
-];
+    { key: undefined, label: 'All', icon: null },
+    { key: 'P1', label: 'P1 Urgent', icon: Flame },
+    { key: 'HIGH_VALUE', label: 'Value >$25k', icon: DollarSign },
+    { key: 'NEEDS_TOUCH', label: 'Needs First Touch', icon: Zap },
+    { key: 'CLOSING', label: 'Deal Closing', icon: Target },
+  ];
 
 export const FilterBar: React.FC<FilterBarProps> = ({
   queryParams,
@@ -71,10 +71,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   const hasActiveFilters = Boolean(
     queryParams.search ||
-      queryParams.status ||
-      queryParams.priority ||
-      queryParams.source ||
-      queryParams.preset
+    queryParams.status ||
+    queryParams.priority ||
+    queryParams.source ||
+    queryParams.preset
   );
 
   const isAllPresetActive =
@@ -139,11 +139,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 key={p.label}
                 type="button"
                 onClick={() => handleSelectPreset(p.key)}
-                className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all whitespace-nowrap ${
-                  isActive
-                    ? 'bg-zinc-900 text-white shadow-2xs'
-                    : 'bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/70 border border-zinc-200/50'
-                }`}
+                className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all whitespace-nowrap ${isActive
+                  ? 'bg-zinc-900 text-white shadow-2xs'
+                  : 'bg-zinc-100 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/70 border border-zinc-200/50'
+                  }`}
               >
                 {Icon && <Icon className="h-3 w-3" />}
                 <span>{p.label}</span>
@@ -160,9 +159,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <button
                 type="button"
                 onClick={() => onDensityChange('comfortable')}
-                className={`p-1 rounded text-xs transition-all ${
-                  density === 'comfortable' ? 'bg-white text-zinc-900 shadow-2xs' : 'text-zinc-400 hover:text-zinc-700'
-                }`}
+                className={`p-1 rounded text-xs transition-all ${density === 'comfortable' ? 'bg-white text-zinc-900 shadow-2xs' : 'text-zinc-400 hover:text-zinc-700'
+                  }`}
                 title="Comfortable row density"
               >
                 <Rows className="h-3.5 w-3.5" />
@@ -170,9 +168,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <button
                 type="button"
                 onClick={() => onDensityChange('compact')}
-                className={`p-1 rounded text-xs transition-all ${
-                  density === 'compact' ? 'bg-white text-zinc-900 shadow-2xs' : 'text-zinc-400 hover:text-zinc-700'
-                }`}
+                className={`p-1 rounded text-xs transition-all ${density === 'compact' ? 'bg-white text-zinc-900 shadow-2xs' : 'text-zinc-400 hover:text-zinc-700'
+                  }`}
                 title="Compact spreadsheet density"
               >
                 <AlignJustify className="h-3.5 w-3.5" />
@@ -185,9 +182,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <button
               type="button"
               onClick={() => onViewModeChange('table')}
-              className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all ${
-                viewMode === 'table' ? 'bg-white text-zinc-900 shadow-2xs font-semibold' : 'text-zinc-500 hover:text-zinc-800'
-              }`}
+              className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all ${viewMode === 'table' ? 'bg-white text-zinc-900 shadow-2xs font-semibold' : 'text-zinc-500 hover:text-zinc-800'
+                }`}
               title="Table View (V)"
             >
               <TableIcon className="h-3.5 w-3.5" />
@@ -196,9 +192,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <button
               type="button"
               onClick={() => onViewModeChange('kanban')}
-              className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all ${
-                viewMode === 'kanban' ? 'bg-white text-zinc-900 shadow-2xs font-semibold' : 'text-zinc-500 hover:text-zinc-800'
-              }`}
+              className={`flex items-center space-x-1 px-2 py-1 rounded text-xs font-medium transition-all ${viewMode === 'kanban' ? 'bg-white text-zinc-900 shadow-2xs font-semibold' : 'text-zinc-500 hover:text-zinc-800'
+                }`}
               title="Kanban Board View (V)"
             >
               <LayoutGrid className="h-3.5 w-3.5" />

@@ -464,22 +464,20 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveTab('overview')}
-                    className={`pb-2 text-xs font-semibold transition-all border-b-2 ${
-                      activeTab === 'overview'
-                        ? 'border-zinc-900 text-zinc-900'
-                        : 'border-transparent text-zinc-400 hover:text-zinc-700'
-                    }`}
+                    className={`pb-2 text-xs font-semibold transition-all border-b-2 ${activeTab === 'overview'
+                      ? 'border-zinc-900 text-zinc-900'
+                      : 'border-transparent text-zinc-400 hover:text-zinc-700'
+                      }`}
                   >
                     Account Overview
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab('timeline')}
-                    className={`pb-2 text-xs font-semibold transition-all border-b-2 flex items-center space-x-1.5 ${
-                      activeTab === 'timeline'
-                        ? 'border-zinc-900 text-zinc-900'
-                        : 'border-transparent text-zinc-400 hover:text-zinc-700'
-                    }`}
+                    className={`pb-2 text-xs font-semibold transition-all border-b-2 flex items-center space-x-1.5 ${activeTab === 'timeline'
+                      ? 'border-zinc-900 text-zinc-900'
+                      : 'border-transparent text-zinc-400 hover:text-zinc-700'
+                      }`}
                   >
                     <span>Timeline & Notes</span>
                     <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-100 text-zinc-600">
@@ -586,18 +584,16 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                           <button
                             type="button"
                             onClick={() => setActivityType('NOTE')}
-                            className={`px-2 py-0.5 rounded font-medium transition-colors ${
-                              activityType === 'NOTE' ? 'bg-zinc-900 text-white font-bold' : 'text-zinc-500 hover:text-zinc-800'
-                            }`}
+                            className={`px-2 py-0.5 rounded font-medium transition-colors ${activityType === 'NOTE' ? 'bg-zinc-900 text-white font-bold' : 'text-zinc-500 hover:text-zinc-800'
+                              }`}
                           >
                             Note
                           </button>
                           <button
                             type="button"
                             onClick={() => setActivityType('CALL')}
-                            className={`px-2 py-0.5 rounded font-medium transition-colors ${
-                              activityType === 'CALL' ? 'bg-zinc-900 text-white font-bold' : 'text-zinc-500 hover:text-zinc-800'
-                            }`}
+                            className={`px-2 py-0.5 rounded font-medium transition-colors ${activityType === 'CALL' ? 'bg-zinc-900 text-white font-bold' : 'text-zinc-500 hover:text-zinc-800'
+                              }`}
                           >
                             Call Log
                           </button>

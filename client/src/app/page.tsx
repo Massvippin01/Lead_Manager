@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
@@ -68,6 +68,9 @@ export default function DashboardPage() {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Ref for actions called via custom events
+  const handleExportCsvRef = useRef<() => void>(() => {});
 
   // Fetch Leads (Stable callback - does NOT depend on selectedLeadForDrawer to prevent loops)
   const fetchLeads = useCallback(async () => {
@@ -196,17 +199,70 @@ export default function DashboardPage() {
 
     const onOpenPalette = () => setIsCommandPaletteOpen(true);
     const onOpenCreate = () => handleOpenCreateModal();
+    const onSwitchView = (e: Event) => {
+      const ce = e as CustomEvent<'table' | 'kanban'>;
+      if (ce.detail) {
+        setViewMode(ce.detail);
+      } else {
+        setViewMode((prev) => (prev === 'table' ? 'kanban' : 'table'));
+      }
+    };
+    const onSwitchPipeline = (e: Event) => {
+      const ce = e as CustomEvent<'saas' | 'inbound' | 'partnerships'>;
+      const pipe = ce.detail;
+      if (pipe === 'inbound') {
+        setQueryParams((prev) => ({
+          ...prev,
+          source: 'WEBSITE',
+          preset: undefined,
+          page: 1,
+        }));
+        success('Product-Led Inbound', 'Filtered by Website acquisition channel');
+      } else if (pipe === 'partnerships') {
+        setQueryParams((prev) => ({
+          ...prev,
+          source: 'REFERRAL',
+          preset: undefined,
+          page: 1,
+        }));
+        success('Strategic Partnerships', 'Filtered by Partner Referrals');
+      } else {
+        setQueryParams((prev) => ({
+          ...prev,
+          source: undefined,
+          preset: undefined,
+          page: 1,
+        }));
+        success('Enterprise SaaS Pipeline', 'Showing all prospective accounts');
+      }
+    };
+    const onTriggerSync = () => {
+      fetchLeads();
+      fetchStats();
+      success('Synchronized', 'Pipeline data refreshed');
+    };
+    const onTriggerExport = () => {
+      handleExportCsvRef.current();
+    };
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('open-command-palette', onOpenPalette);
     window.addEventListener('open-create-lead', onOpenCreate);
+    window.addEventListener('switch-view-mode', onSwitchView);
+    window.addEventListener('switch-pipeline', onSwitchPipeline);
+    window.addEventListener('trigger-sync', onTriggerSync);
+    window.addEventListener('trigger-export-csv', onTriggerExport);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('open-command-palette', onOpenPalette);
       window.removeEventListener('open-create-lead', onOpenCreate);
+      window.removeEventListener('switch-view-mode', onSwitchView);
+      window.removeEventListener('switch-pipeline', onSwitchPipeline);
+      window.removeEventListener('trigger-sync', onTriggerSync);
+      window.removeEventListener('trigger-export-csv', onTriggerExport);
     };
-  }, []);
+  }, [fetchLeads, fetchStats, success]);
 
   // Handle Query Changes
   const handleQueryChange = (updates: Partial<LeadQueryParams>) => {
@@ -418,6 +474,7 @@ export default function DashboardPage() {
     document.body.removeChild(link);
     success('Export Successful', `Exported ${leads.length} leads to CSV`);
   };
+  handleExportCsvRef.current = handleExportCsv;
 
   // Drawer Handler
   const handleSelectLead = (lead: Lead) => {

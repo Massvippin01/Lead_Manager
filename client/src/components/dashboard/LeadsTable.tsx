@@ -428,13 +428,12 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                         setFocusedIndex(index);
                         onSelectLead(lead);
                       }}
-                      className={`group cursor-pointer transition-colors ${
-                        isKeyboardFocused
-                          ? 'bg-zinc-100/90 ring-1 ring-inset ring-zinc-900'
-                          : isSelected
+                      className={`group cursor-pointer transition-colors ${isKeyboardFocused
+                        ? 'bg-zinc-100/90 ring-1 ring-inset ring-zinc-900'
+                        : isSelected
                           ? 'bg-zinc-100/70'
                           : 'hover:bg-zinc-50/70'
-                      }`}
+                        }`}
                     >
                       {/* Checkbox */}
                       <td
@@ -520,23 +519,21 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       {/* Deal Health Score */}
                       <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3 font-mono text-[11px] tabular-numbers`}>
                         <span
-                          className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded font-semibold ${
-                            score >= 80
-                              ? 'text-emerald-700 bg-emerald-50'
-                              : score >= 50
+                          className={`inline-flex items-center space-x-1 px-1.5 py-0.2 rounded font-semibold ${score >= 80
+                            ? 'text-emerald-700 bg-emerald-50'
+                            : score >= 50
                               ? 'text-amber-700 bg-amber-50'
                               : 'text-zinc-500 bg-zinc-100'
-                          }`}
+                            }`}
                           title={`Deal Health: ${score}/100`}
                         >
                           <span
-                            className={`h-1.5 w-1.5 rounded-full ${
-                              score >= 80
-                                ? 'bg-emerald-500'
-                                : score >= 50
+                            className={`h-1.5 w-1.5 rounded-full ${score >= 80
+                              ? 'bg-emerald-500'
+                              : score >= 50
                                 ? 'bg-amber-500'
                                 : 'bg-zinc-400'
-                            }`}
+                              }`}
                           />
                           <span>{score}</span>
                         </span>
@@ -715,11 +712,11 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
       {/* Tactile Power-User Shortcut Hints Bar */}
       <div className="hidden sm:flex items-center justify-between px-2 text-[11px] text-zinc-400 font-mono">
         <div className="flex items-center space-x-3">
-          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">J</kbd> / <kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">K</kbd> Navigate</span>
-          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">↵</kbd> Inspect</span>
-          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">X</kbd> Select</span>
-          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">E</kbd> Edit</span>
-          <span><kbd className="px-1 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">⌘K</kbd> Commands</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">J</kbd> / <kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">K</kbd> Navigate</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">↵</kbd> Inspect</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">X</kbd> Select</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">E</kbd> Edit</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">⌘K</kbd> Commands</span>
         </div>
         <span className="text-zinc-400">Superhuman-style navigation enabled</span>
       </div>
