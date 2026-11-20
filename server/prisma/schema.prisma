@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum LeadSource {
+  WEBSITE
+  REFERRAL
+  COLD_OUTREACH
+  LINKEDIN
+  ADVERTISEMENT
+  EVENT
+  OTHER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  LOST
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  leads     Lead[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Lead {
+  id        String     @id @default(uuid())
+  name      String
+  email     String
+  phone     String
+  company   String
+  source    LeadSource @default(WEBSITE)
+  status    LeadStatus @default(NEW)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+  @@index([name])
+  @@map("leads")
+}
