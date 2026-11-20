@@ -250,21 +250,20 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                         <DropdownMenuTrigger asChild>
                           <button
                             type="button"
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border transition-all hover:ring-1 hover:ring-zinc-300 focus:outline-none ${
-                              lead.priority === 'HIGH'
-                                ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
-                                : lead.priority === 'MEDIUM'
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border transition-all hover:ring-1 hover:ring-zinc-300 focus:outline-none ${lead.priority === 'HIGH'
+                              ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                              : lead.priority === 'MEDIUM'
                                 ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
                                 : 'bg-zinc-100 text-zinc-600 border-zinc-200 hover:bg-zinc-200'
-                            }`}
+                              }`}
                             title="Click to update priority"
                           >
                             <span>
                               {lead.priority === 'HIGH'
                                 ? 'P1 - High'
                                 : lead.priority === 'MEDIUM'
-                                ? 'P2 - Med'
-                                : 'P3 - Low'}
+                                  ? 'P2 - Med'
+                                  : 'P3 - Low'}
                             </span>
                             <ChevronDown className="h-3 w-3 opacity-60" />
                           </button>
