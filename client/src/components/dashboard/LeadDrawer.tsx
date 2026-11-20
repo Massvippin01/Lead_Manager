@@ -375,15 +375,14 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                       Pipeline Progression
                     </span>
                     <span
-                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
-                        lead.status === 'NEW'
-                          ? 'bg-sky-50 text-sky-800 border border-sky-200'
-                          : lead.status === 'CONTACTED'
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${lead.status === 'NEW'
+                        ? 'bg-sky-50 text-sky-800 border border-sky-200'
+                        : lead.status === 'CONTACTED'
                           ? 'bg-amber-50 text-amber-800 border border-amber-200'
                           : lead.status === 'QUALIFIED'
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                          : 'bg-rose-50 text-rose-800 border border-rose-200'
-                      }`}
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : 'bg-rose-50 text-rose-800 border border-rose-200'
+                        }`}
                     >
                       {lead.status}
                     </span>
@@ -400,13 +399,12 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                           key={stage.key}
                           type="button"
                           onClick={() => onStatusChange(lead.id, stage.key)}
-                          className={`relative flex flex-col items-center justify-center py-2 px-1.5 rounded-md text-center transition-all cursor-pointer ${
-                            isCurrent
-                              ? 'bg-zinc-900 text-white shadow-sm ring-1 ring-zinc-900'
-                              : isCompleted
+                          className={`relative flex flex-col items-center justify-center py-2 px-1.5 rounded-md text-center transition-all cursor-pointer ${isCurrent
+                            ? 'bg-zinc-900 text-white shadow-sm ring-1 ring-zinc-900'
+                            : isCompleted
                               ? 'bg-white text-zinc-800 hover:bg-zinc-50 border border-zinc-200/80 shadow-2xs'
                               : 'bg-transparent text-zinc-500 hover:text-zinc-800 hover:bg-white/70'
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center space-x-1">
                             {isCompleted ? (
@@ -419,31 +417,29 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                               </span>
                             )}
                             <span
-                              className={`text-[11px] truncate leading-none ${
-                                isCurrent
-                                  ? 'font-bold text-white'
-                                  : isCompleted
+                              className={`text-[11px] truncate leading-none ${isCurrent
+                                ? 'font-bold text-white'
+                                : isCompleted
                                   ? 'font-semibold text-zinc-900'
                                   : 'font-medium text-zinc-500'
-                              }`}
+                                }`}
                             >
                               {stage.shortLabel}
                             </span>
                           </div>
                           <span
-                            className={`text-[9px] font-mono mt-0.5 leading-none ${
-                              isCurrent
-                                ? 'text-zinc-300'
-                                : isCompleted
+                            className={`text-[9px] font-mono mt-0.5 leading-none ${isCurrent
+                              ? 'text-zinc-300'
+                              : isCompleted
                                 ? 'text-emerald-700'
                                 : 'text-zinc-400'
-                            }`}
+                              }`}
                           >
                             {isCurrent
                               ? 'Active Stage'
                               : isCompleted
-                              ? 'Completed'
-                              : 'Pending'}
+                                ? 'Completed'
+                                : 'Pending'}
                           </span>
                         </button>
                       );

@@ -71,7 +71,7 @@ export default function DashboardPage() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   // Ref for actions called via custom events
-  const handleExportCsvRef = useRef<() => void>(() => {});
+  const handleExportCsvRef = useRef<() => void>(() => { });
 
   // Fetch Leads (Stable callback - does NOT depend on selectedLeadForDrawer to prevent loops)
   const fetchLeads = useCallback(async () => {

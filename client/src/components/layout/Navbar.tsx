@@ -79,8 +79,8 @@ export const Navbar: React.FC = () => {
                       {activePipeline === 'saas'
                         ? 'SaaS Pipeline'
                         : activePipeline === 'inbound'
-                        ? 'Inbound Funnel'
-                        : 'Partnership Pipeline'}
+                          ? 'Inbound Funnel'
+                          : 'Partnership Pipeline'}
                     </span>
                     <ChevronDown className="h-3 w-3 text-slate-400" />
                   </button>
@@ -107,9 +107,8 @@ export const Navbar: React.FC = () => {
                       setActivePipeline('saas');
                       window.dispatchEvent(new CustomEvent('switch-pipeline', { detail: 'saas' }));
                     }}
-                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${
-                      activePipeline === 'saas' ? 'bg-zinc-50 font-semibold' : ''
-                    }`}
+                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${activePipeline === 'saas' ? 'bg-zinc-50 font-semibold' : ''
+                      }`}
                   >
                     <div className="flex items-center space-x-2">
                       <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -128,9 +127,8 @@ export const Navbar: React.FC = () => {
                       setActivePipeline('inbound');
                       window.dispatchEvent(new CustomEvent('switch-pipeline', { detail: 'inbound' }));
                     }}
-                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${
-                      activePipeline === 'inbound' ? 'bg-zinc-50 font-semibold' : ''
-                    }`}
+                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${activePipeline === 'inbound' ? 'bg-zinc-50 font-semibold' : ''
+                      }`}
                   >
                     <div className="flex items-center space-x-2">
                       <span className="h-2 w-2 rounded-full bg-sky-500" />
@@ -151,9 +149,8 @@ export const Navbar: React.FC = () => {
                         new CustomEvent('switch-pipeline', { detail: 'partnerships' })
                       );
                     }}
-                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${
-                      activePipeline === 'partnerships' ? 'bg-zinc-50 font-semibold' : ''
-                    }`}
+                    className={`flex items-center justify-between py-2 text-xs cursor-pointer ${activePipeline === 'partnerships' ? 'bg-zinc-50 font-semibold' : ''
+                      }`}
                   >
                     <div className="flex items-center space-x-2">
                       <span className="h-2 w-2 rounded-full bg-purple-500" />

@@ -131,7 +131,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       accentClass: 'border-t-[3px] border-t-indigo-600',
       activeClass: '',
       isActive: false,
-      onClick: () => {},
+      onClick: () => { },
     },
   ];
 

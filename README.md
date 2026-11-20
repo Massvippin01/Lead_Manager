@@ -247,6 +247,7 @@ Base URL: `http://localhost:5000/api/v1`
 ### 1. Prerequisites
 - **Node.js** (v18+ or v20+ recommended)
 - **npm** (v9+)
+- *(Optional)* **Docker Desktop** (for local PostgreSQL container)
 
 ### 2. Clone Repository
 ```bash
@@ -255,53 +256,68 @@ cd Lead_Manager
 ```
 
 ### 3. Install Dependencies
-From the repository root:
+Install all root, client, and server dependencies in one command:
 ```bash
 npm run install:all
 ```
 
 ### 4. Setup Environment Variables
-Default files are pre-configured with zero setup needed:
+Copy the pre-configured example environment files:
 ```bash
-# Server environment (.env is preconfigured for zero-friction SQLite testing)
+# Server configuration
 cp server/.env.example server/.env
 
-# Client environment
+# Client configuration
 cp client/.env.example client/.env.local
 ```
 
-### 5. Run Database Migrations & Seed Sample Data
+### 5. Start Database & Run Migrations
+
+#### Option A: Local PostgreSQL with Docker (Recommended for local dev)
+Start the PostgreSQL 16 container with one command:
+```bash
+docker-compose up -d
+```
+
+#### Option B: Cloud PostgreSQL (Neon / Supabase)
+Paste your cloud connection string into `server/.env`:
+```env
+DATABASE_URL="postgresql://user:password@ep-xxxx.neon.tech/neondb?sslmode=require"
+```
+
+#### Push Schema & Seed Initial Demo Data:
 ```bash
 cd server
 npx prisma db push
 npx ts-node prisma/seed.ts
 cd ..
 ```
-*This populates the database with a pre-configured demo account and 10 realistic leads across all pipeline stages, priorities, deal values, and notes!*
+*This populates the database with the pre-configured demo account and 10 realistic leads across all pipeline stages, deal values, priorities, and timeline notes.*
 
 **Demo Account Credentials**:
 - **Email**: `demo@meru.com`
 - **Password**: `password123`
 
 ### 6. Run Full-Stack Application
-From the repository root:
+Start both the Express API and Next.js frontend concurrently from the repository root:
 ```bash
 npm run dev
 ```
-- **Frontend**: [http://localhost:3000](http://localhost:3000)
-- **Backend API**: [http://localhost:5000/api/v1/health](http://localhost:5000/api/v1/health)
+
+- **Frontend Application**: [http://localhost:3000](http://localhost:3000)
+- **Backend API Service**: [http://localhost:5000/api/v1/health](http://localhost:5000/api/v1/health)
 
 ---
 
 ## 🧪 Automated Testing
 
-Automated integration tests verify all endpoints, error handling, status transitions, and data integrity:
+Automated integration tests verify all endpoints, authentication, input validation, status transitions, and data integrity:
 
 ```bash
-# Run tests from root
+# Run integration tests from root
 npm run test
 
-# Or directly in the server directory
+# Or run Vitest directly in the server directory
 cd server
 npx vitest run
 ```

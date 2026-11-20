@@ -19,33 +19,33 @@ const columns: {
   prevStatus?: LeadStatus;
   nextStatus?: LeadStatus;
 }[] = [
-  {
-    status: 'NEW',
-    title: 'New Inquiries',
-    dotColor: 'bg-sky-500',
-    nextStatus: 'CONTACTED',
-  },
-  {
-    status: 'CONTACTED',
-    title: 'In Dialogue',
-    dotColor: 'bg-amber-500',
-    prevStatus: 'NEW',
-    nextStatus: 'QUALIFIED',
-  },
-  {
-    status: 'QUALIFIED',
-    title: 'Qualified Deals',
-    dotColor: 'bg-emerald-600',
-    prevStatus: 'CONTACTED',
-    nextStatus: 'LOST',
-  },
-  {
-    status: 'LOST',
-    title: 'Closed / Lost',
-    dotColor: 'bg-zinc-400',
-    prevStatus: 'QUALIFIED',
-  },
-];
+    {
+      status: 'NEW',
+      title: 'New Inquiries',
+      dotColor: 'bg-sky-500',
+      nextStatus: 'CONTACTED',
+    },
+    {
+      status: 'CONTACTED',
+      title: 'In Dialogue',
+      dotColor: 'bg-amber-500',
+      prevStatus: 'NEW',
+      nextStatus: 'QUALIFIED',
+    },
+    {
+      status: 'QUALIFIED',
+      title: 'Qualified Deals',
+      dotColor: 'bg-emerald-600',
+      prevStatus: 'CONTACTED',
+      nextStatus: 'LOST',
+    },
+    {
+      status: 'LOST',
+      title: 'Closed / Lost',
+      dotColor: 'bg-zinc-400',
+      prevStatus: 'QUALIFIED',
+    },
+  ];
 
 const priorityBadges: Record<string, { label: string; dot: string; text: string }> = {
   HIGH: { label: 'P1', dot: 'bg-rose-600', text: 'text-rose-700 bg-rose-50 border-rose-200/60' },
