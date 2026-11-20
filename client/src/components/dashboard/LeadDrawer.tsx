@@ -39,6 +39,9 @@ import {
   Share2,
   Activity,
   User,
+  XCircle,
+  RotateCcw,
+  GitBranch,
 } from 'lucide-react';
 
 interface LeadDrawerProps {
@@ -52,10 +55,10 @@ interface LeadDrawerProps {
   onDelete: (lead: Lead) => void;
 }
 
-const statusStages: { key: LeadStatus; label: string; step: number }[] = [
-  { key: 'NEW', label: '1. New Inquiry', step: 1 },
-  { key: 'CONTACTED', label: '2. In Dialogue', step: 2 },
-  { key: 'QUALIFIED', label: '3. Qualified Deal', step: 3 },
+const statusStages: { key: LeadStatus; label: string; shortLabel: string; step: number }[] = [
+  { key: 'NEW', label: '1. New Inquiry', shortLabel: 'New Inquiry', step: 1 },
+  { key: 'CONTACTED', label: '2. In Dialogue', shortLabel: 'In Dialogue', step: 2 },
+  { key: 'QUALIFIED', label: '3. Qualified Deal', shortLabel: 'Qualified', step: 3 },
 ];
 
 export const LeadDrawer: React.FC<LeadDrawerProps> = ({
@@ -366,97 +369,115 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 </div>
 
                 {/* Visual Pipeline Stage Stepper */}
-                <div className="border border-zinc-200/90 rounded-lg p-3 bg-zinc-50/60 shadow-2xs">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] font-bold text-zinc-700 uppercase tracking-wide font-mono flex items-center">
-                      <Sparkles className="h-3 w-3 mr-1 text-zinc-400" />
-                      Stage Progression
+                <div className="border border-zinc-200/90 rounded-xl p-3 bg-white shadow-2xs space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-zinc-700 uppercase tracking-wider font-mono flex items-center">
+                      <Sparkles className="h-3 w-3 mr-1.5 text-zinc-400" />
+                      Pipeline Progression
                     </span>
                     <span
-                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${lead.status === 'NEW'
-                        ? 'bg-sky-50 text-sky-800 border border-sky-200'
-                        : lead.status === 'CONTACTED'
+                      className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
+                        lead.status === 'NEW'
+                          ? 'bg-sky-50 text-sky-800 border border-sky-200'
+                          : lead.status === 'CONTACTED'
                           ? 'bg-amber-50 text-amber-800 border border-amber-200'
                           : lead.status === 'QUALIFIED'
-                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                            : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
-                        }`}
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                          : 'bg-rose-50 text-rose-800 border border-rose-200'
+                      }`}
                     >
                       {lead.status}
                     </span>
                   </div>
 
-                  {/* Connected Step Track */}
-                  <div className="relative flex items-center justify-between mb-3 px-3">
-                    {/* Background Progress Bar */}
-                    <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-zinc-200 z-0" />
-                    <div
-                      className="absolute left-6 top-1/2 -translate-y-1/2 h-1 bg-zinc-900 z-0 transition-all duration-300"
-                      style={{
-                        width:
-                          currentStep === 1
-                            ? '0%'
-                            : currentStep === 2
-                              ? '50%'
-                              : currentStep === 3
-                                ? '100%'
-                                : '0%',
-                      }}
-                    />
-
+                  {/* 3-Column Tactile Segmented Stage Track */}
+                  <div className="grid grid-cols-3 gap-1.5 p-1 bg-zinc-100/70 rounded-lg border border-zinc-200/70">
                     {statusStages.map((stage) => {
-                      const isCompleted = currentStep >= stage.step;
-                      const isCurrent = lead.status === stage.key;
+                      const isCompleted = currentStep > stage.step;
+                      const isCurrent = currentStep === stage.step;
 
                       return (
                         <button
                           key={stage.key}
                           type="button"
                           onClick={() => onStatusChange(lead.id, stage.key)}
-                          className="relative z-10 flex flex-col items-center group cursor-pointer"
-                        >
-                          <div
-                            className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${isCurrent
-                              ? 'bg-zinc-900 text-white ring-4 ring-zinc-200 shadow-xs scale-110'
+                          className={`relative flex flex-col items-center justify-center py-2 px-1.5 rounded-md text-center transition-all cursor-pointer ${
+                            isCurrent
+                              ? 'bg-zinc-900 text-white shadow-sm ring-1 ring-zinc-900'
                               : isCompleted
-                                ? 'bg-zinc-900 text-white'
-                                : 'bg-white border-2 border-zinc-300 text-zinc-500 hover:border-zinc-500'
-                              }`}
-                          >
-                            {isCompleted && !isCurrent ? (
-                              <Check className="h-3 w-3" />
+                              ? 'bg-white text-zinc-800 hover:bg-zinc-50 border border-zinc-200/80 shadow-2xs'
+                              : 'bg-transparent text-zinc-500 hover:text-zinc-800 hover:bg-white/70'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-1">
+                            {isCompleted ? (
+                              <Check className="h-3 w-3 text-emerald-600 shrink-0" />
+                            ) : isCurrent ? (
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
                             ) : (
-                              stage.step
+                              <span className="text-[10px] font-mono text-zinc-400">
+                                {stage.step}.
+                              </span>
                             )}
+                            <span
+                              className={`text-[11px] truncate leading-none ${
+                                isCurrent
+                                  ? 'font-bold text-white'
+                                  : isCompleted
+                                  ? 'font-semibold text-zinc-900'
+                                  : 'font-medium text-zinc-500'
+                              }`}
+                            >
+                              {stage.shortLabel}
+                            </span>
                           </div>
                           <span
-                            className={`text-[10px] mt-1 font-semibold transition-colors ${isCurrent ? 'text-zinc-900 font-bold' : 'text-zinc-500'
-                              }`}
+                            className={`text-[9px] font-mono mt-0.5 leading-none ${
+                              isCurrent
+                                ? 'text-zinc-300'
+                                : isCompleted
+                                ? 'text-emerald-700'
+                                : 'text-zinc-400'
+                            }`}
                           >
-                            {stage.label}
+                            {isCurrent
+                              ? 'Active Stage'
+                              : isCompleted
+                              ? 'Completed'
+                              : 'Pending'}
                           </span>
                         </button>
                       );
                     })}
                   </div>
 
-                  {lead.status !== 'LOST' ? (
-                    <button
-                      type="button"
-                      onClick={() => onStatusChange(lead.id, 'LOST')}
-                      className="w-full text-xs text-rose-600 hover:text-rose-700 font-medium py-1 text-center hover:bg-rose-50 rounded transition-colors"
-                    >
-                      Mark as Closed / Lost Opportunity
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => onStatusChange(lead.id, 'NEW')}
-                      className="w-full text-xs text-blue-600 hover:text-blue-700 font-medium py-1 text-center hover:bg-blue-50 rounded transition-colors"
-                    >
-                      Reopen Opportunity to New Inquiry
-                    </button>
-                  )}
+                  {/* Stage Advance / Lost Actions Bar */}
+                  <div className="pt-1.5 flex items-center justify-between text-xs">
+                    <span className="text-[10px] text-zinc-400 font-mono">
+                      Click any stage to advance deal
+                    </span>
+
+                    {lead.status !== 'LOST' ? (
+                      <button
+                        type="button"
+                        onClick={() => onStatusChange(lead.id, 'LOST')}
+                        className="inline-flex items-center space-x-1 text-[11px] font-medium text-zinc-400 hover:text-rose-600 hover:bg-rose-50 px-2 py-0.5 rounded transition-all cursor-pointer border border-transparent hover:border-rose-200"
+                        title="Mark deal as closed/lost"
+                      >
+                        <XCircle className="h-3 w-3 text-zinc-400 group-hover:text-rose-500" />
+                        <span>Mark as Lost</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => onStatusChange(lead.id, 'NEW')}
+                        className="inline-flex items-center space-x-1 text-[11px] font-semibold text-sky-700 bg-sky-50 hover:bg-sky-100 px-2.5 py-0.5 rounded border border-sky-200 transition-all cursor-pointer"
+                      >
+                        <RotateCcw className="h-3 w-3 mr-1 text-sky-600" />
+                        <span>Reopen Deal</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Tab Switcher: Overview vs Activity Timeline */}
