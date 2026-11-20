@@ -56,8 +56,6 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
   const [activityType, setActivityType] = useState<'NOTE' | 'CALL'>('NOTE');
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
 
-  if (!isOpen || !lead) return null;
-
   const copyToClipboard = (text: string, fieldName: string) => {
     navigator.clipboard.writeText(text);
     setCopiedField(fieldName);
@@ -97,7 +95,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
 
   const handleNoteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newNote.trim()) return;
+    if (!newNote.trim() || !lead) return;
 
     setIsSubmittingNote(true);
     try {
@@ -110,8 +108,9 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 overflow-hidden">
-        {/* Backdrop */}
+      {isOpen && lead && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -437,6 +436,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
           </motion.div>
         </div>
       </div>
-    </AnimatePresence>
+    )}
+  </AnimatePresence>
   );
 };

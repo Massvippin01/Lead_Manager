@@ -18,6 +18,10 @@ import {
   ChevronRight as ArrowRightIcon,
   CheckSquare,
   Square,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  RotateCcw,
 } from 'lucide-react';
 
 interface LeadsTableProps {
@@ -31,6 +35,8 @@ interface LeadsTableProps {
   onToggleSelectAll: () => void;
   onPageChange: (newPage: number) => void;
   onLimitChange: (newLimit: number) => void;
+  onSortChange: (column: string) => void;
+  onResetFilters: () => void;
   onQuickStatusChange: (leadId: string, newStatus: LeadStatus) => Promise<void>;
   onBulkStatusChange: (newStatus: LeadStatus) => Promise<void>;
   onBulkDelete: () => Promise<void>;
@@ -82,6 +88,8 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
   onToggleSelectAll,
   onPageChange,
   onLimitChange,
+  onSortChange,
+  onResetFilters,
   onQuickStatusChange,
   onBulkStatusChange,
   onBulkDelete,
@@ -126,8 +134,31 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
     }
   };
 
-  const allSelected = leads.length > 0 && selectedLeadIds.length === leads.length;
+  const currentPageIds = leads.map((l) => l.id);
+  const allSelected =
+    currentPageIds.length > 0 && currentPageIds.every((id) => selectedLeadIds.includes(id));
+  const someSelected =
+    currentPageIds.some((id) => selectedLeadIds.includes(id)) && !allSelected;
   const isCompact = density === 'compact';
+
+  const hasActiveFilters = Boolean(
+    queryParams.search ||
+      queryParams.status ||
+      queryParams.priority ||
+      queryParams.source ||
+      queryParams.preset
+  );
+
+  const renderSortIndicator = (columnKey: string) => {
+    if (queryParams.sortBy !== columnKey) {
+      return <ArrowUpDown className="h-3 w-3 ml-1 opacity-40 group-hover/col:opacity-100 transition-opacity" />;
+    }
+    return queryParams.sortOrder === 'asc' ? (
+      <ArrowUp className="h-3 w-3 ml-1 text-zinc-900 font-bold" />
+    ) : (
+      <ArrowDown className="h-3 w-3 ml-1 text-zinc-900 font-bold" />
+    );
+  };
 
   return (
     <div className="relative">
@@ -136,29 +167,97 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200/80 bg-zinc-50/80 text-zinc-500 font-semibold text-[11px] uppercase tracking-wider">
+              <tr className="border-b border-zinc-200/80 bg-zinc-50/80 text-zinc-500 font-semibold text-[11px] uppercase tracking-wider select-none">
                 {/* Checkbox */}
                 <th className="py-2.5 px-3 w-8 text-center">
                   <button
                     type="button"
                     onClick={onToggleSelectAll}
                     className="text-zinc-400 hover:text-zinc-800 transition-colors"
+                    title={allSelected ? 'Deselect all on this page' : 'Select all on this page'}
                   >
                     {allSelected ? (
                       <CheckSquare className="h-3.5 w-3.5 text-zinc-900" />
+                    ) : someSelected ? (
+                      <div className="h-3.5 w-3.5 border border-zinc-900 bg-zinc-900 rounded-xs flex items-center justify-center text-white text-[9px] font-bold">
+                        -
+                      </div>
                     ) : (
                       <Square className="h-3.5 w-3.5" />
                     )}
                   </button>
                 </th>
-                <th className="py-2.5 px-3">Priority</th>
-                <th className="py-2.5 px-3">Prospect</th>
-                <th className="py-2.5 px-3">Company</th>
+
+                {/* Priority Sort */}
+                <th
+                  onClick={() => onSortChange('priority')}
+                  className="py-2.5 px-3 cursor-pointer hover:bg-zinc-100/70 transition-colors group/col"
+                >
+                  <div className="flex items-center">
+                    <span>Priority</span>
+                    {renderSortIndicator('priority')}
+                  </div>
+                </th>
+
+                {/* Prospect Name Sort */}
+                <th
+                  onClick={() => onSortChange('name')}
+                  className="py-2.5 px-3 cursor-pointer hover:bg-zinc-100/70 transition-colors group/col"
+                >
+                  <div className="flex items-center">
+                    <span>Prospect</span>
+                    {renderSortIndicator('name')}
+                  </div>
+                </th>
+
+                {/* Company Sort */}
+                <th
+                  onClick={() => onSortChange('company')}
+                  className="py-2.5 px-3 cursor-pointer hover:bg-zinc-100/70 transition-colors group/col"
+                >
+                  <div className="flex items-center">
+                    <span>Company</span>
+                    {renderSortIndicator('company')}
+                  </div>
+                </th>
+
                 <th className="py-2.5 px-3">Contact</th>
-                <th className="py-2.5 px-3">Deal Value</th>
+
+                {/* Deal Value Sort */}
+                <th
+                  onClick={() => onSortChange('value')}
+                  className="py-2.5 px-3 cursor-pointer hover:bg-zinc-100/70 transition-colors group/col"
+                >
+                  <div className="flex items-center">
+                    <span>Deal Value</span>
+                    {renderSortIndicator('value')}
+                  </div>
+                </th>
+
                 <th className="py-2.5 px-3">Channel</th>
-                <th className="py-2.5 px-3">Pipeline Stage</th>
-                <th className="py-2.5 px-3">Date</th>
+
+                {/* Status Sort */}
+                <th
+                  onClick={() => onSortChange('status')}
+                  className="py-2.5 px-3 cursor-pointer hover:bg-zinc-100/70 transition-colors group/col"
+                >
+                  <div className="flex items-center">
+                    <span>Pipeline Stage</span>
+                    {renderSortIndicator('status')}
+                  </div>
+                </th>
+
+                {/* Date Sort */}
+                <th
+                  onClick={() => onSortChange('createdAt')}
+                  className="py-2.5 px-3 cursor-pointer hover:bg-zinc-100/70 transition-colors group/col"
+                >
+                  <div className="flex items-center">
+                    <span>Date</span>
+                    {renderSortIndicator('createdAt')}
+                  </div>
+                </th>
+
                 <th className="py-2.5 px-3 sm:px-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -208,13 +307,24 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       <UserX className="h-5 w-5" />
                     </div>
                     <h4 className="text-sm font-bold text-zinc-900">
-                      No matching prospects
+                      No matching prospects found
                     </h4>
-                    <p className="text-xs text-zinc-500 mt-0.5 max-w-sm mx-auto">
-                      {queryParams.search || queryParams.status || queryParams.priority || queryParams.source
-                        ? 'Try clearing active filters or presets to view leads.'
-                        : 'No leads in pipeline. Create or import your first prospect.'}
+                    <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
+                      {hasActiveFilters
+                        ? 'Try clearing active search criteria, status stages, or preset filters.'
+                        : 'No leads in pipeline. Create or import your first prospect to get started.'}
                     </p>
+                    {hasActiveFilters && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={onResetFilters}
+                        className="mt-3.5 text-xs h-7 text-zinc-700 hover:text-zinc-900 border-zinc-300"
+                      >
+                        <RotateCcw className="h-3 w-3 mr-1.5" />
+                        Reset All Filters
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ) : (
@@ -328,6 +438,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       <td
                         className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3`}
                         onClick={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
                       >
                         <div className="relative inline-flex items-center">
                           <select

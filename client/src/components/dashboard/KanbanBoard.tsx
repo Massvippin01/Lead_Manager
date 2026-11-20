@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Lead, LeadStatus } from '@/types';
-import { Building2, ChevronRight, ChevronLeft, Flame } from 'lucide-react';
+import { Building2, ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface KanbanBoardProps {
   leads: Lead[];
@@ -101,7 +101,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
         return (
           <div
             key={col.status}
-            className="bg-zinc-50 border border-zinc-200/90 rounded-lg p-2.5 flex flex-col max-h-[calc(100vh-14rem)] overflow-hidden shadow-2xs"
+            className="bg-zinc-50 border border-zinc-200/90 rounded-lg p-2.5 flex flex-col min-h-[420px] max-h-[calc(100vh-14rem)] overflow-hidden shadow-2xs"
           >
             {/* Column Header */}
             <div className="flex items-center justify-between pb-2 border-b border-zinc-200 mb-2 px-1">
@@ -123,8 +123,8 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             {/* Column Cards Container */}
             <div className="flex-1 overflow-y-auto space-y-2 pr-0.5">
               {columnLeads.length === 0 ? (
-                <div className="py-8 text-center text-xs text-zinc-400 font-mono">
-                  Empty
+                <div className="py-12 text-center text-xs text-zinc-400 font-mono border border-dashed border-zinc-200 rounded-md">
+                  No prospects in this stage
                 </div>
               ) : (
                 columnLeads.map((lead) => {
@@ -175,11 +175,18 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                           {lead.source}
                         </span>
 
-                        <div className="flex items-center space-x-0.5" onClick={(e) => e.stopPropagation()}>
+                        <div
+                          className="flex items-center space-x-0.5"
+                          onClick={(e) => e.stopPropagation()}
+                          onMouseDown={(e) => e.stopPropagation()}
+                        >
                           {col.prevStatus && (
                             <button
                               type="button"
-                              onClick={() => onStatusChange(lead.id, col.prevStatus!)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onStatusChange(lead.id, col.prevStatus!);
+                              }}
                               className="p-1 rounded text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 transition-colors"
                               title={`Move back to ${col.prevStatus}`}
                             >
@@ -189,7 +196,10 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                           {col.nextStatus && (
                             <button
                               type="button"
-                              onClick={() => onStatusChange(lead.id, col.nextStatus!)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onStatusChange(lead.id, col.nextStatus!);
+                              }}
                               className="p-1 rounded text-zinc-400 hover:text-zinc-800 hover:bg-zinc-100 transition-colors"
                               title={`Advance to ${col.nextStatus}`}
                             >

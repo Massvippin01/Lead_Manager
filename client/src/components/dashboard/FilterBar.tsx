@@ -37,14 +37,6 @@ interface FilterBarProps {
   onExportCsv: () => void;
 }
 
-const statusTabs: { key?: LeadStatus; label: string }[] = [
-  { key: undefined, label: 'All Statuses' },
-  { key: 'NEW', label: 'New' },
-  { key: 'CONTACTED', label: 'Contacted' },
-  { key: 'QUALIFIED', label: 'Qualified' },
-  { key: 'LOST', label: 'Lost' },
-];
-
 const presets: {
   key?: 'ALL' | 'P1' | 'HIGH_VALUE' | 'NEEDS_TOUCH' | 'CLOSING';
   label: string;
@@ -78,9 +70,53 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       queryParams.preset
   );
 
+  const isAllPresetActive =
+    !queryParams.preset &&
+    !queryParams.status &&
+    !queryParams.priority &&
+    !queryParams.source;
+
+  const handleSelectPreset = (key?: 'ALL' | 'P1' | 'HIGH_VALUE' | 'NEEDS_TOUCH' | 'CLOSING') => {
+    if (!key || key === 'ALL') {
+      onChange({
+        preset: undefined,
+        status: undefined,
+        priority: undefined,
+        source: undefined,
+        page: 1,
+      });
+    } else if (key === 'P1') {
+      onChange({
+        preset: 'P1',
+        priority: 'HIGH',
+        status: undefined,
+        page: 1,
+      });
+    } else if (key === 'HIGH_VALUE') {
+      onChange({
+        preset: 'HIGH_VALUE',
+        page: 1,
+      });
+    } else if (key === 'NEEDS_TOUCH') {
+      onChange({
+        preset: 'NEEDS_TOUCH',
+        status: 'NEW',
+        priority: undefined,
+        page: 1,
+      });
+    } else if (key === 'CLOSING') {
+      onChange({
+        preset: 'CLOSING',
+        status: 'QUALIFIED',
+        priority: undefined,
+        page: 1,
+      });
+    }
+  };
+
   return (
     <div className="space-y-2.5 mb-5">
-      {/* Row 1: Linear-style View Presets & Stage Tabs */}
+      {/* Row 1: Linear-style View Presets & Action Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 border-b border-zinc-200/90 pb-2">
         {/* Preset Pills */}
         <div className="flex items-center space-x-1.5 overflow-x-auto py-0.5">
@@ -89,12 +125,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </span>
           {presets.map((p) => {
             const Icon = p.icon;
-            const isActive = queryParams.preset === p.key;
+            const isActive = p.key === undefined ? isAllPresetActive : queryParams.preset === p.key;
+
             return (
               <button
                 key={p.label}
                 type="button"
-                onClick={() => onChange({ preset: p.key, page: 1 })}
+                onClick={() => handleSelectPreset(p.key)}
                 className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all whitespace-nowrap ${
                   isActive
                     ? 'bg-zinc-900 text-white shadow-2xs'
@@ -240,6 +277,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             onChange={(e) =>
               onChange({
                 status: (e.target.value as LeadStatus) || undefined,
+                preset: undefined, // Clear preset when manual filter is changed
                 page: 1,
               })
             }
@@ -258,6 +296,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             onChange={(e) =>
               onChange({
                 priority: (e.target.value as LeadPriority) || undefined,
+                preset: undefined, // Clear preset when manual filter is changed
                 page: 1,
               })
             }
@@ -275,6 +314,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             onChange={(e) =>
               onChange({
                 source: (e.target.value as LeadSource) || undefined,
+                preset: undefined, // Clear preset when manual filter is changed
                 page: 1,
               })
             }

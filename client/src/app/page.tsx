@@ -67,23 +67,31 @@ export default function DashboardPage() {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
-  // Fetch Leads
+  // Fetch Leads (Stable callback - does NOT depend on selectedLeadForDrawer to prevent loops)
   const fetchLeads = useCallback(async () => {
     if (!user) return;
     setIsLoadingLeads(true);
     try {
       const query = new URLSearchParams();
       if (queryParams.search) query.append('search', queryParams.search);
-      if (queryParams.status) query.append('status', queryParams.status);
+      // In Kanban view, fetch across all stages so board columns aren't blank
+      if (viewMode !== 'kanban' && queryParams.status) {
+        query.append('status', queryParams.status);
+      }
       if (queryParams.priority) query.append('priority', queryParams.priority);
       if (queryParams.source) query.append('source', queryParams.source);
       if (queryParams.preset) query.append('preset', queryParams.preset);
       if (queryParams.sortBy) query.append('sortBy', queryParams.sortBy);
       if (queryParams.sortOrder) query.append('sortOrder', queryParams.sortOrder);
-      if (queryParams.page) query.append('page', String(queryParams.page));
-      // In Kanban view, fetch up to 100 leads to populate columns
-      const limitToUse = viewMode === 'kanban' ? 100 : queryParams.limit || 10;
-      query.append('limit', String(limitToUse));
+
+      // In Kanban view, fetch page 1 with up to 100 leads to populate columns
+      if (viewMode === 'kanban') {
+        query.append('page', '1');
+        query.append('limit', '100');
+      } else {
+        if (queryParams.page) query.append('page', String(queryParams.page));
+        if (queryParams.limit) query.append('limit', String(queryParams.limit));
+      }
 
       const res = await apiRequest<{
         success: boolean;
@@ -93,19 +101,33 @@ export default function DashboardPage() {
       setLeads(res.data.leads);
       setPagination(res.data.pagination);
 
-      // Keep drawer lead updated with fresh notes
-      if (selectedLeadForDrawer) {
-        const updatedSelected = res.data.leads.find((l) => l.id === selectedLeadForDrawer.id);
-        if (updatedSelected) {
-          setSelectedLeadForDrawer(updatedSelected);
+      // Safely sync selected lead in drawer using functional updater without retriggering fetchLeads
+      setSelectedLeadForDrawer((prev) => {
+        if (!prev) return null;
+        const fresh = res.data.leads.find((l) => l.id === prev.id);
+        if (!fresh) return prev;
+        // Only return new object if properties actually changed
+        if (
+          fresh.status === prev.status &&
+          fresh.priority === prev.priority &&
+          fresh.value === prev.value &&
+          fresh.name === prev.name &&
+          fresh.email === prev.email &&
+          fresh.phone === prev.phone &&
+          fresh.company === prev.company &&
+          fresh.source === prev.source &&
+          fresh.notes?.length === prev.notes?.length
+        ) {
+          return prev;
         }
-      }
+        return fresh;
+      });
     } catch (err: any) {
       error('Failed to load leads', err.message);
     } finally {
       setIsLoadingLeads(false);
     }
-  }, [user, queryParams, viewMode, error, selectedLeadForDrawer]);
+  }, [user, queryParams, viewMode, error]);
 
   // Fetch Stats
   const fetchStats = useCallback(async () => {
@@ -129,7 +151,7 @@ export default function DashboardPage() {
     if (!user) return;
     const timer = setTimeout(() => {
       fetchLeads();
-    }, 200);
+    }, 180);
 
     return () => clearTimeout(timer);
   }, [fetchLeads, user]);
@@ -175,7 +197,7 @@ export default function DashboardPage() {
   };
 
   const handleResetFilters = () => {
-    setQueryParams({
+    setQueryParams((prev) => ({
       search: '',
       status: undefined,
       priority: undefined,
@@ -184,9 +206,27 @@ export default function DashboardPage() {
       sortBy: 'createdAt',
       sortOrder: 'desc',
       page: 1,
-      limit: 10,
-    });
+      limit: prev.limit || 10,
+    }));
     setSelectedLeadIds([]);
+  };
+
+  const handleSortChange = (column: string) => {
+    setQueryParams((prev) => {
+      if (prev.sortBy === column) {
+        return {
+          ...prev,
+          sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc',
+          page: 1,
+        };
+      }
+      return {
+        ...prev,
+        sortBy: column as any,
+        sortOrder: 'desc',
+        page: 1,
+      };
+    });
   };
 
   // Status Change
@@ -196,7 +236,14 @@ export default function DashboardPage() {
         method: 'PUT',
         body: JSON.stringify({ status: newStatus }),
       });
-      success('Stage Updated', `Lead moved to ${newStatus}`);
+
+      const isFilteredOut = queryParams.status && queryParams.status !== newStatus;
+      if (isFilteredOut) {
+        success('Stage Updated', `Moved to ${newStatus}. (Filtered out of active view)`);
+      } else {
+        success('Stage Updated', `Lead moved to ${newStatus}`);
+      }
+
       fetchLeads();
       fetchStats();
 
@@ -227,7 +274,7 @@ export default function DashboardPage() {
     }
   };
 
-  // Bulk Selection Handlers
+  // Bulk Selection Handlers (Per-page sync)
   const handleToggleSelectLead = (leadId: string) => {
     setSelectedLeadIds((prev) =>
       prev.includes(leadId) ? prev.filter((id) => id !== leadId) : [...prev, leadId]
@@ -235,10 +282,12 @@ export default function DashboardPage() {
   };
 
   const handleToggleSelectAll = () => {
-    if (selectedLeadIds.length === leads.length) {
-      setSelectedLeadIds([]);
+    const pageIds = leads.map((l) => l.id);
+    const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selectedLeadIds.includes(id));
+    if (allPageSelected) {
+      setSelectedLeadIds((prev) => prev.filter((id) => !pageIds.includes(id)));
     } else {
-      setSelectedLeadIds(leads.map((l) => l.id));
+      setSelectedLeadIds((prev) => Array.from(new Set([...prev, ...pageIds])));
     }
   };
 
@@ -515,14 +564,15 @@ export default function DashboardPage() {
         stats={stats}
         isLoading={isLoadingStats}
         activeStatus={queryParams.status}
-        onFilterStatus={(status) => handleQueryChange({ status, page: 1 })}
+        activePriority={queryParams.priority}
+        onFilter={(updates) => handleQueryChange(updates)}
       />
 
       {/* Pipeline Distribution Funnel Bar */}
       <PipelineDistributionBar
         stats={stats}
         activeStatus={queryParams.status}
-        onSelectStatus={(status) => handleQueryChange({ status, page: 1 })}
+        onSelectStatus={(status) => handleQueryChange({ status, preset: undefined, page: 1 })}
       />
 
       {/* Search, View Presets, Density Toggle, CSV & Actions Toolbar */}
@@ -553,6 +603,8 @@ export default function DashboardPage() {
           onToggleSelectAll={handleToggleSelectAll}
           onPageChange={(page) => handleQueryChange({ page })}
           onLimitChange={(limit) => handleQueryChange({ limit, page: 1 })}
+          onSortChange={handleSortChange}
+          onResetFilters={handleResetFilters}
           onQuickStatusChange={handleStatusChange}
           onBulkStatusChange={handleBulkStatusChange}
           onBulkDelete={handleBulkDelete}
