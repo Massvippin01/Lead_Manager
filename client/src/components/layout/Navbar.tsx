@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -34,16 +34,6 @@ import {
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const [activePipeline, setActivePipeline] = useState<'saas' | 'inbound' | 'partnerships'>('saas');
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 4);
-    };
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleOpenCommandPalette = () => {
     window.dispatchEvent(new CustomEvent('open-command-palette'));
@@ -54,13 +44,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 bg-white border-b transition-all duration-200 ${
-        isScrolled
-          ? 'border-slate-200 shadow-sm'
-          : 'border-slate-200/80 shadow-none'
-      }`}
-    >
+    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-2xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         {/* Left: Brand & Workspace Switcher */}
         <div className="flex items-center space-x-3">
