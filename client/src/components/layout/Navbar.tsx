@@ -82,7 +82,13 @@ export const Navbar: React.FC = () => {
                     <ChevronDown className="h-3 w-3 text-zinc-400" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64 p-1.5">
+                <DropdownMenuContent
+                  side="bottom"
+                  align="start"
+                  sideOffset={6}
+                  collisionPadding={16}
+                  className="w-72 max-h-[calc(100vh-5rem)] overflow-y-auto p-1.5"
+                >
                   <div className="px-2 py-1.5 bg-zinc-50 rounded-md border border-zinc-100 mb-1">
                     <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 block">
                       Active Workspace
