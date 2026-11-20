@@ -7,12 +7,14 @@ import { useToast } from '@/context/ToastContext';
 import { apiRequest } from '@/lib/api';
 import { Lead, LeadStats, Pagination, LeadQueryParams, LeadStatus } from '@/types';
 import { StatsCards } from '@/components/dashboard/StatsCards';
+import { PipelineDistributionBar } from '@/components/dashboard/PipelineDistributionBar';
 import { FilterBar } from '@/components/dashboard/FilterBar';
 import { LeadsTable } from '@/components/dashboard/LeadsTable';
+import { LeadDrawer } from '@/components/dashboard/LeadDrawer';
 import { LeadModal, LeadFormData } from '@/components/dashboard/LeadModal';
 import { DeleteConfirmDialog } from '@/components/dashboard/DeleteConfirmDialog';
 import { Button } from '@/components/ui/button';
-import { Sparkles, RefreshCw, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { RefreshCw, ArrowRight, Layers, Lock, ShieldCheck, ChevronRight } from 'lucide-react';
 
 export default function DashboardPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -36,7 +38,10 @@ export default function DashboardPage() {
     limit: 10,
   });
 
-  // Modals State
+  // Drawer & Modals State
+  const [selectedLeadForDrawer, setSelectedLeadForDrawer] = useState<Lead | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [leadToEdit, setLeadToEdit] = useState<Lead | null>(null);
 
@@ -65,12 +70,20 @@ export default function DashboardPage() {
 
       setLeads(res.data.leads);
       setPagination(res.data.pagination);
+
+      // If drawer is open, keep selected lead updated
+      if (selectedLeadForDrawer) {
+        const updatedSelected = res.data.leads.find((l) => l.id === selectedLeadForDrawer.id);
+        if (updatedSelected) {
+          setSelectedLeadForDrawer(updatedSelected);
+        }
+      }
     } catch (err: any) {
       error('Failed to load leads', err.message);
     } finally {
       setIsLoadingLeads(false);
     }
-  }, [user, queryParams, error]);
+  }, [user, queryParams, error, selectedLeadForDrawer]);
 
   // Fetch Stats
   const fetchStats = useCallback(async () => {
@@ -94,7 +107,7 @@ export default function DashboardPage() {
     if (!user) return;
     const timer = setTimeout(() => {
       fetchLeads();
-    }, 250);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [fetchLeads, user]);
@@ -123,18 +136,29 @@ export default function DashboardPage() {
   };
 
   // Quick Status Update
-  const handleQuickStatusChange = async (leadId: string, newStatus: LeadStatus) => {
+  const handleStatusChange = async (leadId: string, newStatus: LeadStatus) => {
     try {
       await apiRequest(`/leads/${leadId}`, {
         method: 'PUT',
         body: JSON.stringify({ status: newStatus }),
       });
-      success('Status Updated', `Lead status moved to ${newStatus}`);
+      success('Stage Updated', `Lead moved to ${newStatus}`);
       fetchLeads();
       fetchStats();
+
+      // Update drawer lead state if currently selected
+      if (selectedLeadForDrawer && selectedLeadForDrawer.id === leadId) {
+        setSelectedLeadForDrawer({ ...selectedLeadForDrawer, status: newStatus });
+      }
     } catch (err: any) {
       error('Update Failed', err.message);
     }
+  };
+
+  // Drawer Handler
+  const handleSelectLead = (lead: Lead) => {
+    setSelectedLeadForDrawer(lead);
+    setIsDrawerOpen(true);
   };
 
   // Modal Handlers
@@ -184,9 +208,15 @@ export default function DashboardPage() {
       await apiRequest(`/leads/${leadToDelete.id}`, {
         method: 'DELETE',
       });
-      success('Lead Deleted', `${leadToDelete.name} was removed from the system`);
+      success('Lead Deleted', `${leadToDelete.name} was removed`);
       setIsDeleteDialogOpen(false);
       setLeadToDelete(null);
+
+      if (selectedLeadForDrawer && selectedLeadForDrawer.id === leadToDelete.id) {
+        setIsDrawerOpen(false);
+        setSelectedLeadForDrawer(null);
+      }
+
       fetchLeads();
       fetchStats();
     } catch (err: any) {
@@ -196,97 +226,73 @@ export default function DashboardPage() {
     }
   };
 
-  // Unauthenticated Welcome Hero
+  // Unauthenticated Workspace Gateway
   if (!user && !isAuthLoading) {
     return (
-      <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-semibold mb-6">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>Screening Assignment for Meru Technosoft</span>
-        </div>
-
-        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
-          Modern Lead Management & <br className="hidden sm:inline" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
-            Sales Pipeline Intelligence
-          </span>
-        </h1>
-
-        <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Capture, track, qualify, and convert leads with a clean full-stack architecture powered by
-          Next.js, Node.js REST API, PostgreSQL, and Shadcn UI.
-        </p>
-
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link href="/login">
-            <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-blue-500/25">
-              Sign In to Demo Account
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          </Link>
-          <Link href="/register">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto">
-              Create New Account
-            </Button>
-          </Link>
-        </div>
-
-        {/* Feature Highlights Grid */}
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-            <div className="h-10 w-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
-              <Zap className="h-5 w-5" />
-            </div>
-            <h3 className="font-semibold text-slate-900">End-to-End Pipeline</h3>
-            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-              Capture leads with complete verification, track acquisition sources, and transition statuses.
-            </p>
+      <div className="py-14 max-w-4xl mx-auto">
+        <div className="border border-slate-200/90 rounded-2xl bg-white p-8 sm:p-12 shadow-sm text-center">
+          <div className="h-10 w-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-base mx-auto mb-5 shadow-xs">
+            M
           </div>
 
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-            <div className="h-10 w-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
-              <ShieldCheck className="h-5 w-5" />
-            </div>
-            <h3 className="font-semibold text-slate-900">Secure & Isolated</h3>
-            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-              Stateless JWT authentication and PostgreSQL relational foreign keys isolate leads per user.
-            </p>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+            Meru Lead Manager
+          </h1>
+
+          <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
+            Sales pipeline management application built for Meru Technosoft screening assignment.
+            Capture, qualify, and convert prospects with an enterprise-grade stack.
+          </p>
+
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link href="/login">
+              <Button size="lg" className="w-full sm:w-auto text-xs sm:text-sm bg-slate-900 hover:bg-slate-800 text-white">
+                Sign in to Demo Account
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+            <Link href="/register">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto text-xs sm:text-sm">
+                Create Representative Account
+              </Button>
+            </Link>
           </div>
 
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-            <div className="h-10 w-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
-              <Sparkles className="h-5 w-5" />
+          {/* Architecture Credentials Banner */}
+          <div className="mt-10 p-4 rounded-xl bg-slate-50 border border-slate-200/80 max-w-md mx-auto text-left text-xs text-slate-600">
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-semibold text-slate-900">Evaluation Demo Profile</span>
+              <span className="text-[11px] font-mono bg-slate-200/70 text-slate-700 px-1.5 py-0.5 rounded">
+                Pre-seeded
+              </span>
             </div>
-            <h3 className="font-semibold text-slate-900">Instant Filters & Stats</h3>
-            <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-              Real-time search, multi-column sorting, pagination, and instant pipeline conversion metrics.
-            </p>
+            <p className="font-mono text-slate-700">demo@meru.com / password123</p>
           </div>
         </div>
       </div>
     );
   }
 
-  // Loading skeleton while checking initial auth
+  // Initial Auth Loading
   if (isAuthLoading) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center space-y-4">
-        <div className="h-10 w-10 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
-        <p className="text-sm text-slate-500 font-medium">Connecting to Lead Manager API...</p>
+      <div className="py-20 flex flex-col items-center justify-center space-y-3">
+        <div className="h-6 w-6 rounded-full border-2 border-slate-900 border-t-transparent animate-spin" />
+        <p className="text-xs text-slate-500 font-medium">Connecting to sales pipeline...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="space-y-4">
+      {/* Workspace Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Sales Pipeline
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            Sales Leads Pipeline
           </h1>
-          <p className="text-sm text-slate-500 mt-0.5">
-            Monitor, prioritize, and convert prospective client opportunities.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Track, prioritize, and inspect prospective accounts.
           </p>
         </div>
 
@@ -297,23 +303,31 @@ export default function DashboardPage() {
             onClick={() => {
               fetchLeads();
               fetchStats();
-              success('Refreshed', 'Pipeline data synchronized');
+              success('Synchronized', 'Pipeline data refreshed');
             }}
             disabled={isLoadingLeads}
-            className="text-xs"
+            className="text-xs h-8"
           >
-            <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${isLoadingLeads ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-
-          <Button size="sm" onClick={handleOpenCreateModal} className="text-xs">
-            + New Lead
+            <RefreshCw className={`h-3 w-3 mr-1.5 ${isLoadingLeads ? 'animate-spin' : ''}`} />
+            Sync
           </Button>
         </div>
       </div>
 
       {/* KPI Stats Metric Cards */}
-      <StatsCards stats={stats} isLoading={isLoadingStats} />
+      <StatsCards
+        stats={stats}
+        isLoading={isLoadingStats}
+        activeStatus={queryParams.status}
+        onFilterStatus={(status) => handleQueryChange({ status, page: 1 })}
+      />
+
+      {/* Pipeline Distribution Funnel Bar */}
+      <PipelineDistributionBar
+        stats={stats}
+        activeStatus={queryParams.status}
+        onSelectStatus={(status) => handleQueryChange({ status, page: 1 })}
+      />
 
       {/* Search & Filter Toolbar */}
       <FilterBar
@@ -331,9 +345,25 @@ export default function DashboardPage() {
         queryParams={queryParams}
         onPageChange={(page) => handleQueryChange({ page })}
         onLimitChange={(limit) => handleQueryChange({ limit, page: 1 })}
-        onQuickStatusChange={handleQuickStatusChange}
+        onQuickStatusChange={handleStatusChange}
+        onSelectLead={handleSelectLead}
         onEdit={handleOpenEditModal}
         onDelete={handleOpenDeleteDialog}
+      />
+
+      {/* Slide-over Inspector Drawer */}
+      <LeadDrawer
+        lead={selectedLeadForDrawer}
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onStatusChange={handleStatusChange}
+        onEdit={(lead) => {
+          setIsDrawerOpen(false);
+          handleOpenEditModal(lead);
+        }}
+        onDelete={(lead) => {
+          handleOpenDeleteDialog(lead);
+        }}
       />
 
       {/* Create / Edit Modal Dialog */}

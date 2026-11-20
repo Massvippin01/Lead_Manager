@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Lead } from '@/types';
-import { AlertTriangle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
@@ -32,19 +32,18 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-sm">
         <DialogHeader className="flex flex-col items-center sm:items-start">
-          <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-2">
-            <AlertTriangle className="h-6 w-6" />
+          <div className="h-10 w-10 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mb-1">
+            <AlertCircle className="h-5 w-5" />
           </div>
-          <DialogTitle className="text-lg font-bold text-slate-900">
-            Confirm Lead Deletion
+          <DialogTitle className="text-base font-bold text-slate-900">
+            Confirm Deletion
           </DialogTitle>
-          <DialogDescription className="text-slate-600 mt-1">
-            Are you sure you want to permanently delete{' '}
-            <span className="font-semibold text-slate-900">{lead.name}</span> from{' '}
-            <span className="font-semibold text-slate-900">{lead.company}</span>?
-            This action cannot be undone.
+          <DialogDescription className="text-xs text-slate-500 mt-1">
+            Are you sure you want to remove{' '}
+            <span className="font-semibold text-slate-800">{lead.name}</span> (
+            {lead.company}) from your pipeline? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
 
@@ -52,18 +51,22 @@ export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
           <Button
             type="button"
             variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={isDeleting}
+            className="text-xs"
           >
             Cancel
           </Button>
           <Button
             type="button"
             variant="destructive"
+            size="sm"
             onClick={onConfirm}
             disabled={isDeleting}
+            className="text-xs"
           >
-            {isDeleting ? 'Deleting...' : 'Yes, Delete Lead'}
+            {isDeleting ? 'Deleting...' : 'Delete Lead'}
           </Button>
         </DialogFooter>
       </DialogContent>

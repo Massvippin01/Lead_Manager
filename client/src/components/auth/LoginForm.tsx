@@ -9,7 +9,7 @@ import { apiRequest } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Lock, ArrowRight } from 'lucide-react';
 
 export const LoginForm: React.FC = () => {
   const router = useRouter();
@@ -26,7 +26,7 @@ export const LoginForm: React.FC = () => {
     if (!email.trim()) {
       errs.email = 'Email address is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      errs.email = 'Please enter a valid email address';
+      errs.email = 'Enter a valid email address';
     }
 
     if (!password) {
@@ -53,10 +53,10 @@ export const LoginForm: React.FC = () => {
       });
 
       login(res.data.token, res.data.user);
-      success('Welcome back!', `Signed in as ${res.data.user.name}`);
+      success('Signed in', `Welcome back, ${res.data.user.name}`);
       router.push('/');
     } catch (err: any) {
-      error('Authentication Failed', err.message || 'Invalid credentials');
+      error('Authentication Error', err.message || 'Invalid email or password');
     } finally {
       setIsLoading(false);
     }
@@ -69,90 +69,86 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-xl border-slate-200">
-      <CardHeader className="text-center pb-2">
-        <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white mb-2 shadow-lg shadow-blue-500/25">
-          <Sparkles className="h-6 w-6" />
+    <Card className="w-full max-w-sm border-slate-200/90 shadow-sm bg-white">
+      <CardHeader className="text-left pb-2">
+        <div className="h-8 w-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-sm mb-3">
+          M
         </div>
-        <CardTitle className="text-2xl font-bold text-slate-900">Sign in to your account</CardTitle>
-        <CardDescription className="text-slate-500">
-          Enter your credentials to access your sales leads pipeline
+        <CardTitle className="text-xl font-bold text-slate-900">Sign In</CardTitle>
+        <CardDescription className="text-xs text-slate-500">
+          Access your sales leads pipeline workspace
         </CardDescription>
       </CardHeader>
 
       <CardContent>
         {/* Quick Demo Credentials Pill */}
-        <div className="mb-5 p-3 rounded-xl bg-blue-50/70 border border-blue-200/60 text-xs text-blue-900 flex items-center justify-between">
+        <div className="mb-4 p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 flex items-center justify-between">
           <div>
-            <span className="font-semibold block">Need demo credentials?</span>
-            <span className="text-blue-700">demo@meru.com / password123</span>
+            <span className="font-semibold block text-[11px] text-slate-500">Demo Credentials</span>
+            <span className="font-mono text-[11px] text-slate-800">demo@meru.com / password123</span>
           </div>
-          <Button
+          <button
             type="button"
-            variant="outline"
-            size="sm"
             onClick={fillDemoAccount}
-            className="text-xs bg-white text-blue-700 hover:bg-blue-100 border-blue-200"
+            className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 px-2 py-1 rounded hover:bg-slate-200/60 transition-colors"
           >
             Auto-fill
-          </Button>
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Email Address
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Email
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <Input
                 type="email"
                 placeholder="you@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`pl-9 ${fieldErrors.email ? 'border-rose-400 focus-visible:ring-rose-500/10' : ''}`}
+                className={`pl-8 text-xs h-9 ${fieldErrors.email ? 'border-rose-400' : ''}`}
               />
             </div>
             {fieldErrors.email && (
-              <p className="text-xs text-rose-500 mt-1">{fieldErrors.email}</p>
+              <p className="text-[11px] text-rose-500 mt-1">{fieldErrors.email}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <Input
                 type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`pl-9 ${fieldErrors.password ? 'border-rose-400 focus-visible:ring-rose-500/10' : ''}`}
+                className={`pl-8 text-xs h-9 ${fieldErrors.password ? 'border-rose-400' : ''}`}
               />
             </div>
             {fieldErrors.password && (
-              <p className="text-xs text-rose-500 mt-1">{fieldErrors.password}</p>
+              <p className="text-[11px] text-rose-500 mt-1">{fieldErrors.password}</p>
             )}
           </div>
 
-          <Button type="submit" className="w-full mt-2" disabled={isLoading}>
-            {isLoading ? (
-              'Authenticating...'
-            ) : (
-              <>
-                Sign In <ArrowRight className="h-4 w-4 ml-1.5" />
-              </>
-            )}
+          <Button
+            type="submit"
+            className="w-full h-9 text-xs bg-slate-900 hover:bg-slate-800 text-white mt-2"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing in...' : 'Sign in to workspace'}
           </Button>
         </form>
       </CardContent>
 
-      <CardFooter className="flex justify-center border-t border-slate-100 pt-4 text-xs text-slate-500">
-        Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-semibold text-blue-600 hover:underline ml-1">
-          Create one now
+      <CardFooter className="flex justify-center border-t border-slate-100 pt-3 text-xs text-slate-500">
+        Need an account?{' '}
+        <Link href="/register" className="font-semibold text-slate-900 hover:underline ml-1">
+          Create account
         </Link>
       </CardFooter>
     </Card>
