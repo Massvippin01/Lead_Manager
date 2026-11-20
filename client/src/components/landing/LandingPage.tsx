@@ -1415,37 +1415,6 @@ export const LandingPage: React.FC = () => {
           </Button>
         </div>
       </section>
-
-      {/* 9. Footer */}
-      <footer className="border-t border-slate-200 pt-6 pb-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-6 h-6 rounded-md bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-2xs">
-            <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 19V5l8 9 8-9v14" />
-            </svg>
-          </div>
-          <span className="font-bold text-slate-800">Meru Lead Manager</span>
-          <span>·</span>
-          <span>Full Stack Screening Project</span>
-        </div>
-
-        <div className="flex items-center space-x-3 sm:space-x-4">
-          <a
-            href="https://github.com/Massvippin01/Lead_Manager.git"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-1 hover:text-slate-900 transition-colors font-medium"
-          >
-            <span>GitHub Repository</span>
-            <ExternalLink className="h-3 w-3" />
-          </a>
-          <span>·</span>
-          <span className="text-emerald-600 font-semibold flex items-center">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
-            Live Systems Active
-          </span>
-        </div>
-      </footer>
     </div>
   );
 };
