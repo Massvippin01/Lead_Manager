@@ -17,6 +17,7 @@ import { DeleteConfirmDialog } from '@/components/dashboard/DeleteConfirmDialog'
 import { CsvImportModal } from '@/components/dashboard/CsvImportModal';
 import { KeyboardShortcutsDialog } from '@/components/dashboard/KeyboardShortcutsDialog';
 import { CommandPalette } from '@/components/dashboard/CommandPalette';
+import { LandingPage } from '@/components/landing/LandingPage';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, ArrowRight } from 'lucide-react';
 
@@ -549,47 +550,7 @@ export default function DashboardPage() {
 
   // Unauthenticated Workspace Gateway
   if (!user && !isAuthLoading) {
-    return (
-      <div className="py-14 max-w-4xl mx-auto">
-        <div className="border border-zinc-200/90 rounded-2xl bg-white p-8 sm:p-12 shadow-sm text-center">
-          <div className="h-10 w-10 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-bold text-base mx-auto mb-5 shadow-xs">
-            M
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900">
-            Meru Lead Manager
-          </h1>
-
-          <p className="mt-3 text-sm sm:text-base text-zinc-600 max-w-xl mx-auto">
-            High-density sales CRM workspace with Table & Kanban views, P1/P2/P3 prioritization, deal value metrics, and two-way CSV sync.
-          </p>
-
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/login">
-              <Button size="lg" className="w-full sm:w-auto text-xs sm:text-sm bg-zinc-900 hover:bg-zinc-800 text-white">
-                Sign in to Demo Account
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto text-xs sm:text-sm">
-                Create Representative Account
-              </Button>
-            </Link>
-          </div>
-
-          <div className="mt-10 p-4 rounded-xl bg-zinc-50 border border-zinc-200/80 max-w-md mx-auto text-left text-xs text-zinc-600">
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-semibold text-zinc-900">Evaluation Demo Profile</span>
-              <span className="text-[11px] font-mono bg-zinc-200/70 text-zinc-700 px-1.5 py-0.5 rounded">
-                Pre-seeded
-              </span>
-            </div>
-            <p className="font-mono text-zinc-700">demo@meru.com / password123</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <LandingPage />;
   }
 
   // Initial Auth Loading
