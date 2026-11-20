@@ -39,6 +39,13 @@ import {
   Shield,
   KeyRound,
   FileCode2,
+  Phone,
+  MessageSquare,
+  Terminal,
+  Server,
+  ArrowUpRight,
+  CheckCheck,
+  Clock,
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
@@ -460,11 +467,11 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. Core Capabilities Bento Grid */}
+      {/* 3. Core Capabilities Bento Grid Showcase */}
       <section className="space-y-6">
         <div className="text-center space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full">
-            Enterprise Architecture
+            Enterprise Architecture & Workflows
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mt-2">
             Engineered for Sales Velocity & Pipeline Mastery
@@ -474,71 +481,435 @@ export const LandingPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Card 1: Dual Workspaces */}
-          <div className="p-5.5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all space-y-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-900">
-              <Table className="h-5 w-5 text-indigo-600" />
+        {/* Asymmetrical Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* Card 1: Dual Workspaces (Span 2 cols on lg) */}
+          <div className="lg:col-span-2 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group">
+            <div className="p-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div className="h-9 w-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                    <Table className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-600">
+                      View Architecture
+                    </span>
+                    <h3 className="font-bold text-base text-slate-900 leading-tight">
+                      Dual-Engine Workspace: Table & Kanban
+                    </h3>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-1.5 bg-slate-100 px-2 py-1 rounded-md text-[11px] font-mono text-slate-600 border border-slate-200">
+                  <span>Toggle:</span>
+                  <kbd className="px-1.5 py-0.2 bg-white rounded border border-slate-300 font-bold text-slate-900 shadow-2xs">
+                    V
+                  </kbd>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Seamlessly toggle between high-density spreadsheet tables and drag-free visual Kanban pipeline stages with 0 state loss. Jump records at the speed of thought with <kbd className="px-1 py-0.2 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">J</kbd> and <kbd className="px-1 py-0.2 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">K</kbd>.
+              </p>
             </div>
-            <h3 className="font-bold text-sm text-slate-900">Dual Table & Kanban Modes</h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Switch between compact spreadsheet density and visual drag-free pipeline stages with keyboard shortcut <kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 text-[10px] font-mono font-bold">V</kbd>.
-            </p>
+
+            {/* Embedded Micro-UI Preview */}
+            <div className="px-6 pb-6 pt-1">
+              <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 shadow-inner space-y-2.5">
+                <div className="flex items-center justify-between text-xs pb-1.5 border-b border-slate-200/80">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="px-2 py-0.5 rounded-md bg-white text-slate-900 font-semibold shadow-2xs border border-slate-200/80 text-[11px] flex items-center">
+                      <Table className="h-3 w-3 mr-1 text-indigo-600" />
+                      Table Grid
+                    </span>
+                    <span className="px-2 py-0.5 rounded-md text-slate-500 font-medium text-[11px] flex items-center hover:text-slate-800 transition-colors">
+                      <LayoutGrid className="h-3 w-3 mr-1 text-slate-400" />
+                      Kanban Board
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-600 font-medium flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
+                    DOM Virtualized &lt;4ms
+                  </span>
+                </div>
+
+                {/* Mini Table Rows Preview */}
+                <div className="space-y-1.5 font-mono text-xs">
+                  {/* Row 1 - Active Focus */}
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-indigo-300 shadow-xs ring-1 ring-indigo-500/10">
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <span className="h-2 w-2 rounded-full bg-indigo-600 shrink-0" />
+                      <div className="truncate">
+                        <span className="font-bold text-slate-900 font-sans text-xs">Sarah Jenkins</span>
+                        <span className="text-slate-400 font-sans text-[11px] ml-1.5">Acme Corporation</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 shrink-0">
+                      <span className="font-bold text-slate-900 text-xs">$125,000</span>
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                        P1 Urgent
+                      </span>
+                      <span className="px-2 py-0.2 rounded-full text-[10px] font-sans font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Qualified
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Row 2 */}
+                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/70 border border-slate-200 text-slate-600">
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <span className="h-2 w-2 rounded-full bg-slate-300 shrink-0" />
+                      <div className="truncate">
+                        <span className="font-bold text-slate-800 font-sans text-xs">David Chen</span>
+                        <span className="text-slate-400 font-sans text-[11px] ml-1.5">CloudScale Systems</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 shrink-0">
+                      <span className="font-bold text-slate-800 text-xs">$85,000</span>
+                      <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                        P2 Med
+                      </span>
+                      <span className="px-2 py-0.2 rounded-full text-[10px] font-sans font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                        In Dialogue
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Card 2: Deal Health Scoring */}
-          <div className="p-5.5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all space-y-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-900">
-              <Activity className="h-5 w-5 text-emerald-600" />
+          {/* Card 2: Algorithmic Deal Health Engine (Span 1 col on lg) */}
+          <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all p-6 flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <div className="h-9 w-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+                  <Activity className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600">
+                    Proprietary Logic
+                  </span>
+                  <h3 className="font-bold text-base text-slate-900 leading-tight">
+                    Algorithmic Deal Health
+                  </h3>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Dynamic 0-100 win probability index mathematically evaluates deal valuation, priority urgency, pipeline stage, and touchpoint recency in real time.
+              </p>
             </div>
-            <h3 className="font-bold text-sm text-slate-900">Algorithmic Deal Health Scoring</h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Dynamic win probability scoring (0-100) mathematically evaluates contract valuation, urgency tier, pipeline stage, and touchpoint recency.
-            </p>
+
+            {/* Embedded Health Meter UI */}
+            <div className="mt-4 p-3.5 rounded-xl border border-slate-200 bg-slate-50/80 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-baseline space-x-1">
+                    <span className="text-3xl font-extrabold text-emerald-600 font-mono">92</span>
+                    <span className="text-xs text-slate-400 font-mono">/ 100</span>
+                  </div>
+                  <span className="text-[11px] font-bold text-emerald-800 block">
+                    High Closing Velocity
+                  </span>
+                </div>
+                <div className="h-10 w-10 rounded-full border-4 border-emerald-500 border-t-emerald-200 flex items-center justify-center font-mono text-[10px] font-bold text-emerald-700 bg-emerald-50">
+                  92%
+                </div>
+              </div>
+
+              {/* Factor Breakdown Bars */}
+              <div className="space-y-1.5 pt-1 border-t border-slate-200/80 text-[10px] font-mono">
+                <div>
+                  <div className="flex justify-between text-slate-600 mb-0.5">
+                    <span>Valuation ($125k)</span>
+                    <span className="font-bold text-emerald-600">35 / 35 pts</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full w-full" />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-slate-600 mb-0.5">
+                    <span>Stage (Qualified Deal)</span>
+                    <span className="font-bold text-emerald-600">30 / 30 pts</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full w-full" />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-slate-600 mb-0.5">
+                    <span>Urgency Tier (P1 Hot)</span>
+                    <span className="font-bold text-rose-600">20 / 20 pts</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-rose-500 rounded-full w-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Card 3: Slide-Over Inspector */}
-          <div className="p-5.5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all space-y-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-900">
-              <Layers className="h-5 w-5 text-sky-600" />
+          {/* Card 3: Spotlight Command Bar (Span 1 col on lg) */}
+          <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all p-6 flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <div className="h-9 w-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600">
+                  <Command className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-600">
+                    Speed Interface
+                  </span>
+                  <h3 className="font-bold text-base text-slate-900 leading-tight">
+                    Spotlight Command Palette
+                  </h3>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Raycast-style spotlight command center accessible anywhere via <kbd className="px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 font-mono text-[10px] font-bold">⌘K</kbd>. Instant fuzzy search, stage updates, and rapid prospect creation.
+              </p>
             </div>
-            <h3 className="font-bold text-sm text-slate-900">Slide-Over Prospect Inspector</h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Deep dive into account dossiers, log call interactions and meeting notes with chronological audit trails, and advance stages in 1 click.
-            </p>
+
+            {/* Embedded Command Bar Preview */}
+            <div className="mt-4 p-3 rounded-xl bg-slate-900 text-white shadow-lg space-y-2 border border-slate-800">
+              <div className="flex items-center space-x-2 pb-2 border-b border-slate-800 text-xs">
+                <Search className="h-3.5 w-3.5 text-slate-400" />
+                <span className="text-slate-300 font-medium">Sarah Jenkins</span>
+                <span className="h-3.5 w-0.5 bg-indigo-400 animate-pulse" />
+                <kbd className="ml-auto text-[9px] font-mono bg-slate-800 text-slate-400 px-1 py-0.2 rounded border border-slate-700">
+                  ESC
+                </kbd>
+              </div>
+
+              <div className="space-y-1 text-xs">
+                <div className="flex items-center justify-between p-1.5 rounded-lg bg-indigo-600/30 text-white border border-indigo-500/40 font-medium">
+                  <div className="flex items-center space-x-2 truncate">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    <span className="truncate">Open Sarah Jenkins (Acme)</span>
+                  </div>
+                  <kbd className="text-[9px] font-mono bg-indigo-950 px-1 py-0.2 rounded border border-indigo-800">
+                    ↵
+                  </kbd>
+                </div>
+
+                <div className="flex items-center justify-between p-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-colors">
+                  <div className="flex items-center space-x-2">
+                    <Phone className="h-3 w-3 text-slate-500" />
+                    <span>Log Call Interaction Note</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">⌘N</span>
+                </div>
+
+                <div className="flex items-center justify-between p-1.5 rounded-lg text-slate-400 hover:text-slate-200 transition-colors">
+                  <div className="flex items-center space-x-2">
+                    <Flame className="h-3 w-3 text-rose-400" />
+                    <span>Filter: High Priority (P1)</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500">⌘P</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Card 4: Keyboard Speed */}
-          <div className="p-5.5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all space-y-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-900">
-              <Command className="h-5 w-5 text-purple-600" />
+          {/* Card 4: Slide-Over Prospect Dossier (Span 2 cols on lg) */}
+          <div className="lg:col-span-2 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group">
+            <div className="p-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div className="h-9 w-9 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+                    <Layers className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-sky-600">
+                      Prospect Intelligence
+                    </span>
+                    <h3 className="font-bold text-base text-slate-900 leading-tight">
+                      Slide-Over Dossier & Audit Trails
+                    </h3>
+                  </div>
+                </div>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-sky-50 text-sky-700 border border-sky-200">
+                  Zero Context Switch
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Inspect rich account dossiers, log timestamped interaction notes, advance stages, and review immutable chronological audit trails without losing your position in the main pipeline.
+              </p>
             </div>
-            <h3 className="font-bold text-sm text-slate-900">Spotlight Palette & J/K Navigation</h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Raycast-style spotlight command bar (<kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 text-[10px] font-mono font-bold">⌘K</kbd>), Superhuman table hopping (<kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 text-[10px] font-mono font-bold">J</kbd>/<kbd className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-300 text-[10px] font-mono font-bold">K</kbd>), and instant fuzzy search.
-            </p>
+
+            {/* Embedded Dossier Drawer Preview */}
+            <div className="px-6 pb-6 pt-1">
+              <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 space-y-3 shadow-inner">
+                {/* Dossier Top Banner */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-200">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="h-8 w-8 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center">
+                      SJ
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-900 leading-tight">Sarah Jenkins</p>
+                      <p className="text-[11px] text-slate-500 font-sans">VP Procurement · Acme Corporation</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 font-mono text-xs">
+                    <span className="font-bold text-slate-900">$125,000</span>
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                      P1 - High
+                    </span>
+                  </div>
+                </div>
+
+                {/* Stage Stepper Progress Bar */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                    Pipeline Progression
+                  </span>
+                  <div className="grid grid-cols-4 gap-1 text-[10px] font-mono font-medium text-center">
+                    <div className="bg-emerald-100 text-emerald-800 py-1 rounded border border-emerald-300 flex items-center justify-center">
+                      <Check className="h-2.5 w-2.5 mr-0.5" />
+                      Inquiry
+                    </div>
+                    <div className="bg-emerald-100 text-emerald-800 py-1 rounded border border-emerald-300 flex items-center justify-center">
+                      <Check className="h-2.5 w-2.5 mr-0.5" />
+                      Contacted
+                    </div>
+                    <div className="bg-emerald-600 text-white font-bold py-1 rounded border border-emerald-700 shadow-xs flex items-center justify-center">
+                      <span className="h-1.5 w-1.5 rounded-full bg-white mr-1 animate-pulse" />
+                      Qualified
+                    </div>
+                    <div className="bg-white text-slate-400 py-1 rounded border border-slate-200">
+                      Closed Won
+                    </div>
+                  </div>
+                </div>
+
+                {/* Chronological Note Timeline Snippet */}
+                <div className="p-2.5 rounded-lg bg-white border border-slate-200 space-y-1">
+                  <div className="flex items-center justify-between text-[10px] text-slate-500">
+                    <span className="font-semibold text-slate-800 flex items-center">
+                      <Phone className="h-3 w-3 mr-1 text-indigo-600" />
+                      Call Interaction Logged
+                    </span>
+                    <span className="font-mono text-slate-400">14m ago · Alex Johnson</span>
+                  </div>
+                  <p className="text-[11px] text-slate-700 leading-normal">
+                    &quot;Technical evaluation cleared by security team. Pricing approved for 50 enterprise seats at $125k annual contract value. Master agreement sent.&quot;
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Card 5: Two-Way CSV Sync */}
-          <div className="p-5.5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all space-y-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-900">
-              <Download className="h-5 w-5 text-amber-600" />
+          {/* Card 5: Two-Way CSV Sync & Bulk Operations (Span 1 col on lg) */}
+          <div className="rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all p-6 flex flex-col justify-between group">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <div className="h-9 w-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600">
+                  <Download className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-600">
+                    Data Operations
+                  </span>
+                  <h3 className="font-bold text-base text-slate-900 leading-tight">
+                    Two-Way CSV & Bulk Matrix
+                  </h3>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Batch import inbound prospect datasets with schema validation previews, bulk advance pipeline stages in 1 click, and export RFC-compliant CSVs.
+              </p>
             </div>
-            <h3 className="font-bold text-sm text-slate-900">Two-Way CSV Ingestion & Export</h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              Batch import prospect datasets with schema validation previews, bulk stage updates, and instant RFC-compliant CSV export downloads.
-            </p>
+
+            {/* Embedded Ingestion & Export Preview */}
+            <div className="mt-4 p-3.5 rounded-xl border border-slate-200 bg-slate-50/80 space-y-2.5">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 text-xs">
+                <div className="flex items-center space-x-2 truncate">
+                  <FileSpreadsheet className="h-4 w-4 text-emerald-600 shrink-0" />
+                  <div className="truncate">
+                    <p className="font-mono font-bold text-slate-900 text-[11px] truncate">
+                      inbound_q4_leads.csv
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-mono">14.2 KB · 10 Accounts</p>
+                  </div>
+                </div>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                  100% Valid
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-[11px] font-semibold">
+                <div className="p-2 rounded-lg bg-white border border-slate-200 text-center text-slate-700 flex items-center justify-center space-x-1">
+                  <CheckSquare className="h-3 w-3 text-indigo-600" />
+                  <span>Bulk Select</span>
+                </div>
+                <div className="p-2 rounded-lg bg-slate-900 text-white text-center flex items-center justify-center space-x-1 shadow-2xs">
+                  <Download className="h-3 w-3 text-white" />
+                  <span>Export CSV</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Card 6: Multi-Database ORM */}
-          <div className="p-5.5 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all space-y-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-900">
-              <Database className="h-5 w-5 text-teal-600" />
+          {/* Card 6: Enterprise Cloud PostgreSQL & Architecture (Span 2 cols on lg) */}
+          <div className="lg:col-span-2 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group">
+            <div className="p-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <div className="h-9 w-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-600">
+                    <Database className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-teal-600">
+                      Cloud Infrastructure
+                    </span>
+                    <h3 className="font-bold text-base text-slate-900 leading-tight">
+                      Cloud PostgreSQL on Neon & Clean Architecture
+                    </h3>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-xs font-mono font-bold text-slate-700">Neon Cloud Active</span>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Built on enterprise PostgreSQL on Neon with Prisma ORM relational indexing, cascade deletions, Express RESTful endpoints, and Docker containerization.
+              </p>
             </div>
-            <h3 className="font-bold text-sm text-slate-900">Cloud PostgreSQL & Docker Stack</h3>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal">
-              High-throughput cloud PostgreSQL on Neon with Prisma ORM relational indexing, cascade deletions, and zero-config local containerization.
-            </p>
+
+            {/* Embedded Architecture Terminal Preview */}
+            <div className="px-6 pb-6 pt-1">
+              <div className="rounded-xl border border-slate-800 bg-slate-950 p-3.5 text-white shadow-xl space-y-2.5 font-mono text-xs">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-[11px] text-slate-400">
+                  <div className="flex items-center space-x-2">
+                    <Terminal className="h-3.5 w-3.5 text-emerald-400" />
+                    <span className="text-slate-200">meru-lead-api.onrender.com</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.2 rounded border border-emerald-800">
+                    SSL Enforced · 14ms
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                  {/* Schema Relation */}
+                  <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                    <span className="text-[10px] text-slate-500 block uppercase font-bold">Relational Integrity</span>
+                    <p className="text-emerald-300 font-semibold">User (1) ──&gt; Lead (N) ──&gt; Note (N)</p>
+                    <p className="text-slate-400 text-[10px]">onDelete: Cascade · Compound B-Tree Index</p>
+                  </div>
+
+                  {/* RESTful Endpoints */}
+                  <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                    <span className="text-[10px] text-slate-500 block uppercase font-bold">RESTful Contract</span>
+                    <p className="text-sky-300 font-semibold">POST /api/v1/leads <span className="text-emerald-400">201 OK</span></p>
+                    <p className="text-slate-400 text-[10px]">Zod Validation · JWT Auth · Express MVC</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
