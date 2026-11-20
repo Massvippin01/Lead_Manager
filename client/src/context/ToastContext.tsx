@@ -61,7 +61,18 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ toast: addToast, success, error }}>
       {children}
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] flex flex-col space-y-2 pointer-events-none w-[calc(100vw-2rem)] sm:w-96 max-w-sm">
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          zIndex: 99999,
+          pointerEvents: 'none',
+          maxWidth: '384px',
+          width: 'calc(100vw - 2rem)',
+        }}
+        className="flex flex-col space-y-2"
+      >
         <AnimatePresence mode="popLayout">
           {toasts.map((t) => (
             <motion.div
