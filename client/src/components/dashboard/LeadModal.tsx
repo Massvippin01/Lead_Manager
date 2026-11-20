@@ -236,7 +236,7 @@ export const LeadModal: React.FC<LeadModalProps> = ({
                 <Input
                   type="number"
                   min="0"
-                  step="500"
+                  step="any"
                   placeholder="25000"
                   value={formData.value || ''}
                   onChange={(e) =>
