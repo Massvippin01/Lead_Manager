@@ -87,24 +87,24 @@ export const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="py-6 sm:py-12 max-w-6xl mx-auto space-y-20">
+    <div className="py-4 sm:py-12 max-w-6xl mx-auto space-y-12 sm:space-y-20 overflow-x-hidden w-full">
       {/* 1. Hero Section */}
-      <section className="relative text-center space-y-6 pt-4 sm:pt-10">
+      <section className="relative text-center space-y-5 sm:space-y-6 pt-2 sm:pt-10 overflow-hidden">
         {/* Subtle Background Glow Blob */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-gradient-to-tr from-indigo-500/10 via-sky-500/10 to-emerald-500/10 blur-3xl -z-10 pointer-events-none rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] xs:w-[380px] sm:w-[500px] h-[200px] sm:h-[300px] bg-gradient-to-tr from-indigo-500/10 via-sky-500/10 to-emerald-500/10 blur-3xl -z-10 pointer-events-none rounded-full" />
 
         {/* Release Pill Badge */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-slate-200/90 text-slate-800 text-xs font-semibold shadow-sm hover:border-slate-300 transition-all backdrop-blur-md"
+          className="inline-flex items-center space-x-1.5 sm:space-x-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-white/90 border border-slate-200/90 text-slate-800 text-xs font-semibold shadow-sm hover:border-slate-300 transition-all backdrop-blur-md max-w-full"
         >
-          <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
           <span className="text-slate-900 font-bold">Meru CRM 2.0</span>
-          <span className="text-slate-300">·</span>
-          <span className="text-slate-600 font-mono text-[11px]">Production Screening Architecture</span>
-          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-indigo-50 text-indigo-700 font-bold border border-indigo-200/60">
+          <span className="text-slate-300 hidden sm:inline">·</span>
+          <span className="text-slate-600 font-mono text-[11px] hidden sm:inline">Production Screening Architecture</span>
+          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-indigo-50 text-indigo-700 font-bold border border-indigo-200/60 shrink-0">
             LTS Verified
           </span>
         </motion.div>
@@ -114,15 +114,15 @@ export const LandingPage: React.FC = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.05 }}
-          className="space-y-4 max-w-3xl mx-auto"
+          className="space-y-3 sm:space-y-4 max-w-3xl mx-auto px-2"
         >
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
+          <h1 className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.18] sm:leading-[1.12] break-words">
             Turn Inbound Prospects into{' '}
             <span className="bg-gradient-to-r from-slate-950 via-indigo-900 to-indigo-700 bg-clip-text text-transparent underline decoration-indigo-300/60 decoration-wavy decoration-2">
               Predictable Revenue
             </span>
           </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
+          <p className="text-xs xs:text-sm sm:text-base lg:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
             An enterprise-grade, high-density sales CRM workspace engineered for modern account executives.
             Switch seamlessly between spreadsheet-speed tables and visual Kanban boards, calculate real-time deal health, and execute bulk pipelines.
           </p>
@@ -133,14 +133,14 @@ export const LandingPage: React.FC = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.1 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3 pt-2 max-w-md sm:max-w-none mx-auto w-full px-2"
         >
           {/* 1-Click Instant Demo Button */}
           <Button
             size="lg"
             onClick={handle1ClickDemo}
             disabled={isDemoLoading}
-            className="w-full sm:w-auto h-12 px-7 text-sm bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-md hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all active:scale-98"
+            className="w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-7 text-xs sm:text-sm bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-md hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all active:scale-98"
           >
             {isDemoLoading ? (
               <>
@@ -161,7 +161,7 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto h-12 px-6 text-sm border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl shadow-2xs hover:-translate-y-0.5 transition-all"
+              className="w-full sm:w-auto h-11 sm:h-12 px-5 sm:px-6 text-xs sm:text-sm border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl shadow-2xs hover:-translate-y-0.5 transition-all"
             >
               Sign In with Account
             </Button>
@@ -172,7 +172,7 @@ export const LandingPage: React.FC = () => {
             <Button
               variant="ghost"
               size="lg"
-              className="w-full sm:w-auto h-12 px-5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium rounded-xl"
+              className="w-full sm:w-auto h-11 sm:h-12 px-4 sm:px-5 text-xs sm:text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 font-medium rounded-xl"
             >
               <UserPlus className="h-4 w-4 mr-1.5" />
               Create Rep Profile
@@ -185,15 +185,15 @@ export const LandingPage: React.FC = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.15 }}
-          className="pt-2"
+          className="pt-1 px-2"
         >
-          <div className="inline-flex flex-col sm:flex-row items-center gap-2 p-2 px-3.5 rounded-xl bg-white border border-slate-200/90 text-xs text-slate-600 shadow-sm">
-            <span className="font-semibold text-slate-800 flex items-center">
-              <ShieldCheck className="h-4 w-4 mr-1.5 text-emerald-600" />
+          <div className="inline-flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2 p-2 px-3 sm:px-3.5 rounded-xl bg-white border border-slate-200/90 text-xs text-slate-600 shadow-sm max-w-full">
+            <span className="font-semibold text-slate-800 flex items-center text-center text-[11px] sm:text-xs">
+              <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 text-emerald-600 shrink-0" />
               Pre-seeded Evaluator Credentials:
             </span>
-            <div className="flex items-center space-x-2 font-mono text-[11px] bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">
-              <span className="text-slate-900 font-bold">demo@meru.com</span>
+            <div className="flex items-center space-x-1.5 sm:space-x-2 font-mono text-[10px] sm:text-[11px] bg-slate-50 px-2 sm:px-2.5 py-1 rounded-md border border-slate-200">
+              <span className="text-slate-900 font-bold truncate">demo@meru.com</span>
               <span className="text-slate-300">/</span>
               <span className="text-slate-900 font-bold">password123</span>
               <button
@@ -218,17 +218,17 @@ export const LandingPage: React.FC = () => {
 
       {/* 2. Interactive Product Preview Mockup Window */}
       <section className="space-y-3">
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between px-1 gap-2 flex-wrap sm:flex-nowrap">
           <div className="flex items-center space-x-2 text-xs font-semibold text-slate-600">
-            <Layers className="h-3.5 w-3.5 text-indigo-600" />
-            <span>Interactive Production Workspace Preview</span>
+            <Layers className="h-3.5 w-3.5 text-indigo-600 shrink-0" />
+            <span className="truncate">Interactive Production Workspace Preview</span>
           </div>
 
-          <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs shadow-2xs">
+          <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs shadow-2xs shrink-0">
             <button
               type="button"
               onClick={() => setPreviewTab('table')}
-              className={`flex items-center space-x-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+              className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold transition-all ${
                 previewTab === 'table'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-500 hover:text-slate-800'
@@ -240,7 +240,7 @@ export const LandingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setPreviewTab('kanban')}
-              className={`flex items-center space-x-1.5 px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+              className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1 rounded-md text-xs font-semibold transition-all ${
                 previewTab === 'kanban'
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-500 hover:text-slate-800'
@@ -255,24 +255,25 @@ export const LandingPage: React.FC = () => {
         {/* Mac-style Window Mockup */}
         <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xl overflow-hidden transition-all">
           {/* Top Window Bar */}
-          <div className="h-10 bg-slate-50/90 border-b border-slate-200 px-4 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="h-3 w-3 rounded-full bg-rose-500 inline-block" />
-              <span className="h-3 w-3 rounded-full bg-amber-400 inline-block" />
-              <span className="h-3 w-3 rounded-full bg-emerald-500 inline-block" />
+          <div className="h-9 sm:h-10 bg-slate-50/90 border-b border-slate-200 px-3 sm:px-4 flex items-center justify-between gap-2 overflow-hidden">
+            <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+              <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-rose-500 inline-block" />
+              <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-amber-400 inline-block" />
+              <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-emerald-500 inline-block" />
             </div>
 
-            <div className="text-[11px] font-mono font-medium text-slate-500 flex items-center space-x-2">
-              <Building2 className="h-3 w-3 text-slate-400" />
-              <span>meru.app/pipeline — Enterprise SaaS Pipeline</span>
-              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+            <div className="text-[10px] sm:text-[11px] font-mono font-medium text-slate-500 flex items-center space-x-1.5 sm:space-x-2 truncate">
+              <Building2 className="h-3 w-3 text-slate-400 shrink-0" />
+              <span className="truncate max-w-[130px] xs:max-w-[190px] sm:max-w-none">meru.app/pipeline</span>
+              <span className="hidden md:inline text-slate-400">— Enterprise SaaS Pipeline</span>
+              <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 shrink-0">
                 Live 200 OK
               </span>
             </div>
 
-            <div className="flex items-center space-x-2 text-slate-400 text-xs">
-              <Command className="h-3.5 w-3.5" />
-              <span className="font-mono text-[10px]">⌘K Spotlight</span>
+            <div className="hidden xs:flex items-center space-x-1.5 text-slate-400 text-xs shrink-0">
+              <Command className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span className="font-mono text-[9px] sm:text-[10px]">⌘K Spotlight</span>
             </div>
           </div>
 
@@ -315,99 +316,105 @@ export const LandingPage: React.FC = () => {
           <div className="p-4 sm:p-5 bg-slate-50/60">
             {previewTab === 'table' ? (
               <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50/90 border-b border-slate-200 text-slate-500 font-semibold text-[11px] uppercase tracking-wider">
-                    <tr>
-                      <th className="py-2.5 px-3">Lead Account</th>
-                      <th className="py-2.5 px-3">Company</th>
-                      <th className="py-2.5 px-3">Deal Value</th>
-                      <th className="py-2.5 px-3">Priority</th>
-                      <th className="py-2.5 px-3">Pipeline Stage</th>
-                      <th className="py-2.5 px-3">Health Score</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    <tr className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-2.5 px-3">
-                        <div className="font-bold text-slate-900">Sarah Jenkins</div>
-                        <div className="text-[10px] text-slate-400 font-mono">sarah.j@acmecorp.com</div>
-                      </td>
-                      <td className="py-2.5 px-3 font-semibold text-slate-800">Acme Corporation</td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-slate-900">$125,000</td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                          <Flame className="h-2.5 w-2.5 mr-0.5" />
-                          P1 - High
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 mr-1.5" />
-                          Qualified Deal
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                          <span>92</span>
-                        </span>
-                      </td>
-                    </tr>
+                <div className="sm:hidden px-3 py-1.5 bg-slate-50 border-b border-slate-200 text-[10px] font-mono text-slate-500 flex items-center justify-between">
+                  <span>← Swipe horizontally to view all columns →</span>
+                  <span className="text-indigo-600 font-bold">6 Columns</span>
+                </div>
+                <div className="overflow-x-auto scrollbar-thin">
+                  <table className="w-full min-w-[620px] text-left text-xs">
+                    <thead className="bg-slate-50/90 border-b border-slate-200 text-slate-500 font-semibold text-[11px] uppercase tracking-wider">
+                      <tr>
+                        <th className="py-2.5 px-3">Lead Account</th>
+                        <th className="py-2.5 px-3">Company</th>
+                        <th className="py-2.5 px-3">Deal Value</th>
+                        <th className="py-2.5 px-3">Priority</th>
+                        <th className="py-2.5 px-3">Pipeline Stage</th>
+                        <th className="py-2.5 px-3">Health Score</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                      <tr className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-2.5 px-3">
+                          <div className="font-bold text-slate-900">Sarah Jenkins</div>
+                          <div className="text-[10px] text-slate-400 font-mono">sarah.j@acmecorp.com</div>
+                        </td>
+                        <td className="py-2.5 px-3 font-semibold text-slate-800">Acme Corporation</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-slate-900">$125,000</td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                            <Flame className="h-2.5 w-2.5 mr-0.5" />
+                            P1 - High
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 mr-1.5" />
+                            Qualified Deal
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                            <span>92</span>
+                          </span>
+                        </td>
+                      </tr>
 
-                    <tr className="bg-slate-50/30 hover:bg-slate-50/80 transition-colors">
-                      <td className="py-2.5 px-3">
-                        <div className="font-bold text-slate-900">David Chen</div>
-                        <div className="text-[10px] text-slate-400 font-mono">dchen@cloudscale.io</div>
-                      </td>
-                      <td className="py-2.5 px-3 font-semibold text-slate-800">CloudScale Systems</td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-slate-900">$85,000</td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                          P2 - Med
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500 mr-1.5" />
-                          In Dialogue
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                          <span>76</span>
-                        </span>
-                      </td>
-                    </tr>
+                      <tr className="bg-slate-50/30 hover:bg-slate-50/80 transition-colors">
+                        <td className="py-2.5 px-3">
+                          <div className="font-bold text-slate-900">David Chen</div>
+                          <div className="text-[10px] text-slate-400 font-mono">dchen@cloudscale.io</div>
+                        </td>
+                        <td className="py-2.5 px-3 font-semibold text-slate-800">CloudScale Systems</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-slate-900">$85,000</td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                            P2 - Med
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                            <span className="h-1.5 w-1.5 rounded-full bg-amber-500 mr-1.5" />
+                            In Dialogue
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                            <span>76</span>
+                          </span>
+                        </td>
+                      </tr>
 
-                    <tr className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-2.5 px-3">
-                        <div className="font-bold text-slate-900">Elena Rostova</div>
-                        <div className="text-[10px] text-slate-400 font-mono">elena@novatech.ai</div>
-                      </td>
-                      <td className="py-2.5 px-3 font-semibold text-slate-800">NovaTech AI</td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-slate-900">$45,000</td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                          <Flame className="h-2.5 w-2.5 mr-0.5" />
-                          P1 - High
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-800 border border-sky-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-sky-500 mr-1.5" />
-                          New Inquiry
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-                          <span>60</span>
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                      <tr className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-2.5 px-3">
+                          <div className="font-bold text-slate-900">Elena Rostova</div>
+                          <div className="text-[10px] text-slate-400 font-mono">elena@novatech.ai</div>
+                        </td>
+                        <td className="py-2.5 px-3 font-semibold text-slate-800">NovaTech AI</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-slate-900">$45,000</td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                            <Flame className="h-2.5 w-2.5 mr-0.5" />
+                            P1 - High
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-50 text-sky-800 border border-sky-200">
+                            <span className="h-1.5 w-1.5 rounded-full bg-sky-500 mr-1.5" />
+                            New Inquiry
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                            <span>60</span>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -535,15 +542,15 @@ export const LandingPage: React.FC = () => {
                 {/* Mini Table Rows Preview */}
                 <div className="space-y-1.5 font-mono text-xs">
                   {/* Row 1 - Active Focus */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-indigo-300 shadow-xs ring-1 ring-indigo-500/10">
-                    <div className="flex items-center space-x-2.5 min-w-0">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between p-2 rounded-lg bg-white border border-indigo-300 shadow-xs ring-1 ring-indigo-500/10 gap-1.5">
+                    <div className="flex items-center space-x-2 min-w-0">
                       <span className="h-2 w-2 rounded-full bg-indigo-600 shrink-0" />
                       <div className="truncate">
                         <span className="font-bold text-slate-900 font-sans text-xs">Sarah Jenkins</span>
-                        <span className="text-slate-400 font-sans text-[11px] ml-1.5">Acme Corporation</span>
+                        <span className="text-slate-400 font-sans text-[11px] ml-1.5 truncate">Acme Corporation</span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 shrink-0">
+                    <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 self-end xs:self-auto">
                       <span className="font-bold text-slate-900 text-xs">$125,000</span>
                       <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
                         P1 Urgent
@@ -555,15 +562,15 @@ export const LandingPage: React.FC = () => {
                   </div>
 
                   {/* Row 2 */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-white/70 border border-slate-200 text-slate-600">
-                    <div className="flex items-center space-x-2.5 min-w-0">
+                  <div className="flex flex-col xs:flex-row xs:items-center justify-between p-2 rounded-lg bg-white/70 border border-slate-200 text-slate-600 gap-1.5">
+                    <div className="flex items-center space-x-2 min-w-0">
                       <span className="h-2 w-2 rounded-full bg-slate-300 shrink-0" />
                       <div className="truncate">
                         <span className="font-bold text-slate-800 font-sans text-xs">David Chen</span>
-                        <span className="text-slate-400 font-sans text-[11px] ml-1.5">CloudScale Systems</span>
+                        <span className="text-slate-400 font-sans text-[11px] ml-1.5 truncate">CloudScale Systems</span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 shrink-0">
+                    <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 self-end xs:self-auto">
                       <span className="font-bold text-slate-800 text-xs">$85,000</span>
                       <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                         P2 Med
@@ -766,21 +773,21 @@ export const LandingPage: React.FC = () => {
                   <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
                     Pipeline Progression
                   </span>
-                  <div className="grid grid-cols-4 gap-1 text-[10px] font-mono font-medium text-center">
-                    <div className="bg-emerald-100 text-emerald-800 py-1 rounded border border-emerald-300 flex items-center justify-center">
-                      <Check className="h-2.5 w-2.5 mr-0.5" />
+                  <div className="grid grid-cols-4 gap-1 text-[9px] xs:text-[10px] font-mono font-medium text-center">
+                    <div className="bg-emerald-100 text-emerald-800 py-1 rounded border border-emerald-300 flex items-center justify-center truncate px-0.5">
+                      <Check className="h-2.5 w-2.5 mr-0.5 shrink-0" />
                       Inquiry
                     </div>
-                    <div className="bg-emerald-100 text-emerald-800 py-1 rounded border border-emerald-300 flex items-center justify-center">
-                      <Check className="h-2.5 w-2.5 mr-0.5" />
+                    <div className="bg-emerald-100 text-emerald-800 py-1 rounded border border-emerald-300 flex items-center justify-center truncate px-0.5">
+                      <Check className="h-2.5 w-2.5 mr-0.5 shrink-0" />
                       Contacted
                     </div>
-                    <div className="bg-emerald-600 text-white font-bold py-1 rounded border border-emerald-700 shadow-xs flex items-center justify-center">
-                      <span className="h-1.5 w-1.5 rounded-full bg-white mr-1 animate-pulse" />
+                    <div className="bg-emerald-600 text-white font-bold py-1 rounded border border-emerald-700 shadow-xs flex items-center justify-center truncate px-0.5">
+                      <span className="h-1.5 w-1.5 rounded-full bg-white mr-1 animate-pulse shrink-0" />
                       Qualified
                     </div>
-                    <div className="bg-white text-slate-400 py-1 rounded border border-slate-200">
-                      Closed Won
+                    <div className="bg-white text-slate-400 py-1 rounded border border-slate-200 truncate px-0.5">
+                      Closed
                     </div>
                   </div>
                 </div>
@@ -883,12 +890,12 @@ export const LandingPage: React.FC = () => {
             {/* Embedded Architecture Terminal Preview */}
             <div className="px-6 pb-6 pt-1">
               <div className="rounded-xl border border-slate-800 bg-slate-950 p-3.5 text-white shadow-xl space-y-2.5 font-mono text-xs">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-[11px] text-slate-400">
-                  <div className="flex items-center space-x-2">
-                    <Terminal className="h-3.5 w-3.5 text-emerald-400" />
-                    <span className="text-slate-200">meru-lead-api.onrender.com</span>
+                <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 pb-2 border-b border-slate-800 text-[11px] text-slate-400">
+                  <div className="flex items-center space-x-2 truncate">
+                    <Terminal className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <span className="text-slate-200 truncate">meru-lead-api.onrender.com</span>
                   </div>
-                  <span className="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.2 rounded border border-emerald-800">
+                  <span className="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.2 rounded border border-emerald-800 self-start xs:self-auto shrink-0">
                     SSL Enforced · 14ms
                   </span>
                 </div>
@@ -897,14 +904,14 @@ export const LandingPage: React.FC = () => {
                   {/* Schema Relation */}
                   <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
                     <span className="text-[10px] text-slate-500 block uppercase font-bold">Relational Integrity</span>
-                    <p className="text-emerald-300 font-semibold">User (1) ──&gt; Lead (N) ──&gt; Note (N)</p>
+                    <p className="text-emerald-300 font-semibold break-words">User (1) ──&gt; Lead (N) ──&gt; Note (N)</p>
                     <p className="text-slate-400 text-[10px]">onDelete: Cascade · Compound B-Tree Index</p>
                   </div>
 
                   {/* RESTful Endpoints */}
                   <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
                     <span className="text-[10px] text-slate-500 block uppercase font-bold">RESTful Contract</span>
-                    <p className="text-sky-300 font-semibold">POST /api/v1/leads <span className="text-emerald-400">201 OK</span></p>
+                    <p className="text-sky-300 font-semibold break-words">POST /api/v1/leads <span className="text-emerald-400">201 OK</span></p>
                     <p className="text-slate-400 text-[10px]">Zod Validation · JWT Auth · Express MVC</p>
                   </div>
                 </div>
@@ -915,7 +922,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* 4. Full Stack Screening Assignment Grading Rubric Compliance */}
-      <section className="p-6 sm:p-8 rounded-2xl bg-slate-900 text-white shadow-xl space-y-6">
+      <section className="p-4 sm:p-8 rounded-2xl bg-slate-900 text-white shadow-xl space-y-5 sm:space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-5">
           <div>
             <div className="flex items-center space-x-2">
@@ -1006,19 +1013,19 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* 5. Bottom Call to Action */}
-      <section className="text-center space-y-4 py-8 border-t border-slate-200">
-        <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+      <section className="text-center space-y-4 py-8 border-t border-slate-200 px-2">
+        <h3 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-slate-900 break-words">
           Ready to evaluate the active pipeline?
         </h3>
         <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
           Click below to immediately enter the live workspace with pre-populated accounts and real-time database sync.
         </p>
-        <div className="pt-2">
+        <div className="pt-2 max-w-sm mx-auto">
           <Button
             size="lg"
             onClick={handle1ClickDemo}
             disabled={isDemoLoading}
-            className="h-12 px-8 text-sm bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl active:scale-98 transition-all"
+            className="w-full sm:w-auto h-11 sm:h-12 px-6 sm:px-8 text-xs sm:text-sm bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg hover:shadow-xl active:scale-98 transition-all"
           >
             <Zap className="h-4 w-4 mr-2 text-amber-300 fill-amber-300" />
             Enter Live Workspace Now
@@ -1028,7 +1035,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* 6. Footer */}
-      <footer className="border-t border-slate-200 pt-6 pb-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+      <footer className="border-t border-slate-200 pt-6 pb-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
         <div className="flex items-center space-x-2.5">
           <div className="w-6 h-6 rounded-md bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-2xs">
             <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -1037,10 +1044,10 @@ export const LandingPage: React.FC = () => {
           </div>
           <span className="font-bold text-slate-800">Meru Lead Manager</span>
           <span>·</span>
-          <span>Full Stack Developer Screening Project</span>
+          <span>Screening Project</span>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3 sm:space-x-4">
           <a
             href="https://github.com/Massvippin01/Lead_Manager.git"
             target="_blank"
@@ -1053,7 +1060,7 @@ export const LandingPage: React.FC = () => {
           <span>·</span>
           <span className="text-emerald-600 font-semibold flex items-center">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
-            All Systems Operational
+            Live Systems Active
           </span>
         </div>
       </footer>
