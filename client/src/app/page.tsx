@@ -16,11 +16,12 @@ import { LeadModal, LeadFormData } from '@/components/dashboard/LeadModal';
 import { DeleteConfirmDialog } from '@/components/dashboard/DeleteConfirmDialog';
 import { CsvImportModal } from '@/components/dashboard/CsvImportModal';
 import { KeyboardShortcutsDialog } from '@/components/dashboard/KeyboardShortcutsDialog';
+import { CommandPalette } from '@/components/dashboard/CommandPalette';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, ArrowRight } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, logout, isLoading: isAuthLoading } = useAuth();
   const { success, error } = useToast();
 
   // State
@@ -63,9 +64,10 @@ export default function DashboardPage() {
   const [leadToDelete, setLeadToDelete] = useState<Lead | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Import & Shortcuts Dialogs
+  // Dialogs State
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   // Fetch Leads (Stable callback - does NOT depend on selectedLeadForDrawer to prevent loops)
   const fetchLeads = useCallback(async () => {
@@ -106,7 +108,6 @@ export default function DashboardPage() {
         if (!prev) return null;
         const fresh = res.data.leads.find((l) => l.id === prev.id);
         if (!fresh) return prev;
-        // Only return new object if properties actually changed
         if (
           fresh.status === prev.status &&
           fresh.priority === prev.priority &&
@@ -162,19 +163,25 @@ export default function DashboardPage() {
     }
   }, [fetchStats, user]);
 
-  // Global Keyboard Shortcuts
+  // Global Keyboard Shortcuts & Navbar Custom Events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Command Palette (Cmd+K or Ctrl+K) works everywhere
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+        return;
+      }
+
       // Ignore if typing in input or textarea
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') {
         return;
       }
 
-      if (e.key === '/' || ((e.metaKey || e.ctrlKey) && e.key === 'k')) {
+      if (e.key === '/') {
         e.preventDefault();
-        const searchInput = document.getElementById('global-lead-search-input');
-        if (searchInput) searchInput.focus();
+        setIsCommandPaletteOpen(true);
       } else if (e.key === 'n' || e.key === 'N') {
         e.preventDefault();
         handleOpenCreateModal();
@@ -187,8 +194,18 @@ export default function DashboardPage() {
       }
     };
 
+    const onOpenPalette = () => setIsCommandPaletteOpen(true);
+    const onOpenCreate = () => handleOpenCreateModal();
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('open-command-palette', onOpenPalette);
+    window.addEventListener('open-create-lead', onOpenCreate);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('open-command-palette', onOpenPalette);
+      window.removeEventListener('open-create-lead', onOpenCreate);
+    };
   }, []);
 
   // Handle Query Changes
@@ -644,6 +661,22 @@ export default function DashboardPage() {
         leadToEdit={leadToEdit}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitLeadForm}
+      />
+
+      {/* Raycast-style Spotlight Command Palette */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        leads={leads}
+        onSelectLead={handleSelectLead}
+        onOpenCreateModal={handleOpenCreateModal}
+        onToggleViewMode={() => setViewMode((prev) => (prev === 'table' ? 'kanban' : 'table'))}
+        onToggleDensity={() => setDensity((prev) => (prev === 'comfortable' ? 'compact' : 'comfortable'))}
+        onOpenImportModal={() => setIsImportModalOpen(true)}
+        onExportCsv={handleExportCsv}
+        onOpenShortcuts={() => setIsShortcutsOpen(true)}
+        onFilterPreset={(preset) => handleQueryChange({ preset, page: 1 })}
+        onLogout={logout}
       />
 
       {/* CSV Batch Import Modal Dialog */}

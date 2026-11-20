@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lead, LeadStatus, Pagination, LeadQueryParams } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,8 @@ import {
   ArrowDown,
   ArrowUpDown,
   RotateCcw,
+  Sparkles,
+  Command,
 } from 'lucide-react';
 
 interface LeadsTableProps {
@@ -98,6 +100,43 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
   onDelete,
 }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+
+  // Power user J/K keyboard navigation
+  useEffect(() => {
+    const handleTableKeys = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') {
+        return;
+      }
+
+      if (e.key === 'j' || e.key === 'J' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        setFocusedIndex((prev) => (prev === null ? 0 : Math.min(leads.length - 1, prev + 1)));
+      } else if (e.key === 'k' || e.key === 'K' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        setFocusedIndex((prev) => (prev === null ? 0 : Math.max(0, prev - 1)));
+      } else if (e.key === 'Enter') {
+        if (focusedIndex !== null && leads[focusedIndex]) {
+          e.preventDefault();
+          onSelectLead(leads[focusedIndex]);
+        }
+      } else if (e.key === 'x' || e.key === 'X') {
+        if (focusedIndex !== null && leads[focusedIndex]) {
+          e.preventDefault();
+          onToggleSelectLead(leads[focusedIndex].id);
+        }
+      } else if (e.key === 'e' || e.key === 'E') {
+        if (focusedIndex !== null && leads[focusedIndex]) {
+          e.preventDefault();
+          onEdit(leads[focusedIndex]);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleTableKeys);
+    return () => window.removeEventListener('keydown', handleTableKeys);
+  }, [focusedIndex, leads, onSelectLead, onToggleSelectLead, onEdit]);
 
   const copyEmail = (e: React.MouseEvent, email: string, id: string) => {
     e.stopPropagation();
@@ -134,6 +173,24 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
     }
   };
 
+  // Compute CRM Deal Health Score (0-100)
+  const getDealScore = (l: Lead) => {
+    let score = 20;
+    if (l.status === 'QUALIFIED') score += 40;
+    else if (l.status === 'CONTACTED') score += 25;
+    else if (l.status === 'NEW') score += 10;
+    else if (l.status === 'LOST') return 10;
+
+    if (l.priority === 'HIGH') score += 25;
+    else if (l.priority === 'MEDIUM') score += 15;
+    else score += 5;
+
+    if (l.value >= 25000) score += 15;
+    else if (l.value > 0) score += 10;
+
+    return Math.min(score, 99);
+  };
+
   const currentPageIds = leads.map((l) => l.id);
   const allSelected =
     currentPageIds.length > 0 && currentPageIds.every((id) => selectedLeadIds.includes(id));
@@ -161,7 +218,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative space-y-2">
       <div className="bg-white border border-zinc-200/90 rounded-lg shadow-2xs overflow-hidden">
         {/* Table Container */}
         <div className="overflow-x-auto">
@@ -234,6 +291,11 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                   </div>
                 </th>
 
+                {/* Deal Score */}
+                <th className="py-2.5 px-3">
+                  <span title="Calculated CRM conversion probability">Score</span>
+                </th>
+
                 <th className="py-2.5 px-3">Channel</th>
 
                 {/* Status Sort */}
@@ -286,6 +348,9 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                       <div className="h-4 w-16 bg-zinc-100 rounded" />
                     </td>
                     <td className="py-3 px-3">
+                      <div className="h-4 w-12 bg-zinc-100 rounded" />
+                    </td>
+                    <td className="py-3 px-3">
                       <div className="h-4 w-16 bg-zinc-100 rounded" />
                     </td>
                     <td className="py-3 px-3">
@@ -302,7 +367,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
               ) : leads.length === 0 ? (
                 // Empty State
                 <tr>
-                  <td colSpan={10} className="py-14 text-center">
+                  <td colSpan={11} className="py-14 text-center">
                     <div className="mx-auto h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 mb-2.5">
                       <UserX className="h-5 w-5" />
                     </div>
@@ -329,7 +394,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                 </tr>
               ) : (
                 // Leads Rows
-                leads.map((lead) => {
+                leads.map((lead, index) => {
                   const statusConfig = statusStyles[lead.status] || {
                     label: lead.status,
                     dot: 'bg-zinc-400',
@@ -337,13 +402,22 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                   };
                   const prioConfig = priorityBadges[lead.priority] || priorityBadges.MEDIUM;
                   const isSelected = selectedLeadIds.includes(lead.id);
+                  const isKeyboardFocused = focusedIndex === index;
+                  const score = getDealScore(lead);
 
                   return (
                     <tr
                       key={lead.id}
-                      onClick={() => onSelectLead(lead)}
+                      onClick={() => {
+                        setFocusedIndex(index);
+                        onSelectLead(lead);
+                      }}
                       className={`group cursor-pointer transition-colors ${
-                        isSelected ? 'bg-zinc-100/70' : 'hover:bg-zinc-50/70'
+                        isKeyboardFocused
+                          ? 'bg-zinc-100/90 ring-1 ring-inset ring-zinc-900'
+                          : isSelected
+                          ? 'bg-zinc-100/70'
+                          : 'hover:bg-zinc-50/70'
                       }`}
                     >
                       {/* Checkbox */}
@@ -427,6 +501,31 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                         )}
                       </td>
 
+                      {/* Deal Health Score */}
+                      <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3 font-mono text-[11px] tabular-numbers`}>
+                        <span
+                          className={`inline-flex items-center space-x-1 px-1.5 py-0.2 rounded font-semibold ${
+                            score >= 80
+                              ? 'text-emerald-700 bg-emerald-50'
+                              : score >= 50
+                              ? 'text-amber-700 bg-amber-50'
+                              : 'text-zinc-500 bg-zinc-100'
+                          }`}
+                          title={`Deal Health: ${score}/100`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full ${
+                              score >= 80
+                                ? 'bg-emerald-500'
+                                : score >= 50
+                                ? 'bg-amber-500'
+                                : 'bg-zinc-400'
+                            }`}
+                          />
+                          <span>{score}</span>
+                        </span>
+                      </td>
+
                       {/* Source Channel */}
                       <td className={`${isCompact ? 'py-1.5' : 'py-2.5'} px-3`}>
                         <span className="px-1.5 py-0.5 rounded text-[10px] font-mono text-zinc-600 bg-zinc-100 border border-zinc-200/60">
@@ -476,7 +575,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                             size="sm"
                             onClick={() => onEdit(lead)}
                             className="h-6 w-6 p-0 text-zinc-400 hover:text-zinc-900"
-                            title="Edit Lead"
+                            title="Edit Lead (E)"
                           >
                             <Pencil className="h-3 w-3" />
                           </Button>
@@ -494,7 +593,7 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
                             size="sm"
                             onClick={() => onSelectLead(lead)}
                             className="h-6 w-6 p-0 text-zinc-400 hover:text-zinc-900"
-                            title="Open Drawer"
+                            title="Open Drawer (Enter)"
                           >
                             <ArrowRightIcon className="h-3 w-3" />
                           </Button>
@@ -570,6 +669,18 @@ export const LeadsTable: React.FC<LeadsTableProps> = ({
             </div>
           </div>
         )}
+      </div>
+
+      {/* Tactile Power-User Shortcut Hints Bar */}
+      <div className="hidden sm:flex items-center justify-between px-2 text-[11px] text-zinc-400 font-mono">
+        <div className="flex items-center space-x-3">
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">J</kbd> / <kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">K</kbd> Navigate</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">↵</kbd> Inspect</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">X</kbd> Select</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">E</kbd> Edit</span>
+          <span><kbd className="px-1 py-0.2 rounded bg-zinc-100 border border-zinc-200 text-zinc-600">⌘K</kbd> Commands</span>
+        </div>
+        <span className="text-zinc-400">Superhuman-style navigation enabled</span>
       </div>
 
       {/* Floating Bulk Action Dock */}

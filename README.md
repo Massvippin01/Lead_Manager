@@ -23,6 +23,17 @@ Meru Lead Manager is an enterprise-grade, high-density sales CRM workspace engin
 
 ### 🚀 Production CRM Elevators (100% Completed)
 - **High-Density Linear / Attio Aesthetic**: Completely purged of "vibe-coded" gradient washes or unstyled defaults. Features solid carbon zinc tones (`#09090b`), muted semantic status dots, and crisp tabular numbers.
+- **Spotlight Command Palette (`⌘K` / `Ctrl+K`)**: Raycast-style spotlight overlay with fuzzy search across prospects and quick actions (toggle views, batch import, export CSV, presets, shortcuts) with arrow navigation.
+- **Superhuman-Style Table Keyboard Navigation**:
+  - `J` / `K` (or `↓` / `↑`): Instant row hopping with active keyboard ring focus.
+  - `Enter`: Instantly opens slide-over inspector for the highlighted prospect.
+  - `X`: Toggles selection checkbox for bulk operations.
+  - `E`: Opens edit modal.
+  - `Delete`: Triggers safe delete confirmation.
+- **Deal Health & Win Probability Scoring (0-100)**: Real-time calculated score based on pipeline stage, priority tier, deal value, and interaction history. Highlighted with semantic health badges.
+- **Visual Pipeline Stage Stepper**: Connected progress track in the slide-over inspector allowing 1-click stage transitions with smooth visual completion feedback.
+- **Tactile Outreach Quick Bar**: 1-click contact actions: `Email` (`mailto:`), `Call` (`tel:`), and `Copy Lead Card` (structured clipboard snippet).
+- **Interactive Funnel Visualizer**: Real-time breakdown of conversion progression from New Inquiries ➔ In Dialogue ➔ Qualified Deals ➔ Closed, with stage valuation totals.
 - **Table Density Switcher**: Toggle between **Comfortable Density** (spacious row layout for tablet/desktop) and **Compact Density** (tight 36px spreadsheet layout for rapid triage).
 - **Preset Filter Views**: 1-click curated views matching high-performance sales routines:
   - `All`: Full pipeline overview
@@ -30,7 +41,7 @@ Meru Lead Manager is an enterprise-grade, high-density sales CRM workspace engin
   - `Value >$25k`: Enterprise-tier deals
   - `Needs First Touch`: Fresh inbound leads not yet contacted
   - `Deal Closing`: Qualified opportunities near conversion
-- **Interactive Kanban Pipeline Board**: Seamless toggle (`V` shortcut) between **Table View** and a 4-column **Kanban Board** (`New Inquiries`, `In Contact`, `Qualified Deals`, `Closed/Lost`) with stage advancement buttons and column valuation sums.
+- **Interactive Kanban Pipeline Board**: Seamless toggle (`V` shortcut) between **Table View** and a 4-column **Kanban Board** (`New Inquiries`, `In Dialogue`, `Qualified Deals`, `Closed/Lost`) with stage advancement buttons and column valuation sums.
 - **Deal Valuation & Revenue Projection**: Track estimated deal values ($ USD) per lead with automatic pipeline revenue and qualified revenue aggregation.
 - **Two-Way CSV Data Operations**:
   - **Batch CSV Import**: Modal parser supporting copy-pasted or uploaded CSV records with schema preview and batch ingestion.
@@ -38,11 +49,15 @@ Meru Lead Manager is an enterprise-grade, high-density sales CRM workspace engin
 - **Activity Timeline & Call Logging**: Slide-over inspector drawer to log internal notes or phone call summaries with timestamps and historical audit trail.
 - **Bulk Lead Operations**: Multi-row selection with a floating action dock to batch-update stages (e.g. mark multiple leads as Contacted or Qualified) or perform bulk deletions.
 - **Power Keyboard Shortcuts**:
-  - `Ctrl + K` or `/`: Focuses global search input.
+  - `⌘K` or `Ctrl+K`: Opens Spotlight Command Palette.
+  - `/`: Quick focus command search.
   - `N`: Instantly opens New Lead modal.
   - `V`: Toggles between Table View and Kanban Board.
+  - `J` / `K`: Navigate rows up / down.
+  - `X`: Toggle row selection.
+  - `E`: Edit highlighted lead.
   - `?`: Opens Keyboard Shortcuts cheat sheet.
-  - `Esc`: Dismisses slide-over drawer or dialogs.
+  - `Esc`: Dismisses active dialogs or drawer.
 - **Authentication & User Data Isolation**: Stateless JWT authentication with bcrypt password hashing (`/register`, `/login`, `/me`). Every user sees, modifies, and deletes **only their own leads**.
 - **Pagination & Multi-Column Sorting**:
   - Server-side pagination with configurable page limits (10, 20, 50 per page), previous/next navigation, and total item indicators.
