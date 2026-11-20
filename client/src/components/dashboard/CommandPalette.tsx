@@ -19,6 +19,7 @@ import {
   Command,
   AlignJustify,
   Rows,
+  X,
 } from 'lucide-react';
 import { Lead } from '@/types';
 
@@ -247,6 +248,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-zinc-500 bg-zinc-200/60 rounded border border-zinc-200">
               ESC
             </kbd>
+            <button
+              type="button"
+              onClick={onClose}
+              className="sm:hidden p-1 text-slate-400 hover:text-slate-700 rounded-md"
+              title="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
 
           {/* Results Container */}

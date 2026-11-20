@@ -153,10 +153,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
 
         {/* View Controls, Actions & Modals */}
-        <div className="flex items-center space-x-1.5 shrink-0 self-end md:self-auto">
+        <div className="flex items-center space-x-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 shrink-0">
           {/* Density Toggle (only active in table view) */}
           {viewMode === 'table' && (
-            <div className="flex items-center border border-slate-200 rounded-lg p-0.5 bg-slate-50">
+            <div className="flex items-center border border-slate-200 rounded-lg p-0.5 bg-slate-50 shrink-0">
               <button
                 type="button"
                 onClick={() => onDensityChange('comfortable')}
@@ -181,7 +181,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           )}
 
           {/* Table / Kanban View Toggle */}
-          <div className="flex items-center border border-slate-200 rounded-lg p-0.5 bg-slate-50">
+          <div className="flex items-center border border-slate-200 rounded-lg p-0.5 bg-slate-50 shrink-0">
             <button
               type="button"
               onClick={() => onViewModeChange('table')}
@@ -210,7 +210,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <button
             type="button"
             onClick={onOpenShortcutsDialog}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors shrink-0"
             title="Keyboard Shortcuts (?)"
           >
             <Keyboard className="h-3.5 w-3.5" />
@@ -221,7 +221,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             variant="outline"
             size="sm"
             onClick={onOpenImportModal}
-            className="text-xs h-7.5 px-2.5 text-slate-700 hover:text-slate-900 border-slate-200"
+            className="text-xs h-7.5 px-2.5 text-slate-700 hover:text-slate-900 border-slate-200 shrink-0"
             title="Import CSV"
           >
             <Upload className="h-3 w-3 mr-1" />
@@ -233,7 +233,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             variant="outline"
             size="sm"
             onClick={onExportCsv}
-            className="text-xs h-7.5 px-2.5 text-slate-700 hover:text-slate-900 border-slate-200"
+            className="text-xs h-7.5 px-2.5 text-slate-700 hover:text-slate-900 border-slate-200 shrink-0"
             title="Export CSV"
           >
             <Download className="h-3 w-3 mr-1" />
@@ -244,7 +244,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <Button
             onClick={onOpenCreateModal}
             size="sm"
-            className="text-xs h-7.5 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold shadow-xs"
+            className="text-xs h-7.5 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold shadow-xs shrink-0"
           >
             <Plus className="h-3.5 w-3.5 mr-1" />
             New Lead
@@ -255,7 +255,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       {/* Row 2: Search, Custom Select Dropdowns & Sort */}
       <div className="flex flex-col md:flex-row gap-2 items-stretch md:items-center justify-between">
         {/* Search Input */}
-        <div className="relative flex-1 min-w-[220px]">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <Input
             id="global-lead-search-input"
@@ -276,10 +276,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           )}
         </div>
 
-        {/* Custom Radix Select Filters */}
-        <div className="flex flex-wrap items-center gap-1.5">
+        {/* Custom Radix Select Filters (2x2 grid on mobile, inline flex on desktop) */}
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1.5 w-full md:w-auto">
           {/* Status Filter Dropdown */}
-          <div className="w-[125px]">
+          <div className="w-full sm:w-[125px]">
             <Select
               value={queryParams.status || 'ALL'}
               onValueChange={(val) =>
@@ -290,7 +290,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 })
               }
             >
-              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg">
+              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg w-full">
                 <SelectValue placeholder="All Statuses" />
               </SelectTrigger>
               <SelectContent>
@@ -324,7 +324,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
 
           {/* Priority Filter Dropdown */}
-          <div className="w-[120px]">
+          <div className="w-full sm:w-[120px]">
             <Select
               value={queryParams.priority || 'ALL'}
               onValueChange={(val) =>
@@ -335,7 +335,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 })
               }
             >
-              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg">
+              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg w-full">
                 <SelectValue placeholder="All Priorities" />
               </SelectTrigger>
               <SelectContent>
@@ -363,7 +363,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
 
           {/* Source Filter Dropdown */}
-          <div className="w-[125px]">
+          <div className="w-full sm:w-[125px]">
             <Select
               value={queryParams.source || 'ALL'}
               onValueChange={(val) =>
@@ -374,7 +374,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 })
               }
             >
-              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg">
+              <SelectTrigger className="h-8 text-xs bg-slate-50/80 border-slate-200 rounded-lg w-full">
                 <SelectValue placeholder="All Sources" />
               </SelectTrigger>
               <SelectContent>
@@ -391,8 +391,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
 
           {/* Sort Column & Direction */}
-          <div className="flex items-center space-x-1 border border-slate-200 rounded-lg p-0.5 bg-slate-50/90">
-            <div className="w-[95px]">
+          <div className="flex items-center justify-between sm:justify-start space-x-1 border border-slate-200 rounded-lg p-0.5 bg-slate-50/90 w-full sm:w-auto">
+            <div className="flex-1 sm:w-[95px]">
               <Select
                 value={queryParams.sortBy || 'createdAt'}
                 onValueChange={(val) =>
@@ -402,7 +402,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   })
                 }
               >
-                <SelectTrigger className="h-7 text-[11px] border-0 bg-transparent shadow-none px-1.5 font-medium">
+                <SelectTrigger className="h-7 text-[11px] border-0 bg-transparent shadow-none px-1.5 font-medium w-full">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -423,7 +423,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   sortOrder: queryParams.sortOrder === 'asc' ? 'desc' : 'asc',
                 })
               }
-              className="h-7 px-2 text-slate-600 hover:text-slate-900 flex items-center text-[10px] font-bold rounded-md hover:bg-slate-200/60 transition-colors"
+              className="h-7 px-2 text-slate-600 hover:text-slate-900 flex items-center text-[10px] font-bold rounded-md hover:bg-slate-200/60 transition-colors shrink-0"
               title={`Toggle sort order (${queryParams.sortOrder === 'asc' ? 'Ascending' : 'Descending'})`}
             >
               <ArrowUpDown className="h-3 w-3 mr-0.5" />
@@ -437,10 +437,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               variant="ghost"
               size="sm"
               onClick={onReset}
-              className="text-slate-500 hover:text-slate-900 text-xs h-8 px-2.5 rounded-lg"
+              className="col-span-2 sm:col-span-1 text-slate-500 hover:text-slate-900 text-xs h-8 px-2.5 rounded-lg w-full sm:w-auto justify-center"
             >
               <RotateCcw className="h-3 w-3 mr-1" />
-              Reset
+              Reset Filters
             </Button>
           )}
         </div>

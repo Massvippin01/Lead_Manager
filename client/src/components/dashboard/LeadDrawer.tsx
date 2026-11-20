@@ -221,8 +221,8 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
               <div className="flex-1 overflow-y-auto p-5 space-y-5">
                 {/* Hero Prospect Banner */}
                 <div className="flex items-start space-x-3.5 pb-2">
-                  <div className="h-12 w-12 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0 ring-2 ring-zinc-200">
-                    {getInitials(lead.name)}
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 border border-slate-200 shadow-2xs">
+                    <User className="h-6 w-6 text-slate-600" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-1.5">

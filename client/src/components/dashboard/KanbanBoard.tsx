@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Lead, LeadStatus } from '@/types';
-import { Building2, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Building2, ChevronRight, ChevronLeft, User } from 'lucide-react';
 
 interface KanbanBoardProps {
   leads: Lead[];
@@ -78,13 +78,13 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="flex overflow-x-auto pb-4 gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0">
         {columns.map((col) => (
-          <div key={col.status} className="bg-zinc-100/60 rounded-lg p-3 border border-zinc-200 animate-pulse min-h-[380px]">
-            <div className="h-4 w-24 bg-zinc-200 rounded mb-3" />
+          <div key={col.status} className="w-[84vw] sm:w-auto shrink-0 bg-slate-100/60 rounded-xl p-3 border border-slate-200 animate-pulse min-h-[380px]">
+            <div className="h-4 w-24 bg-slate-200 rounded mb-3" />
             <div className="space-y-2">
-              <div className="h-24 bg-white rounded-md border border-zinc-200" />
-              <div className="h-24 bg-white rounded-md border border-zinc-200" />
+              <div className="h-24 bg-white rounded-md border border-slate-200" />
+              <div className="h-24 bg-white rounded-md border border-slate-200" />
             </div>
           </div>
         ))}
@@ -93,7 +93,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
+    <div className="flex overflow-x-auto pb-4 gap-3 snap-x snap-mandatory sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0 items-start">
       {columns.map((col) => {
         const columnLeads = leads.filter((l) => l.status === col.status);
         const columnTotalValue = columnLeads.reduce((acc, l) => acc + (l.value || 0), 0);
@@ -101,21 +101,21 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
         return (
           <div
             key={col.status}
-            className="bg-zinc-50 border border-zinc-200/90 rounded-lg p-2.5 flex flex-col min-h-[420px] max-h-[calc(100vh-14rem)] overflow-hidden shadow-2xs"
+            className="w-[84vw] sm:w-auto shrink-0 snap-center bg-slate-50 border border-slate-200/90 rounded-xl p-3 flex flex-col min-h-[420px] max-h-[calc(100vh-14rem)] overflow-hidden shadow-2xs"
           >
             {/* Column Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-zinc-200 mb-2 px-1">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 mb-2 px-1">
               <div className="flex items-center space-x-1.5">
                 <span className={`h-1.5 w-1.5 rounded-full ${col.dotColor}`} />
-                <span className="font-bold text-xs text-zinc-900 tracking-tight">
+                <span className="font-bold text-xs text-slate-900 tracking-tight">
                   {col.title}
                 </span>
-                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-700 tabular-numbers">
+                <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 tabular-numbers">
                   {columnLeads.length}
                 </span>
               </div>
 
-              <span className="text-[11px] font-mono font-medium text-zinc-500 tabular-numbers">
+              <span className="text-[11px] font-mono font-medium text-slate-500 tabular-numbers">
                 {formatCurrency(columnTotalValue)}
               </span>
             </div>
@@ -123,7 +123,7 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
             {/* Column Cards Container */}
             <div className="flex-1 overflow-y-auto space-y-2 pr-0.5">
               {columnLeads.length === 0 ? (
-                <div className="py-12 text-center text-xs text-zinc-400 font-mono border border-dashed border-zinc-200 rounded-md">
+                <div className="py-12 text-center text-xs text-slate-400 font-mono border border-dashed border-slate-200 rounded-lg">
                   No prospects in this stage
                 </div>
               ) : (
@@ -137,20 +137,20 @@ export const KanbanBoard: React.FC<KanbanBoardProps> = ({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.12 }}
                       onClick={() => onSelectLead(lead)}
-                      className="bg-white rounded-lg p-3 border border-zinc-200/80 shadow-2xs hover:border-zinc-400 transition-all cursor-pointer group"
+                      className="bg-white rounded-lg p-3 border border-slate-200/80 shadow-2xs hover:border-slate-400 transition-all cursor-pointer group"
                     >
                       {/* Top Row: Prospect & Priority */}
                       <div className="flex items-start justify-between gap-1.5 mb-1.5">
                         <div className="flex items-center space-x-2 min-w-0">
-                          <div className="h-6 w-6 rounded bg-zinc-900 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
-                            {getInitials(lead.name)}
+                          <div className="w-6 h-6 rounded-md bg-slate-100 text-slate-500 border border-slate-200/80 flex items-center justify-center shrink-0">
+                            <User className="h-3.5 w-3.5 text-slate-500" />
                           </div>
                           <div className="min-w-0">
-                            <h4 className="text-xs font-bold text-zinc-900 truncate group-hover:text-blue-600 transition-colors">
+                            <h4 className="text-xs font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
                               {lead.name}
                             </h4>
-                            <p className="text-[11px] text-zinc-500 truncate flex items-center mt-0.5">
-                              <Building2 className="h-2.5 w-2.5 mr-1 text-zinc-400 shrink-0" />
+                            <p className="text-[11px] text-slate-500 truncate flex items-center mt-0.5">
+                              <Building2 className="h-2.5 w-2.5 mr-1 text-slate-400 shrink-0" />
                               {lead.company}
                             </p>
                           </div>

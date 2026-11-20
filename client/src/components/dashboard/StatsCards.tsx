@@ -136,7 +136,7 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 mb-5">
       {cards.map((card) => {
         const Icon = card.icon;
         const isInteractive = card.title !== 'Win Rate';
@@ -147,27 +147,27 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
             type="button"
             disabled={!isInteractive}
             onClick={card.onClick}
-            className={`text-left rounded-xl border p-3.5 transition-all duration-150 ${card.accentClass} ${
+            className={`text-left rounded-xl border p-2.5 sm:p-3.5 transition-all duration-150 ${card.accentClass} ${
               card.isActive && isInteractive
                 ? card.activeClass
                 : 'bg-white border-slate-200/90 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 shadow-2xs'
             } ${!isInteractive ? 'cursor-default' : 'cursor-pointer group'}`}
           >
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-2">
+            <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1.5 sm:mb-2">
               <span className="flex items-center space-x-1.5 truncate">
                 <span className={`h-1.5 w-1.5 rounded-full ${card.dotColor}`} />
-                <span className="truncate">{card.title}</span>
+                <span className="truncate text-[11px] sm:text-xs">{card.title}</span>
               </span>
               <div className={`p-1 rounded-md ${card.iconBg} shrink-0 transition-transform group-hover:scale-105`}>
                 <Icon className="h-3 w-3" />
               </div>
             </div>
 
-            <div className="flex items-baseline space-x-1 my-1">
+            <div className="flex items-baseline space-x-1 my-0.5 sm:my-1">
               {isLoading ? (
                 <div className="h-7 w-14 bg-slate-100 rounded animate-pulse my-0.5" />
               ) : (
-                <span className="text-2xl font-bold tracking-tight text-slate-900 font-mono tabular-numbers">
+                <span className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-mono tabular-numbers">
                   {card.value}
                 </span>
               )}

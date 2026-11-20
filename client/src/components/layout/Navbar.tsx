@@ -28,6 +28,7 @@ import {
   RefreshCw,
   Download,
   Check,
+  User,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -48,11 +49,13 @@ export const Navbar: React.FC = () => {
         {/* Left: Brand & Workspace Switcher */}
         <div className="flex items-center space-x-3">
           <Link href="/" className="flex items-center space-x-2.5 group">
-            <div className="h-7.5 w-7.5 rounded-lg bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center text-white font-bold text-xs shadow-sm ring-1 ring-white/20 group-hover:from-slate-800 transition-all">
-              M
+            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:bg-slate-800 transition-colors">
+              <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 19V5l8 9 8-9v14" />
+              </svg>
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-bold text-slate-900 tracking-tight leading-none">
+              <span className="text-sm font-bold text-slate-900 tracking-tight leading-none">
                 Meru CRM
               </span>
               <span className="text-[10px] text-slate-400 font-mono leading-tight mt-0.5 hidden sm:inline">
@@ -280,17 +283,28 @@ export const Navbar: React.FC = () => {
         )}
 
         {/* Right: Actions & User Navigation */}
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-1.5 sm:space-x-2.5">
           {user ? (
             <>
+              {/* Mobile Search Button */}
+              <button
+                type="button"
+                onClick={handleOpenCommandPalette}
+                className="md:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                title="Search leads or actions (⌘K)"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+
               {/* Quick Create Lead Primary Button */}
               <Button
                 size="sm"
                 onClick={handleOpenCreateModal}
-                className="h-8 px-3.5 text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg shadow-xs"
+                className="h-8 px-2.5 sm:px-3.5 text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg shadow-xs"
               >
-                <Plus className="h-3.5 w-3.5 mr-1" />
-                <span>New Lead</span>
+                <Plus className="h-3.5 w-3.5 sm:mr-1" />
+                <span className="hidden xs:inline">New Lead</span>
+                <span className="xs:hidden">New</span>
                 <kbd className="hidden lg:inline-block ml-1.5 px-1 py-0.2 text-[9px] font-mono bg-slate-800 text-slate-300 rounded">
                   N
                 </kbd>
@@ -299,9 +313,9 @@ export const Navbar: React.FC = () => {
               {/* User Profile Pill & Sign Out */}
               <div className="flex items-center space-x-1.5 pl-2 border-l border-slate-200">
                 <div className="flex items-center space-x-2 text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg py-1 px-2.5 shadow-2xs">
-                  <span className="h-5.5 w-5.5 rounded-full bg-gradient-to-tr from-slate-900 to-indigo-700 text-white flex items-center justify-center font-bold text-[10px] ring-1 ring-slate-300 shadow-2xs">
-                    {user.name.charAt(0).toUpperCase()}
-                  </span>
+                  <div className="w-6 h-6 rounded-full bg-slate-200/90 text-slate-600 flex items-center justify-center shrink-0 border border-slate-300/80">
+                    <User className="h-3.5 w-3.5 text-slate-600" />
+                  </div>
                   <div className="flex flex-col text-left leading-tight hidden lg:flex">
                     <span className="font-bold text-slate-800 text-[11px] max-w-[120px] truncate">
                       {user.name}
