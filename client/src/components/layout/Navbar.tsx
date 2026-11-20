@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -8,11 +8,17 @@ import {
   LogOut,
   Plus,
   Search,
+  Bell,
+  ChevronDown,
+  Building2,
+  CheckCircle2,
   Sparkles,
+  Command,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const handleOpenCommandPalette = () => {
     window.dispatchEvent(new CustomEvent('open-command-palette'));
@@ -23,24 +29,37 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200/90 bg-white/90 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-13 flex items-center justify-between">
-        {/* Brand & Workspace Indicator */}
+    <header className="sticky top-0 z-40 border-b border-zinc-200/90 bg-white/95 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
+        {/* Left: Brand & Workspace Switcher */}
         <div className="flex items-center space-x-3">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="h-6 w-6 rounded-md bg-zinc-900 flex items-center justify-center text-white font-bold text-xs shadow-2xs">
+          <Link href="/" className="flex items-center space-x-2.5 group">
+            <div className="h-7 w-7 rounded-lg bg-zinc-900 flex items-center justify-center text-white font-bold text-xs shadow-xs group-hover:bg-zinc-800 transition-colors">
               M
             </div>
-            <span className="text-xs font-bold text-zinc-900 tracking-tight">
-              Meru CRM
-            </span>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-zinc-900 tracking-tight leading-none">
+                Meru CRM
+              </span>
+              <span className="text-[10px] text-zinc-400 font-mono leading-tight mt-0.5 hidden sm:inline">
+                Lead Intelligence
+              </span>
+            </div>
           </Link>
 
           {user && (
-            <div className="hidden sm:flex items-center space-x-1.5 pl-3 border-l border-zinc-200 text-xs text-zinc-500 font-mono">
-              <span className="text-zinc-300">/</span>
-              <span className="font-semibold text-zinc-800">Sales Pipeline</span>
-              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-sans">
+            <div className="hidden sm:flex items-center space-x-2 pl-3 border-l border-zinc-200">
+              <button
+                type="button"
+                onClick={handleOpenCommandPalette}
+                className="flex items-center space-x-1.5 px-2 py-1 rounded-md text-xs font-medium text-zinc-700 bg-zinc-100/70 hover:bg-zinc-200/60 transition-colors"
+              >
+                <Building2 className="h-3.5 w-3.5 text-zinc-500" />
+                <span className="font-semibold text-zinc-800">Sales Pipeline</span>
+                <ChevronDown className="h-3 w-3 text-zinc-400" />
+              </button>
+
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
                 Live Sync
               </span>
@@ -48,51 +67,67 @@ export const Navbar: React.FC = () => {
           )}
         </div>
 
-        {/* Global Command Center & Actions */}
+        {/* Center: Command Palette Spotlight Bar */}
+        {user && (
+          <div className="hidden md:flex items-center justify-center flex-1 max-w-sm mx-4">
+            <button
+              type="button"
+              onClick={handleOpenCommandPalette}
+              className="w-full flex items-center justify-between px-3 py-1.5 text-xs text-zinc-500 bg-zinc-50 hover:bg-zinc-100/80 border border-zinc-200 rounded-lg transition-all cursor-pointer shadow-2xs group"
+              title="Open Spotlight Command Palette (Ctrl+K or ⌘K)"
+            >
+              <div className="flex items-center space-x-2">
+                <Search className="h-3.5 w-3.5 text-zinc-400 group-hover:text-zinc-600 transition-colors" />
+                <span className="text-zinc-400 group-hover:text-zinc-600 transition-colors">
+                  Search leads or actions...
+                </span>
+              </div>
+              <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-zinc-500 bg-white rounded border border-zinc-200 shadow-2xs">
+                ⌘K
+              </kbd>
+            </button>
+          </div>
+        )}
+
+        {/* Right: Actions & User Navigation */}
         <div className="flex items-center space-x-2.5">
           {user ? (
             <>
-              {/* Command Palette Trigger */}
-              <button
-                type="button"
-                onClick={handleOpenCommandPalette}
-                className="hidden md:flex items-center space-x-2 px-2.5 py-1 text-xs text-zinc-500 bg-zinc-100/80 hover:bg-zinc-200/70 border border-zinc-200 rounded-md transition-all cursor-pointer font-medium"
-                title="Command Palette (Ctrl+K or ⌘K)"
-              >
-                <Search className="h-3 w-3 text-zinc-400" />
-                <span>Commands & search...</span>
-                <kbd className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-zinc-500 bg-white rounded border border-zinc-200 shadow-2xs">
-                  ⌘K
-                </kbd>
-              </button>
-
-              {/* Quick Create Lead Button in Navbar */}
+              {/* Quick Create Lead Primary Button */}
               <Button
                 size="sm"
                 onClick={handleOpenCreateModal}
-                className="hidden sm:inline-flex h-7 px-2.5 text-xs bg-zinc-900 hover:bg-zinc-800 text-white font-semibold"
+                className="h-8 px-3 text-xs bg-zinc-900 hover:bg-zinc-800 text-white font-semibold shadow-xs"
               >
                 <Plus className="h-3.5 w-3.5 mr-1" />
-                New Lead
+                <span>New Lead</span>
+                <kbd className="hidden lg:inline-block ml-1.5 px-1 py-0.2 text-[9px] font-mono bg-zinc-800 text-zinc-300 rounded">
+                  N
+                </kbd>
               </Button>
 
-              {/* User Profile Pill */}
-              <div className="flex items-center space-x-2 pl-2 sm:border-l sm:border-zinc-200">
-                <div className="flex items-center space-x-1.5 text-xs text-zinc-700 bg-zinc-50 border border-zinc-200 rounded-md py-0.5 px-2">
-                  <span className="h-4 w-4 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-[9px]">
+              {/* User Profile Pill & Sign Out */}
+              <div className="flex items-center space-x-1.5 pl-2 border-l border-zinc-200">
+                <div className="flex items-center space-x-2 text-xs text-zinc-700 bg-zinc-50 border border-zinc-200 rounded-lg py-1 px-2.5">
+                  <span className="h-5 w-5 rounded-md bg-zinc-900 text-white flex items-center justify-center font-bold text-[10px] shadow-2xs">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
-                  <span className="font-semibold text-zinc-800 max-w-[100px] truncate hidden lg:inline">
-                    {user.name}
-                  </span>
+                  <div className="flex flex-col text-left leading-tight hidden lg:flex">
+                    <span className="font-bold text-zinc-800 text-[11px] max-w-[120px] truncate">
+                      {user.name}
+                    </span>
+                    <span className="text-[10px] text-zinc-400 font-mono">
+                      Sales Rep
+                    </span>
+                  </div>
                 </div>
 
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={logout}
-                  className="text-zinc-400 hover:text-rose-600 hover:bg-rose-50 text-xs h-7 px-2"
-                  title="Sign out"
+                  className="text-zinc-400 hover:text-rose-600 hover:bg-rose-50 text-xs h-8 px-2"
+                  title="Sign out of account"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                 </Button>
@@ -101,12 +136,12 @@ export const Navbar: React.FC = () => {
           ) : (
             <div className="flex items-center space-x-2">
               <Link href="/login">
-                <Button variant="ghost" size="sm" className="text-xs h-7">
+                <Button variant="ghost" size="sm" className="text-xs h-8">
                   Sign In
                 </Button>
               </Link>
               <Link href="/register">
-                <Button size="sm" className="text-xs h-7 bg-zinc-900 hover:bg-zinc-800 text-white">
+                <Button size="sm" className="text-xs h-8 bg-zinc-900 hover:bg-zinc-800 text-white">
                   Get Started
                 </Button>
               </Link>
