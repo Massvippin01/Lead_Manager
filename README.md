@@ -69,9 +69,9 @@ meru/
 | Layer | Technology | Justification |
 | :--- | :--- | :--- |
 | **Frontend** | **Next.js 14 + React + TypeScript** | Modern SSR/CSR hybrid capabilities, optimal page bundle sizes, strict type safety matching backend contracts. |
-| **Styling & UI** | **Tailwind CSS + Shadcn/ui + Framer Motion** | Accessible Radix UI primitives, clean modern visual hierarchy, fluid micro-interactions, and responsive layout. |
+| **Styling & UI** | **Tailwind CSS + Radix UI + Framer Motion** | Accessible Radix UI primitives, clean modern visual hierarchy, fluid micro-interactions, and responsive layout. |
 | **Backend API** | **Node.js + Express + TypeScript** | Industry standard, modular MVC architecture (Routes, Controllers, Services), high-throughput I/O. |
-| **Database & ORM** | **PostgreSQL + Prisma ORM** | ACID-compliant relational storage, foreign keys with cascade deletion, enums, migrations, and strict type generation. |
+| **Database & ORM** | **SQLite (Dev) / PostgreSQL (Prod) + Prisma ORM** | Out-of-the-box zero-setup database for instant local evaluation without requiring external database daemons, with full Prisma relational migration compatibility. |
 | **Data Validation** | **Zod** | Composable schema validation guarding both request bodies and query parameters with explicit error arrays. |
 | **Testing** | **Vitest + Supertest** | Sub-second test execution, end-to-end HTTP endpoint validation without mocking server instances. |
 

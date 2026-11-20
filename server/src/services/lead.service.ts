@@ -1,7 +1,7 @@
 import { prisma } from '../lib/prisma';
 import { CreateLeadInput, UpdateLeadInput, LeadQueryParams } from '../schemas/lead.schema';
 import { AppError } from '../middleware/errorHandler';
-import { Prisma, LeadStatus, LeadSource } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export class LeadService {
   static async getLeads(userId: string, params: LeadQueryParams) {
@@ -9,14 +9,14 @@ export class LeadService {
 
     const where: Prisma.LeadWhereInput = {
       userId,
-      ...(status ? { status: status as LeadStatus } : {}),
-      ...(source ? { source: source as LeadSource } : {}),
+      ...(status ? { status } : {}),
+      ...(source ? { source } : {}),
       ...(search
         ? {
             OR: [
-              { name: { contains: search, mode: 'insensitive' } },
-              { company: { contains: search, mode: 'insensitive' } },
-              { email: { contains: search, mode: 'insensitive' } },
+              { name: { contains: search } },
+              { company: { contains: search } },
+              { email: { contains: search } },
             ],
           }
         : {}),
@@ -52,10 +52,10 @@ export class LeadService {
   static async getStats(userId: string) {
     const [total, newCount, contactedCount, qualifiedCount, lostCount] = await Promise.all([
       prisma.lead.count({ where: { userId } }),
-      prisma.lead.count({ where: { userId, status: LeadStatus.NEW } }),
-      prisma.lead.count({ where: { userId, status: LeadStatus.CONTACTED } }),
-      prisma.lead.count({ where: { userId, status: LeadStatus.QUALIFIED } }),
-      prisma.lead.count({ where: { userId, status: LeadStatus.LOST } }),
+      prisma.lead.count({ where: { userId, status: 'NEW' } }),
+      prisma.lead.count({ where: { userId, status: 'CONTACTED' } }),
+      prisma.lead.count({ where: { userId, status: 'QUALIFIED' } }),
+      prisma.lead.count({ where: { userId, status: 'LOST' } }),
     ]);
 
     const conversionRate = total > 0 ? ((qualifiedCount / total) * 100).toFixed(1) : '0';
